@@ -1,9 +1,8 @@
-"use client";
-import { Heart, Star } from "lucide-react";
+import { Star } from "lucide-react";
 import Image from "next/image";
-import { toast } from "sonner";
 import { ASSSETS } from "../../constants/assets";
-import { Button } from "./ui/button";
+import ButtonAddToFavorite from "./ButtonAddToFavorite";
+import DetailDialog from "./DetailDialog";
 import {
   Card,
   CardContent,
@@ -25,24 +24,7 @@ const ProductCard = () => {
             className="rounded-t-xl border-none w-full h-auto"
             unoptimized
           ></Image>
-          <Button
-            className="bg-white/40  hover:bg-white absolute top-5 right-3 h-8 w-8 cursor-pointer active:scale-110 rounded-full"
-            onClick={() =>
-              toast.success(
-                <span className="font-[500]">
-                  Added{" "}
-                  <span className="text-green-500 font-bold">{`"Advanced Machine Learning Specialization"`}</span>{" "}
-                  to your favorite list!
-                </span>,
-                {
-                  className:
-                    "bg-green-50 text-green-800 border border-green-300 shadow",
-                }
-              )
-            }
-          >
-            <Heart className="fill-red-400 text-red-500 h-5 w-5" />
-          </Button>
+          <ButtonAddToFavorite className="absolute top-5 right-3 bg-gray-300/30 border-1 border-gray-400/10" />
         </div>
         <CardHeader>
           <div className="flex flex-row items-center justify-between w-full">
@@ -67,9 +49,7 @@ const ProductCard = () => {
             <Text className="text-lg font-[700] text-green-600/90">
               $499,000
             </Text>
-            <Button variant={"viewDetails"} className="py-0 text-white">
-              View Details
-            </Button>
+            <DetailDialog />
           </div>
         </CardContent>
       </Card>
