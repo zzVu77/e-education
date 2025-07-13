@@ -43,7 +43,11 @@ const ProductCard = ({
             className="rounded-t-xl border-none w-full h-auto"
             unoptimized
           ></Image>
-          <ButtonAddToFavorite className="absolute top-5 right-3 bg-gray-300/30 border-1 border-gray-400/10" />
+          <ButtonAddToFavorite
+            className="absolute top-5 right-3 border-1 border-gray-400/10"
+            itemName={courseName}
+            isFavorite={false}
+          />
         </div>
         <CardHeader>
           <div className="flex flex-row items-center justify-between w-full">
