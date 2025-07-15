@@ -12,6 +12,7 @@ import {
 } from "./ui/dialog";
 import { Text } from "./ui/typography";
 import { ProductCardProps } from "./ProductCard";
+import { formatCurrency } from "@/lib/utils";
 export type CourseInfo = {
   label?: string;
   value?: string;
@@ -37,7 +38,6 @@ const DetailDialog = ({ productProps }: DetailDialogProps) => {
               height={400}
               alt="product-image"
               className="rounded-xl border-none w-full h-full   object-cover"
-              unoptimized
             ></Image>
           </div>
           <div className="w-full flex flex-col gap-3 md:gap-4">
@@ -70,7 +70,7 @@ const DetailDialog = ({ productProps }: DetailDialogProps) => {
             </div>
             {/* Cost */}
             <Text className="text-[28px] md:text-[32px] font-[700] text-green-600/90 text-start">
-              {productProps.coursePrice || "$499,000"}
+              {formatCurrency(productProps.coursePrice ?? 100) || "$499,000"}
             </Text>
             {/* Description */}
             <div className="w-full flex flex-col gap-1">
@@ -80,10 +80,10 @@ const DetailDialog = ({ productProps }: DetailDialogProps) => {
               <Text className="text-gray-600/90 text-[14px]">{`Take your machine learning skills to the next level with this advanced specialization. You'll dive deep into neural networks, deep learning, computer vision, and natural language processing. Through hands-on projects, you'll build real-world AI applications that can recognize images, understand text, and make predictions based on complex data.`}</Text>
             </div>
             {/* Course Info */}
-            <div className="grid grid-cols-2 md:grid-cols-3 items-center justify-items-start gap-3">
+            <div className="grid grid-cols-2 items-center justify-items-start gap-3">
               {productProps.courseInfo?.map((info, index) => (
                 <div key={index} className="flex flex-col">
-                  <Text className="text-xs font-medium text-gray-900">
+                  <Text className="text-xs font-medium text-gray-900 italic">
                     {info.label}
                   </Text>
                   <Text className="text-sm text-gray-600">{info.value}</Text>
