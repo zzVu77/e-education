@@ -19,14 +19,7 @@ export type CourseInfo = {
 type DetailDialogProps = {
   productProps: Omit<ProductCardProps, "courseShortDescription">;
 };
-// const dummyCourseInfo: CourseInfo[] = [
-//   { label: "Duration", value: "6 months" },
-//   { label: "Level", value: "Advanced" },
-//   { label: "Instructor", value: "John Doe" },
-//   { label: "Language", value: "English" },
-//   { label: "Category", value: "Machine Learning" },
-//   { label: "Enrollment", value: "Open" },
-// ];
+
 const DetailDialog = ({ productProps }: DetailDialogProps) => {
   return (
     <>

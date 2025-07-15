@@ -1,10 +1,15 @@
+import Filter from "@/components/Filter";
 import ProductCard from "@/components/ProductCard";
 import { Check, Info } from "lucide-react";
 import { Toaster } from "sonner";
-
+import { dummyCategories, dummyPriceRanges } from "../../../constants/data";
 const Page = () => {
   return (
     <>
+      <div className="flex flex-row items-center justify-start gap-10">
+        <Filter typeOfFilter="category" items={dummyCategories} />
+        <Filter typeOfFilter="price" items={dummyPriceRanges} />
+      </div>
       <Toaster
         icons={{
           success: <Check className="text-green-500 h-5 w-5 mr-4" />,
