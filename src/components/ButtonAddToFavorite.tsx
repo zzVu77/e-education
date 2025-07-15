@@ -37,7 +37,7 @@ const ButtonAddToFavorite = ({ className, isFavorite, itemName }: Props) => {
       >
         <Heart
           className={cn(
-            "absolute fill-white/70 text-gray-300/30 h-7 w-7",
+            "absolute fill-gray-200/70 text-gray-300/30 h-7 w-7",
             favorite && " fill-red-400 text-red-500 h-7 w-7"
           )}
         />
