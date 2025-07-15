@@ -4,6 +4,7 @@ import Wrapper from "@/components/shared/Wrapper";
 import { Check, Info } from "lucide-react";
 import { Toaster } from "sonner";
 import { mockCoursesData } from "../../constants/data";
+import SuggestionSection from "@/components/SuggestionSection";
 
 const Home = () => {
   return (
@@ -39,6 +40,9 @@ const Home = () => {
             ))
           }
         </div>
+      </Wrapper>
+      <Wrapper>
+        <SuggestionSection />
       </Wrapper>
     </>
   );
