@@ -30,14 +30,14 @@ const ButtonAddToFavorite = ({ className, isFavorite, itemName }: Props) => {
     <>
       <Button
         className={cn(
-          "bg-white/10 relative hover:bg-white h-10 w-10 cursor-pointer active:scale-110 rounded-full ",
+          "bg-white/40 relative hover:bg-white h-10 w-10 cursor-pointer active:scale-110 rounded-full ",
           className
         )}
         onClick={handleOnClick}
       >
         <Heart
           className={cn(
-            "absolute fill-gray-200 text-gray-300/30 h-7 w-7",
+            "absolute fill-white/70 text-gray-300/30 h-7 w-7",
             favorite && " fill-red-400 text-red-500 h-7 w-7"
           )}
         />
