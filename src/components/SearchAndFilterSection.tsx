@@ -1,8 +1,7 @@
 import Filter from "@/components/Filter";
-
 import SearchBar from "@/components/SearchBar";
-import { dummyCategories, dummyPriceRanges } from "../../constants/data";
 import { Suspense } from "react";
+import { dummyPriceRanges, mockCategories } from "../../constants/data";
 const SearchAndFilterSection = () => {
   return (
     <>
@@ -12,7 +11,12 @@ const SearchAndFilterSection = () => {
         </Suspense>
         <div className="flex flex-row items-center justify-center gap-2 w-full md:w-auto">
           <Suspense fallback={null}>
-            <Filter typeOfFilter="category" items={dummyCategories} />
+            <Filter
+              typeOfFilter="category"
+              items={[...mockCategories].sort((a, b) =>
+                a.label.localeCompare(b.label)
+              )}
+            />
           </Suspense>
           <Suspense fallback={null}>
             <Filter typeOfFilter="price" items={dummyPriceRanges} />

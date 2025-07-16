@@ -251,3 +251,94 @@ export const mockCoursesData: ProductCardProps[] = [
     ],
   },
 ];
+
+export const mockCategories = Array.from(
+  new Set(
+    mockCoursesData
+      .map(
+        (course) =>
+          course.courseInfo?.find((info) => info.label === "Category")?.value
+      )
+      .filter(Boolean)
+  )
+).map((category) => ({
+  label: category as string,
+  value: (category as string)
+    .toLowerCase()
+    .replace(/ & /g, "-")
+    .replace(/\s+/g, "-"),
+}));
+
+export const suggestionCoursesData: ProductCardProps[] = [
+  {
+    courseId: "4",
+    courseName: "Digital Marketing Masterclass",
+    coursePrice: 750,
+    courseImage:
+      "https://images.unsplash.com/photo-1557838923-2985c318be48?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+    courseShortDescription:
+      "Complete guide to SEO, social media, email marketing and more",
+    courseFullDescription:
+      "Become a digital marketing expert with this comprehensive masterclass. You'll learn how to create effective marketing strategies across multiple channels including SEO, PPC, social media, content marketing, and email campaigns. By the end of this course, you'll be able to drive traffic, generate leads, and increase conversions for any business.",
+    courseRating: 4.6,
+    courseInfo: [
+      { label: "Category", value: "Marketing" },
+      { label: "Level", value: "All Levels" },
+      { label: "Instructor", value: "Neil Patel" },
+      { label: "Duration", value: "52 hours" },
+    ],
+  },
+  {
+    courseId: "5",
+    courseName: "Financial Accounting Fundamentals",
+    coursePrice: 450,
+    courseImage:
+      "https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+    courseShortDescription:
+      "Master the basics of accounting and financial statements",
+    courseFullDescription:
+      "Gain a solid understanding of financial accounting principles and practices. This course covers the accounting cycle, financial statements, inventory valuation, receivables, fixed assets, liabilities, and equity accounting. You'll learn how to analyze financial statements and make informed business decisions based on accounting data.",
+    courseRating: 4.5,
+    courseInfo: [
+      { label: "Category", value: "Finance" },
+      { label: "Level", value: "Beginner" },
+      { label: "Instructor", value: "Dr. Sarah Johnson" },
+      { label: "Duration", value: "45 hours" },
+    ],
+  },
+  {
+    courseId: "6",
+    courseName: "iOS App Development with Swift",
+    coursePrice: 899,
+    courseImage:
+      "https://images.unsplash.com/photo-1563206767-5b18f218e8de?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+    courseShortDescription: "Build iPhone and iPad apps using Swift and Xcode",
+    courseFullDescription:
+      "Learn to build professional iOS applications from the ground up using Swift and Xcode. This course covers UI design, data persistence, networking, and integration with Apple's frameworks. By completing this course, you'll have built several real-world apps and be ready to publish your own applications to the App Store.",
+    courseRating: 4.7,
+    courseInfo: [
+      { label: "Category", value: "Mobile Development" },
+      { label: "Level", value: "Intermediate" },
+      { label: "Instructor", value: "Chris Anderson" },
+      { label: "Duration", value: "57 hours" },
+    ],
+  },
+  {
+    courseId: "7",
+    courseName: "IELTS Academic Preparation Course",
+    coursePrice: 299,
+    courseImage:
+      "https://images.unsplash.com/photo-1434030216411-0b793f4b4173?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+    courseShortDescription:
+      "Comprehensive preparation for all IELTS test sections",
+    courseFullDescription:
+      "Prepare thoroughly for the IELTS Academic exam with this comprehensive course. You'll receive detailed instruction and practice for all four sections: Listening, Reading, Writing, and Speaking. Our experienced instructors will provide personalized feedback on your writing and speaking to help you achieve your target band score.",
+    courseRating: 4.8,
+    courseInfo: [
+      { label: "Category", value: "Language" },
+      { label: "Level", value: "All Levels" },
+      { label: "Instructor", value: "Dr. Jane Wilson" },
+      { label: "Duration", value: "30 hours" },
+    ],
+  },
+];
