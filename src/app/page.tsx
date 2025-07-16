@@ -6,12 +6,12 @@ import axiosInstance from "@/config/axiosConfig";
 import { filterCourses } from "@/utils/searchAndFilter";
 import { Check, Info } from "lucide-react";
 import { Toaster } from "sonner";
-type PageProps = {
-  searchParams: {
-    [key: string]: string | undefined;
-  };
-};
-const Home = async ({ searchParams }: PageProps) => {
+
+const Home = async ({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | undefined };
+}) => {
   const coursesData = await axiosInstance.get<ProductCardProps[]>("/courses");
 
   const response = filterCourses(coursesData.data, {
