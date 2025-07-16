@@ -4,11 +4,12 @@ import Wrapper from "@/components/shared/Wrapper";
 import SuggestionSection from "@/components/SuggestionSection";
 import axiosInstance from "@/config/axiosConfig";
 import { filterCourses } from "@/utils/searchAndFilter";
-import { SearchParams } from "@/utils/searchParams";
 import { Check, Info } from "lucide-react";
 import { Toaster } from "sonner";
 type PageProps = {
-  searchParams: SearchParams;
+  searchParams: {
+    [key: string]: string | undefined;
+  };
 };
 const Home = async ({ searchParams }: PageProps) => {
   const coursesData = await axiosInstance.get<ProductCardProps[]>("/courses");
