@@ -18,8 +18,7 @@ const SuggestionSection = () => {
       timeout: 1500,
     });
   };
-  console.log("is loading", loading);
-  console.log("response", response?.length);
+
   return (
     <>
       <div className="w-full">

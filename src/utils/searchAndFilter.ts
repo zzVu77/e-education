@@ -52,13 +52,11 @@ export function filterCourses(
     const courseCategory = course.courseInfo?.find(
       (info) => info.label === "Category"
     )?.value;
-    // console.log("courseCategory: ", courseCategory);
 
     const matchesCategory =
       category && category !== "all"
         ? toKebabCase(courseCategory ?? "") === category
         : true;
-    console.log("matchesCategory: ", matchesCategory);
     return matchesName && matchesPrice && matchesCategory;
   });
 }
