@@ -3,12 +3,23 @@ import SearchAndFilterSection from "@/components/SearchAndFilterSection";
 import Wrapper from "@/components/shared/Wrapper";
 import SuggestionSection from "@/components/SuggestionSection";
 import axiosInstance from "@/config/axiosConfig";
+import { filterCourses } from "@/utils/searchAndFilter";
+import { SearchParams } from "@/utils/searchParams";
 import { Check, Info } from "lucide-react";
 import { Toaster } from "sonner";
 
-const Home = async () => {
+const Home = async ({ searchParams }: { searchParams: SearchParams }) => {
   const coursesData = await axiosInstance.get<ProductCardProps[]>("/courses");
-  const response = coursesData.data;
+  console.log("search param: ", searchParams.category);
+  console.log("search param: ", searchParams.price);
+  console.log("search param: ", searchParams.search);
+
+  const response = filterCourses(coursesData.data, {
+    courseName: searchParams.search,
+    priceRange: searchParams.price,
+    category: searchParams.category,
+  });
+  console.log("filtered response", response);
   return (
     <>
       <Toaster

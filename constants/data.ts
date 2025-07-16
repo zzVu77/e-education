@@ -10,24 +10,21 @@ export const dummyCourseInfo: CourseInfo[] = [
   { label: "Enrollment", value: "Open" },
 ];
 
-export const dummyCategories = [
-  { label: "Machine Learning", value: "machine-learning" },
-  { label: "Data Science", value: "data-science" },
-  { label: "Web Development", value: "web-development" },
-  { label: "Mobile Development", value: "mobile-development" },
-  { label: "Cloud Computing", value: "cloud-computing" },
-  { label: "Cybersecurity", value: "cybersecurity" },
-  { label: "AI & Deep Learning", value: "ai-deep-learning" },
+export const mockCategories = [
+  { label: "All", value: "all" },
   { label: "Blockchain", value: "blockchain" },
-  { label: "DevOps", value: "devops" },
-  { label: "Game Development", value: "game-development" },
-  { label: "Software Engineering", value: "software-engineering" },
-  { label: "Digital Marketing", value: "digital-marketing" },
-  { label: "UI/UX Design", value: "ui-ux-design" },
-  { label: "Project Management", value: "project-management" },
-  { label: "Business Analytics", value: "business-analytics" },
+  { label: "Business", value: "business" },
+  { label: "Data Science", value: "data-science" },
+  { label: "Design", value: "design" },
+  { label: "Finance", value: "finance" },
+  { label: "Language", value: "language" },
+  { label: "Marketing", value: "marketing" },
+  { label: "Mobile Development", value: "mobile-development" },
+  { label: "Photography", value: "photography" },
+  { label: "Web Development", value: "web-development" },
 ];
 export const dummyPriceRanges = [
+  { label: "All", value: "all" },
   { label: "Free", value: "free" },
   { label: "Under $500", value: "lt-500" }, // lt = less than
   { label: "$500 - $1000", value: "500-1000" },
@@ -251,23 +248,6 @@ export const mockCoursesData: ProductCardProps[] = [
     ],
   },
 ];
-
-export const mockCategories = Array.from(
-  new Set(
-    mockCoursesData
-      .map(
-        (course) =>
-          course.courseInfo?.find((info) => info.label === "Category")?.value
-      )
-      .filter(Boolean)
-  )
-).map((category) => ({
-  label: category as string,
-  value: (category as string)
-    .toLowerCase()
-    .replace(/ & /g, "-")
-    .replace(/\s+/g, "-"),
-}));
 
 export const suggestionCoursesData: ProductCardProps[] = [
   {
