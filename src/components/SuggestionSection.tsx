@@ -5,6 +5,7 @@ import { Button } from "./ui/button";
 import ProductCard, { ProductCardProps } from "./ProductCard";
 import useAxios from "@/hooks/useAxios";
 import ProductSkeleton from "./ProductSkeleton";
+import Desktop from "./shared/Desktop";
 
 const SuggestionSection = () => {
   const { fetchData, response, setResponse, loading } =
@@ -43,12 +44,21 @@ const SuggestionSection = () => {
         {/* List suggested courses */}
         <div className="w-full">
           {loading && (
-            <div className="grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid items-center justify-items-center gap-5 mt-0 py-0 w-full ">
-              <ProductSkeleton />
-              <ProductSkeleton />
-              <ProductSkeleton />
-              <ProductSkeleton />
-            </div>
+            <>
+              <Desktop.Show>
+                <div className="grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid items-center justify-items-center gap-5 mt-0 py-0 w-full ">
+                  <ProductSkeleton />
+                  <ProductSkeleton />
+                  <ProductSkeleton />
+                  <ProductSkeleton />
+                </div>
+              </Desktop.Show>
+              <Desktop.Hide>
+                <div className="grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid items-center justify-items-center gap-5 mt-0 py-0 w-full ">
+                  <ProductSkeleton />
+                </div>
+              </Desktop.Hide>
+            </>
           )}
           {response && response.length > 0 ? (
             <div className="grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid items-center justify-items-center gap-5 mt-0 py-0 w-full ">
