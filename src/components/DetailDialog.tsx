@@ -98,7 +98,10 @@ const DetailDialog = ({ productProps }: DetailDialogProps) => {
               >
                 Purchase Now
               </Button>
-              <ButtonAddToFavorite className="rounded-lg bg-white border-1 border-gray-600/20 hover:border-gray-600/50 h-10 w-10 " />
+              <ButtonAddToFavorite
+                itemID={productProps.courseId ?? "1"}
+                className="rounded-lg bg-white border-1 border-gray-600/20 hover:border-gray-600/50 h-10 w-10 "
+              />
             </div>
           </div>
         </DialogContent>

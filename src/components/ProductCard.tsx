@@ -44,9 +44,9 @@ const ProductCard = ({
             className="rounded-t-xl border-none w-full h-full object-cover"
           ></Image>
           <ButtonAddToFavorite
+            itemID={courseId ?? "1"}
             className="absolute top-5 right-3 border-1 border-gray-400/10"
             itemName={courseName}
-            isFavorite={false}
           />
         </div>
         <CardHeader>

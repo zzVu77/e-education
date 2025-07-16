@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
+import { Toaster } from "@/components/ui/sonner";
+import { Check, Info } from "lucide-react";
 
 const openSans = Open_Sans({
   variable: "--font-open-sans",
@@ -24,6 +26,12 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${openSans.variable}  antialiased`}>
         <Header />
+        <Toaster
+          icons={{
+            success: <Check className="text-green-500 h-5 w-5 mr-4" />,
+            info: <Info className="text-blue-500 h-5 w-5 mr-4  " />,
+          }}
+        />
         {children}
       </body>
     </html>

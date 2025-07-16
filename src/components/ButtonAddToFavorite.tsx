@@ -3,46 +3,49 @@ import { toast } from "sonner";
 import { Button } from "./ui/button";
 import { Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
+import { useFavorite } from "@/hooks/useFavorite";
+
 type Props = {
   className?: HTMLButtonElement["className"];
-  isFavorite?: boolean;
   itemName?: string;
+  itemID: string;
 };
-const ButtonAddToFavorite = ({ className, isFavorite, itemName }: Props) => {
-  const [favorite, setFavorite] = useState(isFavorite);
-  const handleOnClick = () => {
-    const next = !favorite;
-    setFavorite(next);
 
-    toast[next ? "success" : "info"](
+const ButtonAddToFavorite = ({ className, itemName, itemID }: Props) => {
+  const { isFavorite, toggleFavorite } = useFavorite(itemID);
+
+  const handleClick = () => {
+    toast[!isFavorite ? "success" : "info"](
       <span className="font-[500]">
-        {next ? "Added " : "Removed "}
-        <span className="text-green-500 font-bold">
-          {itemName || "Advanced Machine Learning Specialization"}
-        </span>
-        {next ? " to your favorite list!" : " from your favorite list!"}
+        {!isFavorite ? "Added" : "Removed"}{" "}
+        <span
+          className={
+            !isFavorite ? "text-green-500 font-bold" : "text-red-500 font-bold"
+          }
+        >
+          {itemName || "Item"}
+        </span>{" "}
+        {!isFavorite ? "to" : "from"} your favorite list!
       </span>
     );
+    toggleFavorite();
   };
 
   return (
-    <>
-      <Button
+    <Button
+      className={cn(
+        "bg-white/40 relative hover:bg-white h-10 w-10 cursor-pointer active:scale-110 rounded-full ",
+        className
+      )}
+      onClick={handleClick}
+    >
+      <Heart
         className={cn(
-          "bg-white/40 relative hover:bg-white h-10 w-10 cursor-pointer active:scale-110 rounded-full ",
-          className
+          "absolute fill-gray-200/70 text-gray-300/30 h-7 w-7",
+          isFavorite && "fill-red-400 text-red-500"
         )}
-        onClick={handleOnClick}
-      >
-        <Heart
-          className={cn(
-            "absolute fill-gray-200/70 text-gray-300/30 h-7 w-7",
-            favorite && " fill-red-400 text-red-500 h-7 w-7"
-          )}
-        />
-      </Button>
-    </>
+      />
+    </Button>
   );
 };
 
