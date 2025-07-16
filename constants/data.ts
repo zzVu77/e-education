@@ -322,3 +322,23 @@ export const suggestionCoursesData: ProductCardProps[] = [
     ],
   },
 ];
+export const formatCoursesToContextString = () => {
+  return mockCoursesData
+    .map((course) => {
+      const info = (course.courseInfo ?? [])
+        .map((i) => `${i.label}: ${i.value}`)
+        .join(", ");
+
+      return `
+Course ID: ${course.courseId}      
+Course: ${course.courseName}
+Description: ${course.courseShortDescription}
+Details: ${course.courseFullDescription}
+${info}
+Price: ${course.coursePrice}đ
+Rating: ${course.courseRating}
+---
+`;
+    })
+    .join("\n");
+};
