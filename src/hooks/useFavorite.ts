@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { LOCAL_STORAGE_KEY } from "../../constants/const";
+import { LOCAL_STORAGE_FAVORITE_KEY } from "../../constants/const";
 
 // Custom event to notify when there is a change
 const FAVORITE_CHANGED_EVENT = "favorite:changed";
@@ -10,13 +10,15 @@ export const useFavorite = (itemID?: string) => {
   // Check if the item exists in localStorage
   useEffect(() => {
     if (!itemID) return;
-    const stored = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || "[]");
+    const stored = JSON.parse(
+      localStorage.getItem(LOCAL_STORAGE_FAVORITE_KEY) || "[]"
+    );
     setIsFavorite(stored.includes(itemID));
   }, [itemID]);
 
   const toggleFavorite = () => {
     const stored: string[] = JSON.parse(
-      localStorage.getItem(LOCAL_STORAGE_KEY) || "[]"
+      localStorage.getItem(LOCAL_STORAGE_FAVORITE_KEY) || "[]"
     );
 
     let updated: string[];
@@ -27,7 +29,7 @@ export const useFavorite = (itemID?: string) => {
       updated = [...stored, itemID!];
     }
 
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated));
+    localStorage.setItem(LOCAL_STORAGE_FAVORITE_KEY, JSON.stringify(updated));
     setIsFavorite(updated.includes(itemID!));
 
     window.dispatchEvent(

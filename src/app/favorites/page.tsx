@@ -5,7 +5,7 @@ import ProductCard, { ProductCardProps } from "@/components/ProductCard";
 import Wrapper from "@/components/shared/Wrapper";
 import { HeartIcon } from "lucide-react";
 import { mockCoursesData } from "../../../constants/data";
-import { LOCAL_STORAGE_KEY } from "../../../constants/const";
+import { LOCAL_STORAGE_FAVORITE_KEY } from "../../../constants/const";
 import { useFavoriteChangeListener } from "@/hooks/useFavorite";
 import Link from "next/link";
 import { Text } from "@/components/ui/typography";
@@ -16,7 +16,9 @@ const Page = () => {
   );
 
   const loadFavorites = useCallback(() => {
-    const stored = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) || "[]");
+    const stored = JSON.parse(
+      localStorage.getItem(LOCAL_STORAGE_FAVORITE_KEY) || "[]"
+    );
     const favorites = mockCoursesData.filter((product) =>
       stored.includes(product.courseId)
     );

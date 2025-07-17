@@ -13,6 +13,7 @@ import {
 import { Text } from "./ui/typography";
 import { ProductCardProps } from "./ProductCard";
 import { formatCurrency } from "@/lib/utils";
+import ButtonViewDetail from "./ButtonViewDetail";
 export type CourseInfo = {
   label?: string;
   value?: string;
@@ -26,9 +27,7 @@ const DetailDialog = ({ productProps }: DetailDialogProps) => {
     <>
       <Dialog>
         <DialogTrigger asChild>
-          <Button variant={"viewDetails"} className="py-0 text-white">
-            View Details
-          </Button>
+          <ButtonViewDetail productId={productProps.courseId ?? "1"} />
         </DialogTrigger>
         <DialogContent className="grid grid-rows-2 grid-cols-1 md:grid-cols-2 md:grid-rows-1 gap-4 w-full h-full max-w-[95vw] xl:max-w-[80vw] max-h-[92vh] px-4 overflow-y-auto py-[50px]">
           <div className="w-[100%] h-full max-h-[400px] md:max-h-none">
