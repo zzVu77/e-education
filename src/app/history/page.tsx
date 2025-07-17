@@ -16,9 +16,12 @@ const Page = () => {
     const stored = JSON.parse(
       localStorage.getItem(LOCAL_STORAGE_HISTORY_KEY) || "[]"
     );
-    const history = mockCoursesData.filter((product) =>
-      stored.includes(product.courseId)
-    );
+    const reversedStored = [...stored].reverse();
+    const history = reversedStored
+      .map((id: string) =>
+        mockCoursesData.find((product) => product.courseId === id)
+      )
+      .filter(Boolean) as ProductCardProps[];
     setHistoryList(history);
   }, []);
 
