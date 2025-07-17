@@ -87,7 +87,7 @@ const AIChat = () => {
       </Button>
 
       {isOpen && (
-        <Card className="fixed bottom-0 right-0 w-full sm:w-96 h-[500px] rounded-t-xl shadow-xl z-50 flex flex-col p-0 border border-gray-300/30 mb-[unset] mr-[unset] md:mb-4 md:mr-2">
+        <Card className="fixed bottom-0 right-0 w-full sm:w-96 h-[90vh] md:h-[500px] rounded-t-xl shadow-xl z-50 flex flex-col p-0 border border-gray-300/30 mb-[unset] mr-[unset] md:mb-4 md:mr-2">
           <div className="bg-gradient-to-r from-green-500 to-green-400 text-white px-4 py-3 flex justify-between items-center rounded-t-xl">
             <div className="flex items-center">
               <BotIcon className="h-7 w-7 mr-2" />
