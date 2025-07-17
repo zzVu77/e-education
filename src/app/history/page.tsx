@@ -1,45 +1,41 @@
 "use client";
-
 import EmptyState from "@/components/EmptyState";
 import ProductCard, { ProductCardProps } from "@/components/ProductCard";
 import Wrapper from "@/components/shared/Wrapper";
-import { useFavoriteChangeListener } from "@/hooks/useFavorite";
-import { HeartIcon } from "lucide-react";
+import { useHistoryChangeListener } from "@/hooks/useHistory";
+import { History } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import { LOCAL_STORAGE_FAVORITE_KEY } from "../../../constants/const";
+import { LOCAL_STORAGE_HISTORY_KEY } from "../../../constants/const";
 import { mockCoursesData } from "../../../constants/data";
 import SectionHeader from "@/components/SectionHeader";
 
 const Page = () => {
-  const [favoriteProducts, setFavoriteProducts] = useState<ProductCardProps[]>(
-    []
-  );
+  const [historyList, setHistoryList] = useState<ProductCardProps[]>([]);
 
-  const loadFavorites = useCallback(() => {
+  const loadHistory = useCallback(() => {
     const stored = JSON.parse(
-      localStorage.getItem(LOCAL_STORAGE_FAVORITE_KEY) || "[]"
+      localStorage.getItem(LOCAL_STORAGE_HISTORY_KEY) || "[]"
     );
-    const favorites = mockCoursesData.filter((product) =>
+    const history = mockCoursesData.filter((product) =>
       stored.includes(product.courseId)
     );
-    setFavoriteProducts(favorites);
+    setHistoryList(history);
   }, []);
 
   useEffect(() => {
-    loadFavorites();
-  }, [loadFavorites]);
+    loadHistory();
+  }, [loadHistory]);
 
-  useFavoriteChangeListener(() => {
-    loadFavorites();
+  useHistoryChangeListener(() => {
+    loadHistory();
   });
 
   return (
     <div className="flex flex-col items-center justify-center w-full">
       <SectionHeader
-        icon={<HeartIcon className="h-12 w-12 mr-2 fill-red-400" />}
-        title="My Favorites"
-        description="Your collection of saved educational resources. Click on any item to
-            view details."
+        icon={<History className="h-12 w-12 mr-2 fill-blue-500" />}
+        title="Viewing History"
+        description="Here you can find all the courses you've viewed recently. Click on any course to revisit its details."
       />
 
       <Wrapper
@@ -47,15 +43,15 @@ const Page = () => {
           container: "pt-5 md:px-10",
         }}
       >
-        {favoriteProducts.length === 0 ? (
+        {historyList.length === 0 ? (
           <EmptyState
-            icon={<HeartIcon className="w-12 h-12 mx-auto" />}
-            title="No favorites yet"
+            icon={<History className="h-12 w-12 mx-auto text-gray-500 mb-4" />}
+            title=" No viewed courses yet"
             description={
               <>
-                {` You haven't added any products to your favorites.`}
+                {` You haven't viewed any courses yet.`}
                 <br />
-                {`  Browse the catalog and click the heart icon to add items here.`}
+                {`Explore our catalog and click on a course to see it appear here in your history.`}
               </>
             }
             buttonText="Browse Products"
@@ -63,7 +59,7 @@ const Page = () => {
           />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 items-center justify-items-center gap-10 mt-0 py-0 w-full">
-            {favoriteProducts.map((product) => (
+            {historyList.map((product) => (
               <ProductCard
                 key={product.courseId}
                 courseId={product.courseId}

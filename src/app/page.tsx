@@ -1,10 +1,12 @@
 import ProductCard, { ProductCardProps } from "@/components/ProductCard";
 import SearchAndFilterSection from "@/components/SearchAndFilterSection";
+import SectionHeader from "@/components/SectionHeader";
 import Wrapper from "@/components/shared/Wrapper";
 import SuggestionSection from "@/components/SuggestionSection";
 import axiosInstance from "@/config/axiosConfig";
 import { filterCourses } from "@/utils/searchAndFilter";
 import { SearchParamsPromise } from "@/utils/searchParams";
+import { Bookmark } from "lucide-react";
 
 const Home = async ({
   searchParams,
@@ -22,6 +24,11 @@ const Home = async ({
   });
   return (
     <>
+      <SectionHeader
+        icon={<Bookmark className="h-12 w-12 mr-2 fill-amber-400" />}
+        title="All Courses"
+        description="Browse our complete collection of courses. Click on any course to view more details and start learning."
+      />
       <Wrapper
         classNames={{
           container: "pt-10 ",

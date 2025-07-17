@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { HeartIcon, HomeIcon, ShoppingCartIcon } from "lucide-react";
+import { HeartIcon, History, HomeIcon, ShoppingCartIcon } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import HamburgerMenu from "@/components/HamburgerMenu";
@@ -28,7 +28,7 @@ const Header = () => {
                 "flex items-center space-x-1 text-sm font-medium text-black"
               )}
             >
-              <HomeIcon className="h-4 w-4" />
+              <HomeIcon className="h-5 w-5 " />
               Home
             </Link>
 
@@ -39,8 +39,18 @@ const Header = () => {
                 "flex items-center space-x-1 text-sm font-medium text-black"
               )}
             >
-              <HeartIcon className="h-4 w-4" />
+              <HeartIcon className="h-5 w-5" />
               Favorites
+            </Link>
+            <Link
+              href="/history"
+              className={cn(
+                buttonVariants({ variant: "ghost", size: "sm" }),
+                "flex items-center space-x-1 text-sm font-medium text-black"
+              )}
+            >
+              <History className="h-5 w-5" />
+              History
             </Link>
           </nav>
 

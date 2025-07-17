@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { MenuIcon, HomeIcon, HeartIcon, X } from "lucide-react";
+import { MenuIcon, HomeIcon, HeartIcon, X, History } from "lucide-react";
 import {
   Drawer,
   DrawerTrigger,
@@ -36,7 +36,7 @@ const HamburgerMenu = () => {
                 "flex items-center gap-2  text-black"
               )}
             >
-              <HomeIcon className="h-4 w-4" />
+              <HomeIcon className="h-5 w-5" />
               Home
             </Link>
 
@@ -47,8 +47,19 @@ const HamburgerMenu = () => {
                 "flex items-center gap-2 text-black "
               )}
             >
-              <HeartIcon className="h-4 w-4" />
+              <HeartIcon className="h-5 w-5" />
               Favorites
+            </Link>
+
+            <Link
+              href="/history"
+              className={cn(
+                buttonVariants({ variant: "ghost", size: "sm" }),
+                "flex items-center gap-2 text-black "
+              )}
+            >
+              <History className="h-5 w-5" />
+              History
             </Link>
 
             <DrawerClose asChild>
