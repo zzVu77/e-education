@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import { Text } from "./ui/typography"; // hoặc đường dẫn đến Text của bạn
+import { Text } from "../ui/typography"; // hoặc đường dẫn đến Text của bạn
 
 interface EmptyStateProps {
   icon: React.ReactNode;

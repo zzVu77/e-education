@@ -1,5 +1,5 @@
 "use client";
-import EmptyState from "@/components/EmptyState";
+import EmptyState from "@/components/shared/EmptyState";
 import ProductCard, { ProductCardProps } from "@/components/ProductCard";
 import Wrapper from "@/components/shared/Wrapper";
 import { useHistoryChangeListener } from "@/hooks/useHistory";
@@ -7,7 +7,7 @@ import { History } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
 import { LOCAL_STORAGE_HISTORY_KEY } from "../../../constants/const";
 import { mockCoursesData } from "../../../constants/data";
-import SectionHeader from "@/components/SectionHeader";
+import SectionHeader from "@/components/shared/SectionHeader";
 
 const Page = () => {
   const [historyList, setHistoryList] = useState<ProductCardProps[]>([]);
