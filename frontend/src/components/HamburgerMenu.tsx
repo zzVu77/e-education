@@ -33,7 +33,7 @@ const HamburgerMenu = () => {
               href="/"
               className={cn(
                 buttonVariants({ variant: "ghost", size: "sm" }),
-                "flex items-center gap-2  text-black"
+                "flex items-center gap-2  text-black",
               )}
             >
               <HomeIcon className="h-5 w-5" />
@@ -44,7 +44,7 @@ const HamburgerMenu = () => {
               href="/favorites"
               className={cn(
                 buttonVariants({ variant: "ghost", size: "sm" }),
-                "flex items-center gap-2 text-black "
+                "flex items-center gap-2 text-black ",
               )}
             >
               <HeartIcon className="h-5 w-5" />
@@ -55,7 +55,7 @@ const HamburgerMenu = () => {
               href="/history"
               className={cn(
                 buttonVariants({ variant: "ghost", size: "sm" }),
-                "flex items-center gap-2 text-black "
+                "flex items-center gap-2 text-black ",
               )}
             >
               <History className="h-5 w-5" />

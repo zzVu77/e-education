@@ -14,12 +14,12 @@ const Page = () => {
 
   const loadHistory = useCallback(() => {
     const stored = JSON.parse(
-      localStorage.getItem(LOCAL_STORAGE_HISTORY_KEY) || "[]"
+      localStorage.getItem(LOCAL_STORAGE_HISTORY_KEY) || "[]",
     );
     const reversedStored = [...stored].reverse();
     const history = reversedStored
       .map((id: string) =>
-        mockCoursesData.find((product) => product.courseId === id)
+        mockCoursesData.find((product) => product.courseId === id),
       )
       .filter(Boolean) as ProductCardProps[];
     setHistoryList(history);

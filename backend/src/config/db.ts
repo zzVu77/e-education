@@ -11,8 +11,10 @@ export async function connectDB(uri: string) {
   conn.on("disconnected", () => console.log("MongoDB disconnected"));
 
   // Đóng kết nối khi process kết thúc
-  process.on("SIGINT", async () => {
-    await mongoose.connection.close();
-    process.exit(0);
+  process.on("SIGINT", () => {
+    void (async () => {
+      await mongoose.connection.close();
+      process.exit(0);
+    })();
   });
 }

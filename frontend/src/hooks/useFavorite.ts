@@ -11,14 +11,14 @@ export const useFavorite = (itemID?: string) => {
   useEffect(() => {
     if (!itemID) return;
     const stored = JSON.parse(
-      localStorage.getItem(LOCAL_STORAGE_FAVORITE_KEY) || "[]"
+      localStorage.getItem(LOCAL_STORAGE_FAVORITE_KEY) || "[]",
     );
     setIsFavorite(stored.includes(itemID));
   }, [itemID]);
 
   const toggleFavorite = () => {
     const stored: string[] = JSON.parse(
-      localStorage.getItem(LOCAL_STORAGE_FAVORITE_KEY) || "[]"
+      localStorage.getItem(LOCAL_STORAGE_FAVORITE_KEY) || "[]",
     );
 
     let updated: string[];
@@ -35,7 +35,7 @@ export const useFavorite = (itemID?: string) => {
     window.dispatchEvent(
       new CustomEvent(FAVORITE_CHANGED_EVENT, {
         detail: { itemID, isFavorite: updated.includes(itemID!) },
-      })
+      }),
     );
   };
 
@@ -44,7 +44,7 @@ export const useFavorite = (itemID?: string) => {
 
 // Separate hook to listen for changes in the favorites list
 export const useFavoriteChangeListener = (
-  callback: (event: CustomEvent) => void
+  callback: (event: CustomEvent) => void,
 ) => {
   useEffect(() => {
     const listener = (e: Event) => {

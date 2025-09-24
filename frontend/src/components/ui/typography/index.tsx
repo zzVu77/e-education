@@ -45,12 +45,12 @@ const Title = React.forwardRef<HTMLHeadingElement, TitleProps>(
           titleVariants({
             level,
             className,
-          })
+          }),
         )}
         {...props}
       />
     );
-  }
+  },
 );
 Title.displayName = "Title";
 // #endregion
@@ -140,7 +140,7 @@ const Text = React.forwardRef<HTMLSpanElement | HTMLElement, TextProps>(
       blockquote,
       ...props
     },
-    ref
+    ref,
   ) => {
     let Comp;
     if (asChild) {
@@ -178,12 +178,12 @@ const Text = React.forwardRef<HTMLSpanElement | HTMLElement, TextProps>(
             ellipsis,
             blockquote,
             className,
-          })
+          }),
         )}
         {...props}
       />
     );
-  }
+  },
 );
 Text.displayName = "Text";
 // #endregion

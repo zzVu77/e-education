@@ -9,7 +9,7 @@ async function bootstrap() {
   const app = express();
   app.use(morgan("dev"));
   app.use(express.json());
-  app.get("/", async (_req, res) => {
+  app.get("/", (_req, res) => {
     res.send("E-Education API is running");
   });
   app.use("/api/courses", courseRouter);

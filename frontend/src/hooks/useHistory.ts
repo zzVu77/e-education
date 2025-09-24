@@ -8,7 +8,7 @@ export const useHistory = (productId?: string) => {
 
   useEffect(() => {
     const stored: string[] = JSON.parse(
-      localStorage.getItem(LOCAL_STORAGE_HISTORY_KEY) || "[]"
+      localStorage.getItem(LOCAL_STORAGE_HISTORY_KEY) || "[]",
     );
     setHistory(stored);
   }, []);
@@ -17,7 +17,7 @@ export const useHistory = (productId?: string) => {
     if (!productId) return;
 
     const stored: string[] = JSON.parse(
-      localStorage.getItem(LOCAL_STORAGE_HISTORY_KEY) || "[]"
+      localStorage.getItem(LOCAL_STORAGE_HISTORY_KEY) || "[]",
     );
 
     const updated = [...stored.filter((id) => id !== productId), productId];
@@ -28,7 +28,7 @@ export const useHistory = (productId?: string) => {
     window.dispatchEvent(
       new CustomEvent(HISTORY_CHANGED_EVENT, {
         detail: { productId, updated },
-      })
+      }),
     );
   };
 
@@ -36,7 +36,7 @@ export const useHistory = (productId?: string) => {
 };
 
 export const useHistoryChangeListener = (
-  callback: (event: CustomEvent) => void
+  callback: (event: CustomEvent) => void,
 ) => {
   useEffect(() => {
     const listener = (e: Event) => {

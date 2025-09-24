@@ -12,15 +12,15 @@ import SectionHeader from "@/components/shared/SectionHeader";
 
 const Page = () => {
   const [favoriteProducts, setFavoriteProducts] = useState<ProductCardProps[]>(
-    []
+    [],
   );
 
   const loadFavorites = useCallback(() => {
     const stored = JSON.parse(
-      localStorage.getItem(LOCAL_STORAGE_FAVORITE_KEY) || "[]"
+      localStorage.getItem(LOCAL_STORAGE_FAVORITE_KEY) || "[]",
     );
     const favorites = mockCoursesData.filter((product) =>
-      stored.includes(product.courseId)
+      stored.includes(product.courseId),
     );
     setFavoriteProducts(favorites);
   }, []);

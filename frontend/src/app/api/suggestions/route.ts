@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
   if (!userId) {
     return NextResponse.json(
       { error: "Missing userId query parameter" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 

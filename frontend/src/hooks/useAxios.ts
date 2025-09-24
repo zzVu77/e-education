@@ -52,7 +52,7 @@ const useAxios = <TResponse = unknown>() => {
         setLoading(false);
       }
     },
-    []
+    [],
   );
 
   useEffect(() => {

@@ -26,7 +26,7 @@ const ButtonAddToFavorite = ({ className, itemName, itemID }: Props) => {
           {itemName || "Item"}
         </span>{" "}
         {!isFavorite ? "to" : "from"} your favorite list!
-      </span>
+      </span>,
     );
     toggleFavorite();
   };
@@ -35,14 +35,14 @@ const ButtonAddToFavorite = ({ className, itemName, itemID }: Props) => {
     <Button
       className={cn(
         "bg-white/40 relative hover:bg-white h-10 w-10 cursor-pointer active:scale-110 rounded-full ",
-        className
+        className,
       )}
       onClick={handleClick}
     >
       <Heart
         className={cn(
           "absolute fill-gray-200/70 text-gray-300/30 h-7 w-7",
-          isFavorite && "fill-red-400 text-red-500"
+          isFavorite && "fill-red-400 text-red-500",
         )}
       />
     </Button>

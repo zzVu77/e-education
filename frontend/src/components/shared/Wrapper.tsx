@@ -22,7 +22,7 @@ const Wrapper: React.FC<WrapperProps> = ({
     <div
       className={cn(
         "w-full h-full px-5 md:px-[80px] flex flex-col items-center gap-10 pb-[80px] lg:pb-[100px]",
-        classNames?.container
+        classNames?.container,
       )}
     >
       {title && (
@@ -31,7 +31,7 @@ const Wrapper: React.FC<WrapperProps> = ({
             <h2
               className={cn(
                 "text-white text-[33px] font-[900] text-center uppercase",
-                classNames?.title
+                classNames?.title,
               )}
             >
               {title}
@@ -41,7 +41,7 @@ const Wrapper: React.FC<WrapperProps> = ({
             <p
               className={cn(
                 "font-[200] text-[16px] text-center text-white",
-                classNames?.desc
+                classNames?.desc,
               )}
             >
               {description}

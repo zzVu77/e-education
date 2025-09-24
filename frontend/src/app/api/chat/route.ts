@@ -65,7 +65,9 @@ Now answer this user question:
         courseIds = parsed.filter((id) => typeof id === "string");
         reply = "Here are the suggested courses.";
       }
-    } catch {}
+    } catch {
+      console.warn("Failed to parse Gemini response");
+    }
 
     return NextResponse.json({
       reply,

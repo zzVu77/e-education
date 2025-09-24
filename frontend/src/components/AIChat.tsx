@@ -138,8 +138,8 @@ const AIChat = () => {
                             (course) =>
                               course.courseId !== undefined &&
                               message.courseIds!.includes(
-                                course.courseId as string
-                              )
+                                course.courseId as string,
+                              ),
                           )
                           .map((course) => (
                             <ProductCard key={course.courseId} {...course} />

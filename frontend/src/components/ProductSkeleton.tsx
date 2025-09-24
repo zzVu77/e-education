@@ -1,5 +1,4 @@
 import { Skeleton } from "./ui/skeleton";
-
 const ProductSkeleton = () => {
   return (
     <div className="border-1 border-gray-500/10 rounded-xl shadow-lg bg-white overflow-hidden w-full max-w-xs sm:max-w-sm md:max-w-sm">

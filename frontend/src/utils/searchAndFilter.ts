@@ -33,7 +33,7 @@ function toKebabCase(str: string) {
 
 export function filterCourses(
   courses: ProductCardProps[],
-  filters: FilterOptions
+  filters: FilterOptions,
 ): ProductCardProps[] {
   return courses.filter((course) => {
     const { courseName, priceRange, category } = filters;
@@ -50,7 +50,7 @@ export function filterCourses(
 
     // Filter by category (if provided)
     const courseCategory = course.courseInfo?.find(
-      (info) => info.label === "Category"
+      (info) => info.label === "Category",
     )?.value;
 
     const matchesCategory =

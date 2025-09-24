@@ -14,7 +14,7 @@ const SearchAndFilterSection = () => {
             <Filter
               typeOfFilter="category"
               items={[...mockCategories].sort((a, b) =>
-                a.label.localeCompare(b.label)
+                a.label.localeCompare(b.label),
               )}
             />
           </Suspense>

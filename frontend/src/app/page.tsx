@@ -41,7 +41,7 @@ const Home = async ({
             response
               .slice()
               .sort((a, b) =>
-                (a.courseName ?? "").localeCompare(b.courseName ?? "")
+                (a.courseName ?? "").localeCompare(b.courseName ?? ""),
               )
               .map((course) => (
                 <ProductCard
