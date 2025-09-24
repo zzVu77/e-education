@@ -1,5 +1,6 @@
 // src/models/user.model.ts
 import { Schema, model, Document } from "mongoose";
+import mongooseLeanVirtuals from "mongoose-lean-virtuals";
 
 export interface IUser extends Document {
   username: string;
@@ -27,5 +28,5 @@ UserSchema.set("toJSON", {
     delete ret.password; // không trả password ra JSON
   },
 });
-
+UserSchema.plugin(mongooseLeanVirtuals);
 export const UserModel = model<IUser>("User", UserSchema);

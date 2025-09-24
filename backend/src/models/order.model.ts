@@ -2,11 +2,12 @@
 import { Schema, model, Document, Types } from "mongoose";
 import { IUser } from "./user.model";
 import { ICourse } from "./course.model";
+import mongooseLeanVirtuals from "mongoose-lean-virtuals";
 
 export interface IOrder extends Document {
-  user: Types.ObjectId | IUser; // người mua
-  courses: (Types.ObjectId | ICourse)[]; // danh sách khóa học mua
-  totalAmount: number; // tổng tiền
+  user: Types.ObjectId | IUser;
+  courses: (Types.ObjectId | ICourse)[];
+  totalAmount: number;
   paymentStatus: "Pending" | "Paid" | "Failed";
   paymentMethod: "CreditCard" | "Paypal" | "BankTransfer";
   createdAt: Date;
@@ -40,5 +41,6 @@ OrderSchema.set("toJSON", {
     delete ret._id;
   },
 });
+OrderSchema.plugin(mongooseLeanVirtuals);
 
 export const OrderModel = model<IOrder>("Order", OrderSchema);

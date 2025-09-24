@@ -1,5 +1,6 @@
 // src/models/course.model.ts
 import { Schema, model, Document } from "mongoose";
+import mongooseLeanVirtuals from "mongoose-lean-virtuals";
 
 export interface ICourse extends Document {
   title: string;
@@ -40,5 +41,6 @@ CourseSchema.set("toJSON", {
     delete ret._id;
   },
 });
+CourseSchema.plugin(mongooseLeanVirtuals);
 
 export const CourseModel = model<ICourse>("Course", CourseSchema);
