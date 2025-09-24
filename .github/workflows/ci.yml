@@ -1,0 +1,49 @@
+name: CI Workflow
+description: Runs on pushes and pull requests to dev and main, linting and building the project.
+
+on:
+  push:
+    branches:
+      - dev
+      - main
+  pull_request:
+    branches:
+      - dev
+      - main
+
+jobs:
+  build:
+    name: Lint & Build Workspaces
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout repo
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2. Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+
+      # 3. Install dependencies for the monorepo
+      - name: Install dependencies
+        run: npm install
+
+      # 4. Lint backend
+      - name: Lint Backend
+        run: npm run lint --workspace=backend
+
+      # 5. Lint frontend
+      - name: Lint Frontend
+        run: npm run lint --workspace=frontend
+
+      # 6. Build backend
+      - name: Build Backend
+        run: npm run build --workspace=backend
+
+      # 7. Build frontend
+      - name: Build Frontend
+        run: npm run build --workspace=frontend
