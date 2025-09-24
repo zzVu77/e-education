@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 // src/models/order.model.ts
 import { Schema, model, Document, Types } from "mongoose";
 import { IUser } from "./user.model";
@@ -30,7 +32,7 @@ const OrderSchema = new Schema<IOrder>(
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 OrderSchema.set("toJSON", {

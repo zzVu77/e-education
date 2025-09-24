@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // src/models/user.model.ts
 import { Schema, model, Document } from "mongoose";
 import mongooseLeanVirtuals from "mongoose-lean-virtuals";
@@ -16,7 +17,7 @@ const UserSchema = new Schema<IUser>(
     password: { type: String, required: true },
     fullName: { type: String, required: true, trim: true },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 UserSchema.set("toJSON", {

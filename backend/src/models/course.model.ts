@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // src/models/course.model.ts
 import { Schema, model, Document } from "mongoose";
 import mongooseLeanVirtuals from "mongoose-lean-virtuals";
@@ -30,7 +31,7 @@ const CourseSchema = new Schema<ICourse>(
     duration: { type: Number, required: true },
     imgUrl: { type: String, default: "" },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 CourseSchema.set("toJSON", {
