@@ -4,15 +4,19 @@ import express from "express";
 import morgan from "morgan";
 import { connectDB } from "./config/db";
 import courseRouter from "./routes/courses.route";
+import userRouter from "./routes/users.route";
 
 async function bootstrap() {
+  // Create Express app
   const app = express();
   app.use(morgan("dev"));
   app.use(express.json());
+  // Define routes
   app.get("/", (_req, res) => {
     res.send("E-Education API is running");
   });
   app.use("/api/courses", courseRouter);
+  app.use("/api/users", userRouter);
   const uri = process.env.MONGODB_URI!;
   await connectDB(uri);
   const port = Number(process.env.PORT) || 3000;
