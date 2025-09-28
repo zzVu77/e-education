@@ -12,7 +12,7 @@ async function bootstrap() {
   // Create Express app
   const app = express();
   app.use(express.json());
-  app.use(express.urlencoded({ extended: true })); // Để xử lý request body từ form HTML
+  app.use(express.urlencoded({ extended: true })); // To handle request body from HTML forms
   app.use(morgan("dev"));
   app.use(cookieParser());
   // Define routes
