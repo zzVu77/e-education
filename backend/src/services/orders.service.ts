@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { CreateOrderDto, OrderResponseDto } from "../dtos/orders.dto";
 import { OrderModel } from "../models/order.model";
 import { CourseModel } from "../models/course.model";
@@ -84,6 +85,12 @@ export const orderService = {
 
         async getOrdersByUser(userId: string): Promise<OrderResponseDto[]> {
             const orders = await OrderModel.find({ user: userId });
+            return orders.map(mapDocToDto);
+        },
+
+        async getOrdersByStatus(status: "Pending" | "Paid" | "Failed"):
+            Promise<OrderResponseDto[]> {
+            const orders = await OrderModel.find({ paymentStatus: status });
             return orders.map(mapDocToDto);
         },
 };

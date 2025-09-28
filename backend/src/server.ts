@@ -9,7 +9,6 @@ import authRouter from "./routes/auth.route";
 import cookieParser from "cookie-parser";
 import orderRouter from "./routes/orders.route";
 
-
 async function bootstrap() {
   // Create Express app
   const app = express();

@@ -7,11 +7,14 @@ const orderRouter = Router();
 
 // Create order
 orderRouter.post("/", validate(createOrderSchema), (req, res) =>
-	orderController.createOrder(req, res),
+  orderController.createOrder(req, res),
 );
 
 // Get all orders
 orderRouter.get("/", (req, res) => orderController.getAllOrders(req, res));
+
+// Get orders by status
+orderRouter.get("/status/:status", (req, res) => orderController.getOrdersByStatus(req, res));
 
 // Get order by id
 orderRouter.get("/:id", (req, res) => orderController.getOrderById(req, res));
