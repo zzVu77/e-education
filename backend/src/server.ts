@@ -7,6 +7,8 @@ import courseRouter from "./routes/courses.route";
 import userRouter from "./routes/users.route";
 import authRouter from "./routes/auth.route";
 import cookieParser from "cookie-parser";
+import orderRouter from "./routes/orders.route";
+
 
 async function bootstrap() {
   // Create Express app
@@ -22,6 +24,7 @@ async function bootstrap() {
   app.use("/api/courses", courseRouter);
   app.use("/api/users", userRouter);
   app.use("/api/auth", authRouter);
+  app.use("/api/orders", orderRouter);
   const uri = process.env.MONGODB_URI!;
   await connectDB(uri);
   const port = Number(process.env.PORT) || 3000;
