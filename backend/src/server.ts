@@ -11,8 +11,9 @@ import cookieParser from "cookie-parser";
 async function bootstrap() {
   // Create Express app
   const app = express();
-  app.use(morgan("dev"));
   app.use(express.json());
+  app.use(express.urlencoded({ extended: true })); // Để xử lý request body từ form HTML
+  app.use(morgan("dev"));
   app.use(cookieParser());
   // Define routes
   app.get("/", (_req, res) => {
