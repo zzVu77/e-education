@@ -6,6 +6,7 @@ import { createCourseSchema, updateCourseSchema } from "../dtos/courses.dto";
 const courseRouter = Router();
 
 courseRouter.get("/", (req, res) => courseController.getAllCourses(req, res));
+courseRouter.get("/search", (req, res) => courseController.searchCoursesByTitle(req, res));
 courseRouter.get("/:id", (req, res) => courseController.getCourseById(req, res));
 // courseRouter.get("/search/:title", courseController.searchCoursesByTitle);
 
@@ -16,6 +17,5 @@ courseRouter.put("/:id", validate(updateCourseSchema), (req, res) =>
   courseController.updateCourse(req, res),
 );
 courseRouter.delete("/:id", (req, res) => courseController.deleteCourse(req, res));
-courseRouter.get("/search", (req, res) => courseController.searchCoursesByTitle(req, res));
 
 export default courseRouter;

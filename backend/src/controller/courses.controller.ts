@@ -40,7 +40,8 @@ export const courseController = {
     try {
       const result = await courseService.searchCoursesByTitle(title, page, limit);
       res.json(result);
-    } catch {
+    } catch (error) {
+      console.error("Error searchCoursesByTitle");
       res.status(500).json({ error: "Internal Server Error" });
     }
   },
