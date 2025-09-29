@@ -4,6 +4,52 @@ import { validate } from "../middleware/validation.middleware";
 import { loginUserSchema } from "../dtos/users.dto";
 
 const authRouter = Router();
+
+/**
+ * @swagger
+ * /api/auth/login:
+ *   post:
+ *     summary: Login
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 example: user@example.com
+ *               password:
+ *                 type: string
+ *                 example: secret123
+ *     responses:
+ *       200:
+ *         description: Login success
+ */
 authRouter.post("/login", validate(loginUserSchema), (req, res) => authController.login(req, res));
+
+/**
+ * @swagger
+ * /api/auth/refresh:
+ *   post:
+ *     summary: Refresh token
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               refreshToken:
+ *                 type: string
+ *                 example: eyJhbGciOi...
+ *     responses:
+ *       200:
+ *         description: Refresh success
+ */
 authRouter.post("/refresh", (req, res) => authController.refresh(req, res));
+
 export default authRouter;

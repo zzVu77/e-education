@@ -8,7 +8,7 @@ import userRouter from "./routes/users.route";
 import authRouter from "./routes/auth.route";
 import cookieParser from "cookie-parser";
 import orderRouter from "./routes/orders.route";
-
+import { setupSwagger } from "./swagger";
 async function bootstrap() {
   // Create Express app
   const app = express();
@@ -27,8 +27,10 @@ async function bootstrap() {
   const uri = process.env.MONGODB_URI!;
   await connectDB(uri);
   const port = Number(process.env.PORT) || 3000;
+  setupSwagger(app);
   app.listen(port, () => {
     console.log(`Server running on http://localhost:${port}`);
+    console.log(`Swagger docs at http://localhost:${port}/api-docs`);
   });
 }
 

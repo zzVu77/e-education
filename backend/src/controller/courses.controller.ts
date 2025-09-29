@@ -10,10 +10,9 @@ export const courseController = {
       if (!newCourse) {
         return res.status(400).json({ error: "Failed to create course" });
       }
-      res.status(201).json({ message: "Course created successfully" });
-      console.log("Course created successfully");
+      return res.status(201).json({ message: "Course created successfully" });
     } catch {
-      res.status(500).json({ error: "Internal Server Error" });
+      return res.status(500).json({ error: "Internal Server Error" });
     }
   },
 
@@ -50,7 +49,7 @@ export const courseController = {
       res.json(result);
     } catch {
       console.error("Error searchCoursesByTitle");
-      res.status(500).json({ error: "Internal Server Error" });
+      return res.status(500).json({ error: "Internal Server Error" });
     }
   },
 
@@ -61,9 +60,9 @@ export const courseController = {
       if (!course) {
         return res.status(404).json({ error: "Course not found" });
       }
-      res.status(200).json(course);
+      return res.status(200).json(course);
     } catch {
-      res.status(500).json({ error: "Failed to fetch course" });
+      return res.status(500).json({ error: "Failed to fetch course" });
     }
   },
 
@@ -78,7 +77,7 @@ export const courseController = {
       res.status(200).json({ message: "Course updated successfully" });
     } catch (error) {
       console.error("Error updating course:", error);
-      res.status(400).json({ error: (error as Error).message });
+      return res.status(400).json({ error: (error as Error).message });
     }
   },
 
@@ -92,7 +91,7 @@ export const courseController = {
       res.status(202).json({ message: "Course deleted successfully" });
     } catch (error) {
       console.error("Error deleting course:", error);
-      res.status(400).json({ error: (error as Error).message });
+      return res.status(400).json({ error: (error as Error).message });
     }
   },
 };
