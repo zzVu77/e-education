@@ -1,6 +1,180 @@
 import { Router } from "express";
 import { courseController } from "../controller/courses.controller";
+import { validate } from "../middleware/validation.middleware";
+import { createCourseSchema, updateCourseSchema } from "../dtos/courses.dto";
 
 const courseRouter = Router();
+
+/**
+ * @swagger
+ * tags:
+ *   name: Courses
+ *   description: Course management
+ */
+
+/**
+ * @swagger
+ * /api/courses:
+ *   get:
+ *     summary: Get all courses (with pagination)
+ *     tags: [Courses]
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           example: 10
+ *     responses:
+ *       200:
+ *         description: List of courses
+ */
 courseRouter.get("/", (req, res) => courseController.getAllCourses(req, res));
+
+/**
+ * @swagger
+ * /api/courses/search:
+ *   get:
+ *     summary: Search courses by title
+ *     tags: [Courses]
+ *     parameters:
+ *       - in: query
+ *         name: title
+ *         schema:
+ *           type: string
+ *           example: React
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           example: 10
+ *     responses:
+ *       200:
+ *         description: Search results
+ */
+courseRouter.get("/search", (req, res) => courseController.searchCoursesByTitle(req, res));
+
+/**
+ * @swagger
+ * /api/courses/{id}:
+ *   get:
+ *     summary: Get course by ID
+ *     tags: [Courses]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: A course
+ *       404:
+ *         description: Course not found
+ */
+courseRouter.get("/:id", (req, res) => courseController.getCourseById(req, res));
+
+/**
+ * @swagger
+ * /api/courses:
+ *   post:
+ *     summary: Create a new course
+ *     tags: [Courses]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 example: React for Beginners
+ *               description:
+ *                 type: string
+ *                 example: Learn React step by step
+ *               price:
+ *                 type: number
+ *                 example: 99.99
+ *               category:
+ *                 type: string
+ *                 example: Web Development
+ *               level:
+ *                 type: string
+ *                 enum: [Beginner, Intermediate, Advanced]
+ *               instructor:
+ *                 type: string
+ *                 example: John Doe
+ *               duration:
+ *                 type: number
+ *                 example: 10
+ *               imgUrl:
+ *                 type: string
+ *                 example: https://example.com/image.png
+ *     responses:
+ *       201:
+ *         description: Course created
+ */
+courseRouter.post("/", validate(createCourseSchema), (req, res) =>
+  courseController.createCourse(req, res),
+);
+
+/**
+ * @swagger
+ * /api/courses/{id}:
+ *   put:
+ *     summary: Update a course
+ *     tags: [Courses]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             description: Partial update allowed
+ *     responses:
+ *       200:
+ *         description: Course updated
+ *       404:
+ *         description: Course not found
+ */
+courseRouter.put("/:id", validate(updateCourseSchema), (req, res) =>
+  courseController.updateCourse(req, res),
+);
+
+/**
+ * @swagger
+ * /api/courses/{id}:
+ *   delete:
+ *     summary: Delete a course
+ *     tags: [Courses]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       204:
+ *         description: Course deleted
+ *       404:
+ *         description: Course not found
+ */
+courseRouter.delete("/:id", (req, res) => courseController.deleteCourse(req, res));
+
 export default courseRouter;
