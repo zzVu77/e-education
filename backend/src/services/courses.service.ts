@@ -16,31 +16,33 @@ export const courseService = {
   async getAllCourses(page = 1, limit = 10): Promise<PaginatedCoursesResponseDto> {
     const skip = (page - 1) * limit;
     const [courses, totalItems] = await Promise.all([
-      CourseModel.find().skip(skip).limit(limit).lean({ virtuals: true }),
+      CourseModel.find().skip(skip).limit(limit),
       CourseModel.countDocuments(),
     ]);
 
     return {
-      data: courses as CourseResponseDto[],
+      data: courses.map((course) => course.toJSON() as CourseResponseDto),
       totalPages: Math.ceil(totalItems / limit),
     };
   },
 
   async getCourseById(id: string): Promise<CourseResponseDto | null> {
-    const course = await CourseModel.findById(id).lean({ virtuals: true });
-    return course as CourseResponseDto | null;
+    const course = await CourseModel.findById(id);
+    console.log("Fetched course:", course);
+    return course ? (course.toJSON() as CourseResponseDto) : null;
   },
 
   async updateCourse(id: string, data: UpdateCourseDto): Promise<CourseResponseDto | null> {
     const course = await CourseModel.findByIdAndUpdate(id, data, {
       new: true,
       runValidators: true,
-    }).lean({ virtuals: true });
-    return course as CourseResponseDto | null;
+    });
+    return course ? (course.toJSON() as CourseResponseDto) : null;
   },
 
-  async deleteCourse(id: string): Promise<void> {
-    await CourseModel.findByIdAndDelete(id);
+  async deleteCourse(id: string): Promise<CourseResponseDto | null> {
+    const deletedCourse = await CourseModel.findByIdAndDelete(id);
+    return deletedCourse ? (deletedCourse.toJSON() as CourseResponseDto) : null;
   },
   async searchCoursesByTitle(
     title: string,
@@ -51,12 +53,12 @@ export const courseService = {
     const query = { title: { $regex: title, $options: "i" } };
 
     const [courses, totalItems] = await Promise.all([
-      CourseModel.find(query).skip(skip).limit(limit).lean({ virtuals: true }),
+      CourseModel.find(query).skip(skip).limit(limit),
       CourseModel.countDocuments(query),
     ]);
 
     return {
-      data: courses as CourseResponseDto[],
+      data: courses.map((course) => course.toJSON() as CourseResponseDto),
       totalPages: Math.ceil(totalItems / limit),
     };
   },

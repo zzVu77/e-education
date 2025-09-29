@@ -3,16 +3,18 @@ import { z } from "zod";
 // 🎯 Request DTOs
 
 // Create Course DTO
-export const createCourseSchema = z.object({
-  title: z.string().min(3, "Title must be at least 3 characters long"),
-  description: z.string().optional(),
-  price: z.number().min(0, "Price must be a positive number"),
-  category: z.string().min(2, "Category must be at least 2 characters long"),
-  level: z.enum(["Beginner", "Intermediate", "Advanced"]),
-  instructor: z.string().min(2, "Instructor name must be at least 2 characters long"),
-  duration: z.number().min(1, "Duration must be at least 1 hour"),
-  imgUrl: z.string().url("Invalid image URL").optional(),
-});
+export const createCourseSchema = z
+  .object({
+    title: z.string().min(3, "Title must be at least 3 characters long"),
+    description: z.string().optional(),
+    price: z.number().min(0, "Price must be a positive number"),
+    category: z.string().min(2, "Category must be at least 2 characters long"),
+    level: z.enum(["Beginner", "Intermediate", "Advanced"]),
+    instructor: z.string().min(2, "Instructor name must be at least 2 characters long"),
+    duration: z.number().min(1, "Duration must be at least 1 hour"),
+    imgUrl: z.url("Invalid image URL").optional(),
+  })
+  .strict();
 export type CreateCourseDto = z.infer<typeof createCourseSchema>;
 
 // Update Course DTO (cho phép partial update)
