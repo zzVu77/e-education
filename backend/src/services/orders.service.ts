@@ -3,7 +3,7 @@ import { OrderModel } from "../models/order.model";
 import { CourseModel } from "../models/course.model";
 
 export const orderService = {
-  async createOrder(orderData: CreateOrderDto): Promise<OrderResponseDto> {
+  async createOrder(orderData: CreateOrderDto) {
     const { user, courses, totalAmount, paymentMethod } = orderData;
     // Ensure all courses exist
     const foundCourses = await CourseModel.find({ _id: { $in: courses } });
@@ -23,8 +23,7 @@ export const orderService = {
       paymentMethod,
       paymentStatus: "Pending",
     });
-    const saved = await newOrder.save();
-    return OrderResponseSchema.parse(saved.toJSON());
+    await newOrder.save();
   },
 
   async getAllOrders(): Promise<OrderResponseDto[]> {
