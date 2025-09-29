@@ -6,21 +6,21 @@ export const orderController = {
   async createOrder(req: Request, res: Response) {
     const body = req.body as CreateOrderDto;
     try {
-      const created = await orderService.createOrder(body);
-      res.status(201).json(created);
+      await orderService.createOrder(body);
+      return res.status(201).json({ message: "Order created successfully" });
     } catch (error) {
       console.error("Error creating order:", error);
-      res.status(400).json({ error: (error as Error).message });
+      return res.status(400).json({ error: (error as Error).message });
     }
   },
 
   async getAllOrders(_req: Request, res: Response) {
     try {
       const orders = await orderService.getAllOrders();
-      res.json(orders);
+      return res.json(orders);
     } catch (error) {
       console.error("Error fetching orders:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      return res.status(500).json({ error: "Internal Server Error" });
     }
   },
 
@@ -29,10 +29,10 @@ export const orderController = {
     try {
       const order = await orderService.getOrderById(id);
       if (!order) return res.status(404).json({ error: "Order not found" });
-      res.json(order);
+      return res.json(order);
     } catch (error) {
       console.error("Error fetching order:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      return res.status(500).json({ error: "Internal Server Error" });
     }
   },
 
@@ -40,10 +40,10 @@ export const orderController = {
     const { userId } = req.params;
     try {
       const orders = await orderService.getOrdersByUser(userId);
-      res.json(orders);
+      return res.json(orders);
     } catch (error) {
       console.error("Error fetching user's orders:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      return res.status(500).json({ error: "Internal Server Error" });
     }
   },
 
@@ -63,7 +63,7 @@ export const orderController = {
       res.json(orders);
     } catch (error) {
       console.error("Error fetching orders by status:", error);
-      res.status(500).json({ error: "Internal Server Error" });
+      return res.status(500).json({ error: "Internal Server Error" });
     }
   },
 };
