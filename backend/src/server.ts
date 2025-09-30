@@ -1,4 +1,5 @@
 // src/server.ts
+import cors from "cors";
 import "dotenv/config";
 import express from "express";
 import morgan from "morgan";
@@ -12,6 +13,13 @@ import { setupSwagger } from "./swagger";
 async function bootstrap() {
   // Create Express app
   const app = express();
+  app.use(
+    cors({
+      origin: ["http://localhost:3000"],
+      credentials: true,
+    }),
+  );
+  // Middleware
   app.use(express.json());
   app.use(express.urlencoded({ extended: true })); // To handle request body from HTML forms
   app.use(morgan("dev"));
@@ -38,3 +46,4 @@ bootstrap().catch((err) => {
   console.error("Startup error:", err);
   process.exit(1);
 });
+// Removed the conflicting cors function declaration
