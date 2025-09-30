@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-
 import Link from "next/link";
 import { useState } from "react";
 
@@ -60,7 +58,7 @@ export default function RegisterForm() {
 
       await new Promise((r) => setTimeout(r, 800));
       window.location.href = "/login?new=1";
-    } catch (err) {
+    } catch {
       setErrors({
         global: "Something went wrong creating your account. Please try again.",
       });
@@ -108,7 +106,7 @@ export default function RegisterForm() {
             className={`block w-full rounded-xl border bg-white py-2.5 pl-11 pr-3 text-[15px] outline-none transition focus:ring-4 disabled:opacity-60 dark:bg-neutral-900 ${
               errors.name
                 ? "border-red-500/70 focus:ring-red-100"
-                : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-100"
+                : "border-gray-300 focus:border-green-500 focus:ring-green-100"
             }`}
             placeholder="John Doe"
             aria-invalid={!!errors.name}
@@ -158,9 +156,9 @@ export default function RegisterForm() {
             className={`block w-full rounded-xl border bg-white py-2.5 pl-11 pr-3 text-[15px] outline-none transition focus:ring-4 disabled:opacity-60 dark:bg-neutral-900 ${
               errors.username
                 ? "border-red-500/70 focus:ring-red-100"
-                : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-100"
+                : "border-gray-300 focus:border-green-500 focus:ring-green-100"
             }`}
-            placeholder="yourusername"
+            placeholder="alice123"
             aria-invalid={!!errors.username}
             aria-describedby={errors.username ? "username-error" : undefined}
           />
@@ -210,7 +208,7 @@ export default function RegisterForm() {
             className={`block w-full rounded-xl border bg-white py-2.5 pl-11 pr-3 text-[15px] outline-none transition focus:ring-4 disabled:opacity-60 dark:bg-neutral-900 ${
               errors.password
                 ? "border-red-500/70 focus:ring-red-100"
-                : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-100"
+                : "border-gray-300 focus:border-green-500 focus:ring-green-100"
             }`}
             placeholder="••••••••"
             aria-invalid={!!errors.password}
@@ -262,7 +260,7 @@ export default function RegisterForm() {
             className={`block w-full rounded-xl border bg-white py-2.5 pl-11 pr-3 text-[15px] outline-none transition focus:ring-4 disabled:opacity-60 dark:bg-neutral-900 ${
               errors.confirm
                 ? "border-red-500/70 focus:ring-red-100"
-                : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-100"
+                : "border-gray-300 focus:border-green-500 focus:ring-green-100"
             }`}
             placeholder="••••••••"
             aria-invalid={!!errors.confirm}
@@ -288,21 +286,18 @@ export default function RegisterForm() {
           type="checkbox"
           checked={agree}
           onChange={(e) => setAgree(e.target.checked)}
-          className="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+          className="mt-1 h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500"
         />
         <label
           htmlFor="terms"
           className="text-sm text-gray-700 dark:text-gray-200"
         >
           I agree to the{" "}
-          <Link href="/terms" className="text-indigo-600 hover:text-indigo-500">
+          <Link href="/terms" className="text-green-600 hover:text-green-500">
             Terms of Service
           </Link>{" "}
           and{" "}
-          <Link
-            href="/privacy"
-            className="text-indigo-600 hover:text-indigo-500"
-          >
+          <Link href="/privacy" className="text-green-600 hover:text-green-500">
             Privacy Policy
           </Link>
           .
@@ -329,7 +324,7 @@ export default function RegisterForm() {
       <button
         type="submit"
         disabled={loading}
-        className="inline-flex w-full items-center justify-center rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-100 disabled:cursor-not-allowed"
+        className="inline-flex w-full items-center justify-center rounded-xl bg-green-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-green-500 focus:outline-none focus:ring-4 focus:ring-green-100 disabled:cursor-not-allowed cursor-pointer"
       >
         {loading ? (
           <>

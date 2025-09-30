@@ -4,11 +4,11 @@ import RegisterForm from "@/components/auth/RegisterForm";
 
 export default function RegisterPage() {
   return (
-    <main className="min-h-[calc(100vh-64px)] w-full flex items-center justify-center px-4 py-10">
+    <main className="h-fit w-full flex items-center justify-center px-4 py-8">
       <div className="w-full max-w-2xl">
         <div className="flex flex-col items-center text-center mb-6">
           {/* header icon */}
-          <div className="h-12 w-12 rounded-xl bg-indigo-600 flex items-center justify-center shadow-md">
+          <div className="h-12 w-12 rounded-xl bg-green-600 flex items-center justify-center shadow-md">
             {/* user-plus icon */}
             <svg
               className="h-6 w-6 text-white"
@@ -34,7 +34,7 @@ export default function RegisterPage() {
             Or{" "}
             <Link
               href="/login"
-              className="font-medium text-indigo-600 hover:text-indigo-500"
+              className="font-medium text-green-600 hover:text-green-500"
             >
               sign in to your existing account
             </Link>

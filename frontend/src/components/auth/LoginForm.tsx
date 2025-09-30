@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
-
 import Link from "next/link";
 import { useState } from "react";
 
@@ -13,7 +11,6 @@ type FieldErrors = Partial<{
 export default function LoginForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [remember, setRemember] = useState(false);
   const [showPwd, setShowPwd] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
@@ -51,7 +48,7 @@ export default function LoginForm() {
 
       // redirect to app logic
       window.location.href = "/"; // or use next/navigation's redirect()
-    } catch (err) {
+    } catch {
       // dont enumerate which part failed (prevents account enumeration)
       setErrors({
         global:
@@ -103,9 +100,9 @@ export default function LoginForm() {
             className={`block w-full rounded-xl border bg-white py-2.5 pl-11 pr-3 text-[15px] outline-none transition focus:ring-4 disabled:opacity-60 dark:bg-neutral-900 ${
               errors.username
                 ? "border-red-500/70 focus:ring-red-100"
-                : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-100"
+                : "border-gray-300 focus:border-green-500 focus:ring-green-100"
             }`}
-            placeholder="yourusername"
+            placeholder="alice123"
             aria-invalid={!!errors.username}
             aria-describedby={errors.username ? "email-error" : undefined}
           />
@@ -132,8 +129,8 @@ export default function LoginForm() {
             Password
           </label>
           <Link
-            href="/forgot-password"
-            className="text-sm font-medium text-indigo-600 hover:text-indigo-500"
+            href="#"
+            className="text-sm font-medium text-green-600 hover:text-green-500"
           >
             Forgot your password?
           </Link>
@@ -167,7 +164,7 @@ export default function LoginForm() {
             className={`block w-full rounded-xl border bg-white py-2.5 pl-11 pr-11 text-[15px] outline-none transition focus:ring-4 disabled:opacity-60 dark:bg-neutral-900 ${
               errors.password
                 ? "border-red-500/70 focus:ring-red-100"
-                : "border-gray-300 focus:border-indigo-500 focus:ring-indigo-100"
+                : "border-gray-300 focus:border-green-500 focus:ring-green-100"
             }`}
             placeholder="••••••••"
             aria-invalid={!!errors.password}
@@ -178,7 +175,7 @@ export default function LoginForm() {
           <button
             type="button"
             onClick={() => setShowPwd((s) => !s)}
-            className="absolute inset-y-0 right-2.5 inline-flex items-center rounded-lg px-2.5 text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="absolute inset-y-0 right-2.5 inline-flex items-center rounded-lg px-2.5 text-gray-500 hover:text-gray-700 cursor-pointer "
             aria-label={showPwd ? "Hide password" : "Show password"}
           >
             {showPwd ? (
@@ -226,24 +223,6 @@ export default function LoginForm() {
         )}
       </div>
 
-      {/* Remember me */}
-      <div className="mb-5 flex items-center gap-2">
-        <input
-          id="remember"
-          name="remember"
-          type="checkbox"
-          checked={remember}
-          onChange={(e) => setRemember(e.target.checked)}
-          className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-        />
-        <label
-          htmlFor="remember"
-          className="text-sm text-gray-700 dark:text-gray-200"
-        >
-          Remember me
-        </label>
-      </div>
-
       {/* Global error */}
       {errors.global && (
         <div
@@ -259,7 +238,7 @@ export default function LoginForm() {
       <button
         type="submit"
         disabled={loading}
-        className="inline-flex w-full items-center justify-center rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-indigo-500 focus:outline-none focus:ring-4 focus:ring-indigo-100 disabled:cursor-not-allowed"
+        className="inline-flex w-full items-center justify-center rounded-xl bg-green-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-green-500 focus:outline-none focus:ring-4 focus:ring-green-100 disabled:cursor-not-allowed cursor-pointer"
       >
         {loading ? (
           <>
@@ -301,31 +280,91 @@ export default function LoginForm() {
       <div className="grid grid-cols-2 gap-3">
         <button
           type="button"
-          onClick={() => (window.location.href = "/api/auth/google")}
-          className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-indigo-100 dark:bg-neutral-900 dark:text-gray-200"
+          // onClick={() => (window.location.href = "/api/auth/google")}
+          className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-green-100 dark:bg-neutral-900 dark:text-gray-200 cursor-pointer"
           aria-label="Continue with Google"
         >
-          {/* Google 'G' */}
-          <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
-            <path
-              d="M21.35 11.1H12v2.9h5.31A5.81 5.81 0 1112 6.19a5.64 5.64 0 013.98 1.55l2.05-2.05A8.93 8.93 0 0012 3a9 9 0 100 18c4.63 0 8.5-3.37 8.5-8.5 0-.57-.06-1.1-.15-1.6z"
-              fill="currentColor"
-            />
+          <svg
+            width="20px"
+            height="20px"
+            viewBox="-0.5 0 48 48"
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            xmlnsXlink="http://www.w3.org/1999/xlink"
+            fill="#000000"
+          >
+            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+            <g
+              id="SVGRepo_tracerCarrier"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            ></g>
+            <g id="SVGRepo_iconCarrier">
+              {" "}
+              <title>Google-color</title> <desc>Created with Sketch.</desc>{" "}
+              <defs> </defs>{" "}
+              <g
+                id="Icons"
+                stroke="none"
+                strokeWidth="1"
+                fill="none"
+                fillRule="evenodd"
+              >
+                {" "}
+                <g id="Color-" transform="translate(-401.000000, -860.000000)">
+                  {" "}
+                  <g id="Google" transform="translate(401.000000, 860.000000)">
+                    {" "}
+                    <path
+                      d="M9.82727273,24 C9.82727273,22.4757333 10.0804318,21.0144 10.5322727,19.6437333 L2.62345455,13.6042667 C1.08206818,16.7338667 0.213636364,20.2602667 0.213636364,24 C0.213636364,27.7365333 1.081,31.2608 2.62025,34.3882667 L10.5247955,28.3370667 C10.0772273,26.9728 9.82727273,25.5168 9.82727273,24"
+                      id="Fill-1"
+                      fill="#FBBC05"
+                    >
+                      {" "}
+                    </path>{" "}
+                    <path
+                      d="M23.7136364,10.1333333 C27.025,10.1333333 30.0159091,11.3066667 32.3659091,13.2266667 L39.2022727,6.4 C35.0363636,2.77333333 29.6954545,0.533333333 23.7136364,0.533333333 C14.4268636,0.533333333 6.44540909,5.84426667 2.62345455,13.6042667 L10.5322727,19.6437333 C12.3545909,14.112 17.5491591,10.1333333 23.7136364,10.1333333"
+                      id="Fill-2"
+                      fill="#EB4335"
+                    >
+                      {" "}
+                    </path>{" "}
+                    <path
+                      d="M23.7136364,37.8666667 C17.5491591,37.8666667 12.3545909,33.888 10.5322727,28.3562667 L2.62345455,34.3946667 C6.44540909,42.1557333 14.4268636,47.4666667 23.7136364,47.4666667 C29.4455,47.4666667 34.9177955,45.4314667 39.0249545,41.6181333 L31.5177727,35.8144 C29.3995682,37.1488 26.7323182,37.8666667 23.7136364,37.8666667"
+                      id="Fill-3"
+                      fill="#34A853"
+                    >
+                      {" "}
+                    </path>{" "}
+                    <path
+                      d="M46.1454545,24 C46.1454545,22.6133333 45.9318182,21.12 45.6113636,19.7333333 L23.7136364,19.7333333 L23.7136364,28.8 L36.3181818,28.8 C35.6879545,31.8912 33.9724545,34.2677333 31.5177727,35.8144 L39.0249545,41.6181333 C43.3393409,37.6138667 46.1454545,31.6490667 46.1454545,24"
+                      id="Fill-4"
+                      fill="#4285F4"
+                    >
+                      {" "}
+                    </path>{" "}
+                  </g>{" "}
+                </g>{" "}
+              </g>{" "}
+            </g>
           </svg>
           Google
         </button>
 
         <button
           type="button"
-          onClick={() => (window.location.href = "/api/auth/facebook")}
-          className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-indigo-100 dark:bg-neutral-900 dark:text-gray-200"
+          // onClick={() => (window.location.href = "/api/auth/facebook")}
+          className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-green-100 dark:bg-neutral-900 dark:text-gray-200 cursor-pointer"
           aria-label="Continue with Facebook"
         >
-          {/* Facebook 'f' */}
           <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
             <path
-              d="M13 22v-8h3l.5-3H13V9.5c0-.87.28-1.5 1.7-1.5H17V5.1C16.3 5 15.2 5 14.4 5 12 5 10.4 6.4 10.4 9.1V11H8v3h2.4v8H13z"
-              fill="currentColor"
+              fill="#1877F2"
+              d="M24 12.07C24 5.74 18.63.98 12 .98S0 5.74 0 12.07C0 18.06 4.39 23.19 10.12 24v-8.44H7.08v-3.49h3.04V9.41c0-3 1.79-4.66 4.53-4.66 1.31 0 2.68.24 2.68.24v2.95h-1.51c-1.49 0-1.95.93-1.95 1.88v2.25h3.32l-.53 3.49h-2.79V24C19.61 23.19 24 18.06 24 12.07z"
+            />
+            <path
+              fill="#fff"
+              d="M16.87 15.56l.53-3.49h-3.32V9.82c0-.95.46-1.88 1.95-1.88h1.51V5c0 0-1.36-.24-2.68-.24-2.74 0-4.53 1.66-4.53 4.66v2.66H7.08v3.49h3.04V24h3.66v-8.44h2.79z"
             />
           </svg>
           Facebook
