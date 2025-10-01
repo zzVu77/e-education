@@ -7,6 +7,7 @@ import axiosInstance from "@/config/axiosConfig";
 import { ProductCardProps } from "@/types";
 import { SearchParamsPromise } from "@/utils/searchParams";
 import { Bookmark } from "lucide-react";
+import Image from "next/image";
 
 const Home = async ({
   searchParams,
@@ -16,15 +17,27 @@ const Home = async ({
   const resolvedParams = await searchParams;
   console.log("Resolved Search Params:", resolvedParams);
 
-  const coursesData = await axiosInstance.get<ProductCardProps[]>(
-    "http://localhost:8080/api/courses",
-  );
+  let coursesData: ProductCardProps[] = [];
 
-  // const response = filterCourses(coursesData.data, {
-  //   courseName: resolvedParams.search,
-  //   priceRange: resolvedParams.price,
-  //   category: resolvedParams.category,
-  // });
+  try {
+    const response = !resolvedParams
+      ? await axiosInstance.get<ProductCardProps[]>("/courses")
+      : await axiosInstance.get<ProductCardProps[]>(
+          `/courses/filter?title=${resolvedParams.title ?? ""}&category=${
+            resolvedParams.category ?? ""
+          }&page=${resolvedParams.page || 1}&limit=${resolvedParams.limit || 10}`,
+        );
+    coursesData = response.data;
+  } catch (error) {
+    console.error("Failed to fetch courses:", error);
+    coursesData = [];
+  }
+  if (resolvedParams.sort === "asc") {
+    coursesData.sort((a, b) => a.price - b.price);
+  } else if (resolvedParams.sort === "desc") {
+    coursesData.sort((a, b) => b.price - a.price);
+  }
+
   return (
     <>
       <SectionHeader
@@ -38,10 +51,21 @@ const Home = async ({
         }}
       >
         <SearchAndFilterSection />
-        <div className="grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid items-center justify-items-center gap-10 mt-0 py-0 w-full ">
-          {
-            // Sort mockCoursesData alphabetically by courseName before mapping
-            coursesData.data.map((course: ProductCardProps) => (
+        {coursesData.length === 0 ? (
+          <div className="flex flex-col items-center justify-center gap-5 ">
+            <p className="text-lg md:text-2xl lg:text-3xl tracking-wider font-bold text-black ">
+              No courses found.
+            </p>
+            <Image
+              src="/empty.svg"
+              alt="No courses found"
+              height={250}
+              width={250}
+            />
+          </div>
+        ) : (
+          <div className="grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid items-center justify-items-center gap-10 mt-0 py-0 w-full">
+            {coursesData.map((course: ProductCardProps) => (
               <ProductCard
                 key={course.id}
                 id={course.id}
@@ -54,9 +78,9 @@ const Home = async ({
                 instructor={course.instructor}
                 duration={course.duration}
               />
-            ))
-          }
-        </div>
+            ))}
+          </div>
+        )}
       </Wrapper>
       <Wrapper>
         <SuggestionSection />

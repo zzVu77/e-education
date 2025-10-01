@@ -12,9 +12,9 @@ const SearchBar = () => {
   const handleSearch = () => {
     const params = new URLSearchParams(searchParams.toString());
     if (query) {
-      params.set("search", query);
+      params.set("title", query.toLowerCase());
     } else {
-      params.delete("search");
+      params.delete("title");
     }
     router.replace(`?${params.toString()}`);
   };

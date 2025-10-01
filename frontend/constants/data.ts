@@ -22,12 +22,10 @@ export const mockCategories = [
   { label: "Photography", value: "photography" },
   { label: "Web Development", value: "web-development" },
 ];
-export const dummyPriceRanges = [
-  { label: "All", value: "all" },
-  { label: "Free", value: "free" },
-  { label: "Under $500", value: "lt-500" }, // lt = less than
-  { label: "$500 - $1000", value: "500-1000" },
-  { label: "Over $1000", value: "gt-1000" }, // gt = greater than
+export const sortOptions = [
+  { label: "Unsorted", value: "none" },
+  { label: "Ascending", value: "asc" },
+  { label: "Descending", value: "desc" },
 ];
 
 export const mockCoursesData: ProductCardProps[] = [

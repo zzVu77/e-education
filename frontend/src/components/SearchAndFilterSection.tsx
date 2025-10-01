@@ -1,7 +1,7 @@
 import Filter from "@/components/Filter";
 import SearchBar from "@/components/SearchBar";
 import { Suspense } from "react";
-import { dummyPriceRanges, mockCategories } from "../../constants/data";
+import { sortOptions, mockCategories } from "../../constants/data";
 const SearchAndFilterSection = () => {
   return (
     <>
@@ -19,7 +19,7 @@ const SearchAndFilterSection = () => {
             />
           </Suspense>
           <Suspense fallback={null}>
-            <Filter typeOfFilter="price" items={dummyPriceRanges} />
+            <Filter typeOfFilter="sort" items={sortOptions} />
           </Suspense>
         </div>
       </div>
