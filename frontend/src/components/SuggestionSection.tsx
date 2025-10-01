@@ -2,10 +2,11 @@
 import { Bot } from "lucide-react";
 import { Text, Title } from "./ui/typography";
 import { Button } from "./ui/button";
-import ProductCard, { ProductCardProps } from "./ProductCard";
+import ProductCard from "./ProductCard";
 import useAxios from "@/hooks/useAxios";
 import ProductSkeleton from "./ProductSkeleton";
 import Desktop from "./shared/Desktop";
+import { ProductCardProps } from "@/types";
 
 const SuggestionSection = () => {
   const { fetchData, response, setResponse, loading } =
@@ -64,15 +65,10 @@ const SuggestionSection = () => {
             <div className="grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid items-center justify-items-center gap-5 mt-0 py-0 w-full ">
               {response?.map((course) => (
                 <ProductCard
-                  key={course.courseId}
-                  courseId={course.courseId}
-                  courseName={course.courseName}
-                  courseImage={course.courseImage}
-                  coursePrice={course.coursePrice}
-                  courseRating={course.courseRating}
-                  courseShortDescription={course.courseShortDescription}
-                  courseFullDescription={course.courseFullDescription}
-                  courseInfo={course.courseInfo}
+                  key={course.id}
+                  id={course.id}
+                  title={course.title}
+                  imgUrl={course.imgUrl}
                 />
               ))}
             </div>

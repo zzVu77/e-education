@@ -1,10 +1,10 @@
-import ProductCard, { ProductCardProps } from "@/components/ProductCard";
+import ProductCard from "@/components/ProductCard";
 import SearchAndFilterSection from "@/components/SearchAndFilterSection";
 import SectionHeader from "@/components/shared/SectionHeader";
 import Wrapper from "@/components/shared/Wrapper";
 import SuggestionSection from "@/components/SuggestionSection";
 import axiosInstance from "@/config/axiosConfig";
-import { filterCourses } from "@/utils/searchAndFilter";
+import { ProductCardProps } from "@/types";
 import { SearchParamsPromise } from "@/utils/searchParams";
 import { Bookmark } from "lucide-react";
 
@@ -14,14 +14,17 @@ const Home = async ({
   searchParams: SearchParamsPromise;
 }) => {
   const resolvedParams = await searchParams;
+  console.log("Resolved Search Params:", resolvedParams);
 
-  const coursesData = await axiosInstance.get<ProductCardProps[]>("/courses");
+  const coursesData = await axiosInstance.get<ProductCardProps[]>(
+    "http://localhost:8080/api/courses",
+  );
 
-  const response = filterCourses(coursesData.data, {
-    courseName: resolvedParams.search,
-    priceRange: resolvedParams.price,
-    category: resolvedParams.category,
-  });
+  // const response = filterCourses(coursesData.data, {
+  //   courseName: resolvedParams.search,
+  //   priceRange: resolvedParams.price,
+  //   category: resolvedParams.category,
+  // });
   return (
     <>
       <SectionHeader
@@ -38,24 +41,20 @@ const Home = async ({
         <div className="grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid items-center justify-items-center gap-10 mt-0 py-0 w-full ">
           {
             // Sort mockCoursesData alphabetically by courseName before mapping
-            response
-              .slice()
-              .sort((a, b) =>
-                (a.courseName ?? "").localeCompare(b.courseName ?? ""),
-              )
-              .map((course) => (
-                <ProductCard
-                  key={course.courseId}
-                  courseId={course.courseId}
-                  courseName={course.courseName}
-                  courseImage={course.courseImage}
-                  coursePrice={course.coursePrice}
-                  courseRating={course.courseRating}
-                  courseShortDescription={course.courseShortDescription}
-                  courseFullDescription={course.courseFullDescription}
-                  courseInfo={course.courseInfo}
-                />
-              ))
+            coursesData.data.map((course: ProductCardProps) => (
+              <ProductCard
+                key={course.id}
+                id={course.id}
+                title={course.title}
+                imgUrl={course.imgUrl}
+                price={course.price}
+                description={course.description}
+                category={course.category}
+                level={course.level}
+                instructor={course.instructor}
+                duration={course.duration}
+              />
+            ))
           }
         </div>
       </Wrapper>

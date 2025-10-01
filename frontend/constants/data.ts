@@ -1,5 +1,4 @@
-import { CourseInfo } from "@/components/DetailDialog";
-import { ProductCardProps } from "@/components/ProductCard";
+import { CourseInfo, ProductCardProps } from "@/types";
 
 export const dummyCourseInfo: CourseInfo[] = [
   { label: "Duration", value: "6 months" },

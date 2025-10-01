@@ -1,7 +1,8 @@
-import { Star } from "lucide-react";
+import { formatCurrency } from "@/lib/utils";
 import Image from "next/image";
 import { ASSSETS } from "../../constants/assets";
 import ButtonAddToFavorite from "./ButtonAddToFavorite";
+import ButtonViewDetail from "./ButtonViewDetail";
 import { Button } from "./ui/button";
 import {
   Dialog,
@@ -11,15 +12,10 @@ import {
   DialogTrigger,
 } from "./ui/dialog";
 import { Text } from "./ui/typography";
-import { ProductCardProps } from "./ProductCard";
-import { formatCurrency } from "@/lib/utils";
-import ButtonViewDetail from "./ButtonViewDetail";
-export type CourseInfo = {
-  label?: string;
-  value?: string;
-};
+import { ProductCardProps } from "@/types";
+
 type DetailDialogProps = {
-  productProps: Omit<ProductCardProps, "courseShortDescription">;
+  productProps: ProductCardProps;
 };
 
 const DetailDialog = ({ productProps }: DetailDialogProps) => {
@@ -27,12 +23,12 @@ const DetailDialog = ({ productProps }: DetailDialogProps) => {
     <>
       <Dialog>
         <DialogTrigger asChild>
-          <ButtonViewDetail productId={productProps.courseId ?? "1"} />
+          <ButtonViewDetail productId={productProps.id ?? "1"} />
         </DialogTrigger>
-        <DialogContent className="grid grid-rows-2 grid-cols-1 md:grid-cols-2 md:grid-rows-1 gap-4 w-full h-full max-w-[95vw] xl:max-w-[80vw] max-h-[92vh] px-4 overflow-y-auto py-[50px]">
-          <div className="w-[100%] h-full max-h-[400px] md:max-h-none">
+        <DialogContent className="grid grid-rows-2 grid-cols-1 lg:grid-cols-2 lg:grid-rows-1 gap-8 lg:gap-10 w-full h-full max-w-[95vw] xl:max-w-[80vw] max-h-[92vh] px-4 overflow-y-auto py-[50px]">
+          <div className="w-[100%] h-full max-h-[400px] lg:max-h-none">
             <Image
-              src={productProps.courseImage || ASSSETS.PLACEHOLDER_IMAGE}
+              src={productProps.imgUrl || ASSSETS.PLACEHOLDER_IMAGE}
               width={352}
               height={400}
               alt="product-image"
@@ -44,50 +40,60 @@ const DetailDialog = ({ productProps }: DetailDialogProps) => {
             <DialogHeader>
               <DialogTitle>
                 <Text className="text-[28px] md:text-[32px] font-[800] text-start">
-                  {productProps.courseName ||
+                  {productProps.title ||
                     " Advanced Machine Learning Specialization"}
                 </Text>
               </DialogTitle>
             </DialogHeader>
-            {/* Rating */}
-            <div className="flex items-center justify-start gap-2">
-              <div className="flex items-center">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    className={`h-5 w-5 ${
-                      i < Math.floor(4.5)
-                        ? "text-yellow-400 fill-yellow-400"
-                        : "text-gray-300"
-                    }`}
-                  />
-                ))}
-              </div>
-              <Text className="font-[500] text-gray-600/80 text-[16px]">
-                {productProps.courseRating || 4.5}
-              </Text>
-            </div>
             {/* Cost */}
             <Text className="text-[28px] md:text-[32px] font-[700] text-green-600/90 text-start">
-              {formatCurrency(productProps.coursePrice ?? 100) || "$499,000"}
+              {formatCurrency(productProps.price ?? 100) || "$499,000"}
             </Text>
             {/* Description */}
             <div className="w-full flex flex-col gap-1">
-              <Text className=" text-[16px] font-medium text-black">
+              <Text className=" text-lg md:text-xl font-medium text-black">
                 Description:
               </Text>
-              <Text className="text-gray-600/90 text-[14px]">{`Take your machine learning skills to the next level with this advanced specialization. You'll dive deep into neural networks, deep learning, computer vision, and natural language processing. Through hands-on projects, you'll build real-world AI applications that can recognize images, understand text, and make predictions based on complex data.`}</Text>
+              <Text className="text-gray-600/90 text-[14px] md:text-[16px]">
+                {productProps.description}
+              </Text>
             </div>
             {/* Course Info */}
             <div className="grid grid-cols-2 items-center justify-items-start gap-3">
-              {productProps.courseInfo?.map((info, index) => (
-                <div key={index} className="flex flex-col">
-                  <Text className="text-xs font-medium text-gray-900 italic">
-                    {info.label}
-                  </Text>
-                  <Text className="text-sm text-gray-600">{info.value}</Text>
-                </div>
-              ))}
+              <div className="flex flex-col">
+                <Text className="text-sm md:text-lg font-medium text-gray-900 italic">
+                  Category
+                </Text>
+                <Text className="text-sm text-gray-600">
+                  {productProps.category || "Development"}
+                </Text>
+              </div>
+              <div className="flex flex-col">
+                <Text className="text-sm md:text-lg font-medium text-gray-900 italic">
+                  Instructor
+                </Text>
+                <Text className="text-sm text-gray-600">
+                  {productProps.instructor || "John Doe"}
+                </Text>
+              </div>
+              <div className="flex flex-col">
+                <Text className="text-sm md:text-lg font-medium text-gray-900 italic">
+                  Level
+                </Text>
+                <Text className="text-sm text-gray-600">
+                  {productProps.level || "Beginner"}
+                </Text>
+              </div>
+              <div className="flex flex-col">
+                <Text className="text-sm md:text-lg font-medium text-gray-900 italic">
+                  Duration
+                </Text>
+                <Text className="text-sm text-gray-600">
+                  {productProps.duration
+                    ? `${productProps.duration} hours`
+                    : "3 hours"}
+                </Text>
+              </div>
             </div>
             <div className="w-full flex flex-row items-end justify-start md:justify-center gap-2 self-end grow-2 pb-4">
               <Button
@@ -98,7 +104,7 @@ const DetailDialog = ({ productProps }: DetailDialogProps) => {
                 Purchase Now
               </Button>
               <ButtonAddToFavorite
-                itemID={productProps.courseId ?? "1"}
+                itemID={productProps.id ?? "1"}
                 className="rounded-lg bg-white border-1 border-gray-600/20 hover:border-gray-600/50 h-10 w-10 "
               />
             </div>
