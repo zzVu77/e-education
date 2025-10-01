@@ -1,4 +1,5 @@
 "use client";
+import ProductSkeleton from "@/components/ProductSkeleton";
 import { Button } from "@/components/ui/button";
 import axiosInstance from "@/config/axiosConfig";
 import React from "react";
@@ -21,6 +22,7 @@ const Page = () => {
       <Button onClick={handleClickLogin}>Login</Button>
       <Button onClick={handleClickLogout}>Logout</Button>
       <Button onClick={handleClickFetchCourses}>Fetch Courses</Button>
+      <ProductSkeleton />
     </div>
   );
 };
