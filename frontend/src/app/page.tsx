@@ -2,7 +2,6 @@ import ProductCard from "@/components/ProductCard";
 import SearchAndFilterSection from "@/components/SearchAndFilterSection";
 import SectionHeader from "@/components/shared/SectionHeader";
 import Wrapper from "@/components/shared/Wrapper";
-import SuggestionSection from "@/components/SuggestionSection";
 import axiosInstance from "@/config/axiosConfig";
 import { ProductCardProps } from "@/types";
 import { SearchParamsPromise } from "@/utils/searchParams";
@@ -81,9 +80,6 @@ const Home = async ({
             ))}
           </div>
         )}
-      </Wrapper>
-      <Wrapper>
-        <SuggestionSection />
       </Wrapper>
     </>
   );
