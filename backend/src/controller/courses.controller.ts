@@ -22,10 +22,7 @@ export const courseController = {
 
     try {
       const result = await courseService.getAllCourses(page, limit);
-      if (result.data.length === 0) {
-        return res.status(404).json({ error: "No courses found" });
-      }
-      res.json(result);
+      return res.status(200).json(result);
     } catch {
       res.status(500).json({ error: "Internal Server Error" });
     }
@@ -43,10 +40,7 @@ export const courseController = {
 
     try {
       const result = await courseService.searchCoursesByTitle(title, page, limit);
-      if (result.data.length === 0) {
-        return res.status(404).json({ error: "No courses found matching the title" });
-      }
-      res.json(result);
+      res.status(200).json(result);
     } catch {
       console.error("Error searchCoursesByTitle");
       return res.status(500).json({ error: "Internal Server Error" });
@@ -106,16 +100,15 @@ export const courseController = {
       criteria.title = title;
     }
 
-    if (category && typeof category === "string") {
+    if (typeof category === "string" && category.toLowerCase() !== "all") {
       criteria.category = category;
+    } else if (category === "all") {
+      criteria.category = "";
     }
 
     try {
       const result = await courseService.filterCoursesByCriteria(criteria, page, limit);
-      if (result.data.length === 0) {
-        return res.status(404).json({ error: "No courses found matching the criteria" });
-      }
-      res.json(result);
+      return res.status(200).json(result);
     } catch (error) {
       console.error("Error filtering courses:", error);
       return res.status(500).json({ error: "Internal Server Error" });
