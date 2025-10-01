@@ -46,7 +46,7 @@ const processQueue = (error: unknown, token: string | null = null) => {
 };
 
 axiosInstance.interceptors.response.use(
-  (response) => response,
+  (response) => response.data,
   async (error: AxiosError) => {
     const originalRequest: any = error.config;
 
