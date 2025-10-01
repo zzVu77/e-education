@@ -75,7 +75,7 @@ axiosInstance.interceptors.response.use(
       try {
         // Call the refresh token API
         await axiosInstance.post(
-          "/auth/refresh",
+          "http://localhost:8080/api/auth/refresh",
           {},
           { withCredentials: true },
         );

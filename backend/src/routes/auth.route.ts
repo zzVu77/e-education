@@ -29,7 +29,17 @@ const authRouter = Router();
  *         description: Login success
  */
 authRouter.post("/login", validate(loginUserSchema), (req, res) => authController.login(req, res));
-
+/**
+ * @swagger
+ * /api/auth/logout:
+ *   post:
+ *     summary: Logout
+ *     tags: [Auth]
+ *     responses:
+ *       200:
+ *         description: Logout success
+ */
+authRouter.post("/logout", (req, res) => authController.logout(req, res));
 /**
  * @swagger
  * /api/auth/refresh:

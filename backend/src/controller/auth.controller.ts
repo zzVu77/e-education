@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
+import { JWT_CONFIG } from "../config/jwt";
 import { LoginUserDto } from "../dtos/users.dto";
 import { authService } from "../services/auth.service";
-import { JWT_CONFIG } from "../config/jwt";
 
 export const authController = {
   async login(req: Request, res: Response) {
@@ -22,6 +22,11 @@ export const authController = {
     } catch {
       return res.status(401).json({ message: "Invalid credentials" });
     }
+  },
+  logout(_req: Request, res: Response) {
+    res.clearCookie("accessToken");
+    res.clearCookie("refreshToken");
+    return res.json({ message: "Logout success" });
   },
   refresh(req: Request, res: Response) {
     try {

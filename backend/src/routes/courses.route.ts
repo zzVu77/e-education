@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { courseController } from "../controller/courses.controller";
-import { validate } from "../middleware/validation.middleware";
 import { createCourseSchema, updateCourseSchema } from "../dtos/courses.dto";
+import { validate } from "../middleware/validation.middleware";
 
 const courseRouter = Router();
 
