@@ -63,7 +63,7 @@ const Home = async ({
             />
           </div>
         ) : (
-          <div className="grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid items-center justify-items-center gap-10 mt-0 py-0 w-full">
+          <div className="grid-cols-1 md:grid-cols-2 lg:grid-cols-3  grid items-center justify-items-center gap-5 mt-0 py-0 w-full">
             {coursesData.map((course: ProductCardProps) => (
               <ProductCard
                 key={course.id}

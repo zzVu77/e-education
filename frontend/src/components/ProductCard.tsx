@@ -1,5 +1,5 @@
 import { formatCurrency } from "@/lib/utils";
-import { Tag } from "lucide-react";
+import { ShoppingCart, Tag } from "lucide-react";
 import Image from "next/image";
 import { ASSSETS } from "../constants/assets";
 import DetailDialog from "./DetailDialog";
@@ -13,6 +13,7 @@ import {
 } from "./ui/card";
 import { Text, Title } from "./ui/typography";
 import { ProductCardProps } from "@/types";
+import { Button } from "./ui/button";
 
 const ProductCard = ({
   id,
@@ -43,7 +44,7 @@ const ProductCard = ({
         </div>
         <CardHeader>
           <div className="flex flex-row items-center justify-between w-full">
-            <CardTitle className="line-clamp-2">
+            <CardTitle>
               <Title level={3} className="text-lg font-[800] line-clamp-2">
                 {title || " Advanced Machine Learning Specialization"}
               </Title>
@@ -54,23 +55,29 @@ const ProductCard = ({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="flex flex-row items-center justify-between">
+          <div className="flex flex-col items-start justify-between gap-6">
             <Text className="text-lg font-[700] text-green-600/90">
               {formatCurrency(price ?? 499000)}
             </Text>
-            <DetailDialog
-              productProps={{
-                id,
-                title,
-                imgUrl,
-                price,
-                level,
-                category,
-                instructor,
-                description,
-                duration,
-              }}
-            />
+            <div className="w-full flex flex-row items-center justify-between">
+              <DetailDialog
+                productProps={{
+                  id,
+                  title,
+                  imgUrl,
+                  price,
+                  level,
+                  category,
+                  instructor,
+                  description,
+                  duration,
+                }}
+              />
+              <Button variant={"viewDetails"} className="py-0">
+                <ShoppingCart className="h-5 w-5" />
+                Add to cart
+              </Button>
+            </div>
           </div>
         </CardContent>
       </Card>
