@@ -1,10 +1,12 @@
+import { FilterQuery } from "mongoose";
 import {
   CourseResponseDto,
   CreateCourseDto,
+  FilterCriteria,
   PaginatedCoursesResponseDto,
   UpdateCourseDto,
 } from "../dtos/courses.dto";
-import { CourseModel } from "../models/course.model";
+import { CourseModel, ICourse } from "../models/course.model";
 
 export const courseService = {
   async createCourse(data: CreateCourseDto): Promise<CourseResponseDto> {
@@ -51,6 +53,39 @@ export const courseService = {
   ): Promise<PaginatedCoursesResponseDto> {
     const skip = (page - 1) * limit;
     const query = { title: { $regex: title, $options: "i" } };
+
+    const [courses, totalItems] = await Promise.all([
+      CourseModel.find(query).skip(skip).limit(limit),
+      CourseModel.countDocuments(query),
+    ]);
+
+    return {
+      data: courses.map((course) => course.toJSON() as CourseResponseDto),
+      totalPages: Math.ceil(totalItems / limit),
+    };
+  },
+  async filterCoursesByCriteria(
+    criteria: FilterCriteria,
+    page = 1,
+    limit = 10,
+  ): Promise<PaginatedCoursesResponseDto> {
+    const skip = (page - 1) * limit;
+
+    const andConditions: FilterQuery<ICourse>[] = [];
+
+    if (criteria.title && criteria.title.trim() !== "") {
+      andConditions.push({
+        title: { $regex: criteria.title, $options: "i" },
+      });
+    }
+
+    if (criteria.category && criteria.category.trim() !== "") {
+      andConditions.push({
+        category: { $regex: criteria.category, $options: "i" },
+      });
+    }
+
+    const query = andConditions.length > 0 ? { $and: andConditions } : {};
 
     const [courses, totalItems] = await Promise.all([
       CourseModel.find(query).skip(skip).limit(limit),
