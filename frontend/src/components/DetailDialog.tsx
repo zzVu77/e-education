@@ -1,6 +1,6 @@
 import { formatCurrency } from "@/lib/utils";
 import Image from "next/image";
-import { ASSSETS } from "../../constants/assets";
+import { ASSSETS } from "../constants/assets";
 import ButtonAddToFavorite from "./ButtonAddToFavorite";
 import ButtonViewDetail from "./ButtonViewDetail";
 import { Button } from "./ui/button";

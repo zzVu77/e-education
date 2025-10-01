@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { BotIcon, SendIcon, UserIcon, XIcon } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
-import { mockCoursesData } from "../../constants/data";
+import { mockCoursesData } from "../constants/data";
 import ProductCard from "./ProductCard";
 
 interface ChatMessage {

@@ -1,8 +1,13 @@
 import Filter from "@/components/Filter";
 import SearchBar from "@/components/SearchBar";
 import { Suspense } from "react";
-import { sortOptions, mockCategories } from "../../constants/data";
+import { mockCategories } from "../constants/data";
 const SearchAndFilterSection = () => {
+  const sortOptions = [
+    { label: "Unsorted", value: "none" },
+    { label: "Ascending", value: "asc" },
+    { label: "Descending", value: "desc" },
+  ];
   return (
     <>
       <div className="flex flex-col md:flex-row items-start md:items-center justify-start gap-2 w-full">

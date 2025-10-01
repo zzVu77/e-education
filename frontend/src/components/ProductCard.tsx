@@ -1,7 +1,7 @@
 import { formatCurrency } from "@/lib/utils";
 import { Tag } from "lucide-react";
 import Image from "next/image";
-import { ASSSETS } from "../../constants/assets";
+import { ASSSETS } from "../constants/assets";
 import DetailDialog from "./DetailDialog";
 import { Badge } from "./ui/badge";
 import {
