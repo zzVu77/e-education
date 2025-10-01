@@ -1,17 +1,24 @@
 "use client";
 
-import Link from "next/link";
-import { MenuIcon, HomeIcon, HeartIcon, X, History } from "lucide-react";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
   Drawer,
-  DrawerTrigger,
+  DrawerClose,
   DrawerContent,
   DrawerHeader,
   DrawerTitle,
-  DrawerClose,
+  DrawerTrigger,
 } from "@/components/ui/drawer";
-import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import {
+  CircleUser,
+  LogIn,
+  LogOut,
+  MenuIcon,
+  ShoppingCartIcon,
+  X,
+} from "lucide-react";
+import Link from "next/link";
 
 const HamburgerMenu = () => {
   return (
@@ -30,41 +37,49 @@ const HamburgerMenu = () => {
 
           <div className="flex flex-col gap-5">
             <Link
+              href="/login"
+              className={cn(
+                buttonVariants({ variant: "ghost", size: "sm" }),
+                "flex items-center space-x-1 text-sm font-medium text-black hover:bg-transparent hover:text-green-500",
+              )}
+            >
+              <CircleUser className="h-5 w-5" />
+              Hi, User
+            </Link>
+            <Link
               href="/"
               className={cn(
                 buttonVariants({ variant: "ghost", size: "sm" }),
-                "flex items-center gap-2  text-black",
+                "flex items-center space-x-1 text-sm font-medium text-black hover:bg-transparent hover:text-green-500",
               )}
             >
-              <HomeIcon className="h-5 w-5" />
-              Home
+              <ShoppingCartIcon className="h-5 w-5 " />
+              Cart
             </Link>
 
             <Link
-              href="/favorites"
+              href="/login"
               className={cn(
                 buttonVariants({ variant: "ghost", size: "sm" }),
-                "flex items-center gap-2 text-black ",
+                "flex items-center space-x-1 text-sm font-medium text-black hover:bg-transparent hover:text-green-500",
               )}
             >
-              <HeartIcon className="h-5 w-5" />
-              Favorites
+              <LogIn className="h-5 w-5" />
+              Login
             </Link>
-
             <Link
-              href="/history"
+              href="/login"
               className={cn(
                 buttonVariants({ variant: "ghost", size: "sm" }),
-                "flex items-center gap-2 text-black ",
+                "flex items-center space-x-1 text-sm font-medium text-black hover:bg-transparent hover:text-green-500",
               )}
             >
-              <History className="h-5 w-5" />
-              History
+              <LogOut className="h-5 w-5" />
+              Logout
             </Link>
-
             <DrawerClose asChild>
-              <Button className="bg-transparent border-none w-fit mx-auto shadow-none hover:bg-transparent text-black">
-                <X size={22} className="text-red-400" />
+              <Button className="bg-transparent border-none w-fit mx-auto shadow-none hover:bg-transparent text-red-400">
+                <X size={20} className="text-red-400" />
                 Close
               </Button>
             </DrawerClose>

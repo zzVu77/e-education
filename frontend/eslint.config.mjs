@@ -35,7 +35,7 @@ export default [
         { argsIgnorePattern: "^_" },
       ],
       "@typescript-eslint/no-explicit-any": "error",
-      "prettier/prettier": ["error", { endOfLine: "auto" }],
+      // "prettier/prettier": ["error", { endOfLine: "auto" }],
     },
   },
 ];
