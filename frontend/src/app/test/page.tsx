@@ -13,10 +13,14 @@ const Page = () => {
   const handleClickLogout = () => {
     axiosInstance.post("http://localhost:8080/api/auth/logout");
   };
+  const handleClickFetchCourses = () => {
+    axiosInstance.get("http://localhost:8080/api/courses");
+  };
   return (
     <div>
       <Button onClick={handleClickLogin}>Login</Button>
       <Button onClick={handleClickLogout}>Logout</Button>
+      <Button onClick={handleClickFetchCourses}>Fetch Courses</Button>
     </div>
   );
 };
