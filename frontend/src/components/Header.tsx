@@ -1,8 +1,8 @@
-import Link from "next/link";
-import { HeartIcon, History, HomeIcon, ShoppingCartIcon } from "lucide-react";
+import HamburgerMenu from "@/components/HamburgerMenu";
 import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import HamburgerMenu from "@/components/HamburgerMenu";
+import { CircleUser, LogIn, LogOut, ShoppingCartIcon } from "lucide-react";
+import Link from "next/link";
 
 const Header = () => {
   return (
@@ -25,32 +25,42 @@ const Header = () => {
               href="/"
               className={cn(
                 buttonVariants({ variant: "ghost", size: "sm" }),
-                "flex items-center space-x-1 text-sm font-medium text-black",
+                "flex items-center space-x-1 text-sm font-medium text-black hover:bg-transparent hover:text-green-500",
               )}
             >
-              <HomeIcon className="h-5 w-5 " />
-              Home
+              <ShoppingCartIcon className="h-5 w-5 " />
+              Cart
             </Link>
 
             <Link
-              href="/favorites"
+              href="/login"
               className={cn(
                 buttonVariants({ variant: "ghost", size: "sm" }),
-                "flex items-center space-x-1 text-sm font-medium text-black",
+                "flex items-center space-x-1 text-sm font-medium text-black hover:bg-transparent hover:text-green-500",
               )}
             >
-              <HeartIcon className="h-5 w-5" />
-              Favorites
+              <LogIn className="h-5 w-5" />
+              Login
             </Link>
             <Link
-              href="/history"
+              href="/login"
               className={cn(
                 buttonVariants({ variant: "ghost", size: "sm" }),
-                "flex items-center space-x-1 text-sm font-medium text-black",
+                "flex items-center space-x-1 text-sm font-medium text-black hover:bg-transparent hover:text-green-500",
               )}
             >
-              <History className="h-5 w-5" />
-              History
+              <LogOut className="h-5 w-5" />
+              Logout
+            </Link>
+            <Link
+              href="/login"
+              className={cn(
+                buttonVariants({ variant: "ghost", size: "sm" }),
+                "flex items-center space-x-1 text-sm font-medium text-black hover:bg-transparent hover:text-green-500",
+              )}
+            >
+              <CircleUser className="h-5 w-5" />
+              Hi, User
             </Link>
           </nav>
 

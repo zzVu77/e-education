@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { courseController } from "../controller/courses.controller";
-import { validate } from "../middleware/validation.middleware";
 import { createCourseSchema, updateCourseSchema } from "../dtos/courses.dto";
+import { validate } from "../middleware/validation.middleware";
 
 const courseRouter = Router();
 
@@ -62,6 +62,38 @@ courseRouter.get("/", (req, res) => courseController.getAllCourses(req, res));
  *         description: Search results
  */
 courseRouter.get("/search", (req, res) => courseController.searchCoursesByTitle(req, res));
+/**
+ * @swagger
+ * /api/courses/filter:
+ *   get:
+ *     summary: Filter courses by criteria
+ *     tags: [Courses]
+ *     parameters:
+ *       - in: query
+ *         name: title
+ *         schema:
+ *           type: string
+ *           example: React
+ *       - in: query
+ *         name: category
+ *         schema:
+ *           type: string
+ *           example: Web Development
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           example: 10
+ *     responses:
+ *       200:
+ *         description: Filtered results
+ */
+courseRouter.get("/filter", (req, res) => courseController.filterCoursesByCriteria(req, res));
 
 /**
  * @swagger

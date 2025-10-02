@@ -22,10 +22,7 @@ export const courseController = {
 
     try {
       const result = await courseService.getAllCourses(page, limit);
-      if (result.data.length === 0) {
-        return res.status(404).json({ error: "No courses found" });
-      }
-      res.json(result);
+      return res.status(200).json(result);
     } catch {
       res.status(500).json({ error: "Internal Server Error" });
     }
@@ -43,10 +40,7 @@ export const courseController = {
 
     try {
       const result = await courseService.searchCoursesByTitle(title, page, limit);
-      if (result.data.length === 0) {
-        return res.status(404).json({ error: "No courses found matching the title" });
-      }
-      res.json(result);
+      res.status(200).json(result);
     } catch {
       console.error("Error searchCoursesByTitle");
       return res.status(500).json({ error: "Internal Server Error" });
@@ -92,6 +86,32 @@ export const courseController = {
     } catch (error) {
       console.error("Error deleting course:", error);
       return res.status(400).json({ error: (error as Error).message });
+    }
+  },
+
+  async filterCoursesByCriteria(req: Request, res: Response) {
+    const { title, category } = req.query;
+    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(req.query.limit as string) || 10;
+
+    const criteria: { title?: string; category?: string } = {};
+
+    if (title && typeof title === "string") {
+      criteria.title = title;
+    }
+
+    if (typeof category === "string" && category.toLowerCase() !== "all") {
+      criteria.category = category;
+    } else if (category === "all") {
+      criteria.category = "";
+    }
+
+    try {
+      const result = await courseService.filterCoursesByCriteria(criteria, page, limit);
+      return res.status(200).json(result);
+    } catch (error) {
+      console.error("Error filtering courses:", error);
+      return res.status(500).json({ error: "Internal Server Error" });
     }
   },
 };

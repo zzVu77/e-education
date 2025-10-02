@@ -18,7 +18,7 @@ const ButtonViewDetail = ({ productId, onClick }: ButtonViewDetailProps) => {
   return (
     <Button
       variant="viewDetails"
-      className="py-0 text-white"
+      className="bg-green-500/20 text-green-600 hover:bg-green-600/20 py-0 "
       onClick={handleClick}
     >
       View Details
