@@ -45,7 +45,7 @@ const ProductCard = ({
         <CardHeader>
           <div className="flex flex-row items-center justify-between w-full">
             <CardTitle>
-              <Title level={3} className="text-lg font-[800] line-clamp-2">
+              <Title level={3} className="text-[16px] font-[800] line-clamp-2">
                 {title || " Advanced Machine Learning Specialization"}
               </Title>
             </CardTitle>

@@ -9,3 +9,7 @@ export type ProductCardProps = {
   instructor: string;
   duration: string;
 };
+export type CoursesDataResponse = {
+  data: ProductCardProps[];
+  totalPages: number;
+};

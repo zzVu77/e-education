@@ -3,25 +3,30 @@ import axios, {
   AxiosError,
   InternalAxiosRequestConfig,
   AxiosHeaders,
+  AxiosInstance,
 } from "axios";
 import Cookies from "js-cookie";
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:8080/api";
 
+interface AxiosInstanceCustom extends AxiosInstance {
+  get<T = any>(url: string, config?: any): Promise<T>;
+  post<T = any>(url: string, data?: any, config?: any): Promise<T>;
+  // Add other HTTP methods if needed
+}
+
 const axiosInstance = axios.create({
   baseURL: BASE_URL,
   headers: { "Content-Type": "application/json" },
-  withCredentials: true, // required for refresh token in cookies
-});
+  withCredentials: true,
+}) as AxiosInstanceCustom;
 
 /* ------------------ Request Interceptor ------------------ */
-// Always attach the token if available; otherwise, treat it as a public request
 axiosInstance.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
     const accessToken = Cookies.get("accessToken");
     if (accessToken) {
-      // Ensure headers are AxiosHeaders to safely use set/concat APIs
       config.headers = AxiosHeaders.from(config.headers);
       config.headers.set("Authorization", `Bearer ${accessToken}`);
     }
@@ -50,10 +55,8 @@ axiosInstance.interceptors.response.use(
   async (error: AxiosError) => {
     const originalRequest: any = error.config;
 
-    // If 401 is encountered and the request has not been retried
     if (error.response?.status === 401 && !originalRequest._retry) {
       if (isRefreshing) {
-        // If a refresh is already in progress → wait
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
@@ -73,15 +76,14 @@ axiosInstance.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        // Call the refresh token API
-        await axiosInstance.post(
+        await axios.post(
           "http://localhost:8080/api/auth/refresh",
           {},
           { withCredentials: true },
         );
-        // Retrieve the new token from cookies (server has already saved the cookie)
         const newAccessToken = Cookies.get("accessToken");
         processQueue(null, newAccessToken);
+
         if (newAccessToken) {
           originalRequest.headers = AxiosHeaders.from(originalRequest.headers);
           originalRequest.headers.set(
@@ -89,7 +91,7 @@ axiosInstance.interceptors.response.use(
             `Bearer ${newAccessToken}`,
           );
         }
-        return axiosInstance(originalRequest); // retry the original request
+        return axiosInstance(originalRequest);
       } catch (err) {
         processQueue(err, null);
         return Promise.reject(err);
@@ -97,6 +99,7 @@ axiosInstance.interceptors.response.use(
         isRefreshing = false;
       }
     }
+
     return Promise.reject(error);
   },
 );

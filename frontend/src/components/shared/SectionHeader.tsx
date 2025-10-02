@@ -16,7 +16,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
 }) => {
   return (
     <section
-      className={`w-full bg-gradient-to-l from-green-300 to-green-500 text-white py-7 ${className}`}
+      className={`w-full h-fit bg-gradient-to-l from-green-300 to-green-500 text-white py-5 ${className}`}
     >
       <div className="container mx-auto px-4">
         <div className="flex items-center mb-4">
