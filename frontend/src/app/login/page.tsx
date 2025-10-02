@@ -1,5 +1,3 @@
-"use client"; // This is a client component 👈🏽
-
 import Link from "next/link";
 import LoginForm from "@/components/auth/LoginForm";
 

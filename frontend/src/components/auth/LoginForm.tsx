@@ -1,9 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import Link from "next/link";
 import { useState } from "react";
 import axiosInstance from "@/config/axiosConfig";
-
+import { useRouter } from "next/navigation";
+import * as z from "zod";
 type FieldErrors = Partial<{
   username: string;
   password: string;
@@ -16,17 +16,35 @@ export default function LoginForm() {
   const [showPwd, setShowPwd] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
-
+  const router = useRouter();
+  const validateSchema = z.object({
+    username: z.string().min(3, "Username must be at least 3 characters long"),
+    password: z.string().min(6, "Password must be at least 6 characters long"),
+  });
+  // const validate = () => {
+  //   const e: FieldErrors = {};
+  //   if (!username) e.username = "Username is required.";
+  //   else if (username.length < 1)
+  //     e.username = "Username must be at least 1 character";
+  //   if (!password) e.password = "Password is required.";
+  //   setErrors(e);
+  //   return Object.keys(e).length === 0;
+  // };
   const validate = () => {
-    const e: FieldErrors = {};
-    if (!username) e.username = "Username is required.";
-    else if (username.length < 1)
-      e.username = "Username must be at least 1 character";
-    if (!password) e.password = "Password is required.";
-    setErrors(e);
-    return Object.keys(e).length === 0;
+    const result = validateSchema.safeParse({ username, password });
+    if (!result.success) {
+      const fieldErrors: FieldErrors = {};
+      result.error.issues.forEach((err) => {
+        if (err.path[0] && !fieldErrors[err.path[0] as keyof FieldErrors]) {
+          fieldErrors[err.path[0] as keyof FieldErrors] = err.message;
+        }
+      });
+      setErrors(fieldErrors);
+      return false;
+    }
+    setErrors({});
+    return true;
   };
-
   const onSubmit = async (ev: React.FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
     if (!validate()) return;
@@ -36,16 +54,12 @@ export default function LoginForm() {
 
     try {
       await axiosInstance.post("/auth/login", { username, password });
-
-      // redirect to app logic
-      window.location.href = "/"; // or use next/navigation's redirect()
-    } catch (err: unknown) {
-      const message =
-        (err as any)?.response?.data?.message ||
-        (err as Error).message ||
-        "We couldn’t sign you in. Please check your credentials and try again.";
-      // dont enumerate which part failed (prevents account enumeration)
-      setErrors({ global: message });
+      router.replace("/");
+    } catch {
+      setErrors({
+        global:
+          "Something went wrong ! Please check your credentials and try again.",
+      });
       setLoading(false);
     }
   };
