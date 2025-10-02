@@ -1,9 +1,10 @@
+import CustomPagination from "@/components/CustomPagination";
 import ProductCard from "@/components/ProductCard";
 import SearchAndFilterSection from "@/components/SearchAndFilterSection";
 import SectionHeader from "@/components/shared/SectionHeader";
 import Wrapper from "@/components/shared/Wrapper";
 import axiosInstance from "@/config/axiosConfig";
-import { ProductCardProps } from "@/types";
+import { CoursesDataResponse, ProductCardProps } from "@/types";
 import { SearchParamsPromise } from "@/utils/searchParams";
 import { Bookmark } from "lucide-react";
 import Image from "next/image";
@@ -14,28 +15,25 @@ const Home = async ({
   searchParams: SearchParamsPromise;
 }) => {
   const resolvedParams = await searchParams;
-  console.log("Resolved Search Params:", resolvedParams);
-
-  let coursesData: ProductCardProps[] = [];
-
+  let coursesData: CoursesDataResponse = { data: [], totalPages: 0 };
   try {
     const response = !resolvedParams
-      ? await axiosInstance.get<ProductCardProps[]>("/courses")
-      : await axiosInstance.get<ProductCardProps[]>(
+      ? await axiosInstance.get<CoursesDataResponse>("/courses")
+      : await axiosInstance.get<CoursesDataResponse>(
           `/courses/filter?title=${resolvedParams.title ?? ""}&category=${
             resolvedParams.category ?? ""
-          }&page=${resolvedParams.page || 1}&limit=${resolvedParams.limit || 10}`,
+          }&page=${resolvedParams.page || 1}&limit=${resolvedParams.limit || 8}`,
         );
-    coursesData = response.data;
+    coursesData = response;
   } catch (error) {
     console.error("Failed to fetch courses:", error);
-    coursesData = [];
   }
   if (resolvedParams.sort === "asc") {
-    coursesData.sort((a, b) => a.price - b.price);
+    coursesData.data.sort((a, b) => a.price - b.price);
   } else if (resolvedParams.sort === "desc") {
-    coursesData.sort((a, b) => b.price - a.price);
+    coursesData.data.sort((a, b) => b.price - a.price);
   }
+  console.log(coursesData);
 
   return (
     <>
@@ -50,7 +48,7 @@ const Home = async ({
         }}
       >
         <SearchAndFilterSection />
-        {coursesData.length === 0 ? (
+        {coursesData.data.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-5 ">
             <p className="text-lg md:text-2xl lg:text-3xl tracking-wider font-bold text-black ">
               No courses found.
@@ -63,8 +61,8 @@ const Home = async ({
             />
           </div>
         ) : (
-          <div className="grid-cols-1 md:grid-cols-2 lg:grid-cols-3  grid items-center justify-items-center gap-5 mt-0 py-0 w-full">
-            {coursesData.map((course: ProductCardProps) => (
+          <div className="grid-cols-1 md:grid-cols-2 lg:grid-cols-4  grid items-center justify-items-center gap-5 mt-0 py-0 w-full">
+            {coursesData.data.map((course: ProductCardProps) => (
               <ProductCard
                 key={course.id}
                 id={course.id}
@@ -80,6 +78,7 @@ const Home = async ({
             ))}
           </div>
         )}
+        <CustomPagination totalPages={coursesData.totalPages} />
       </Wrapper>
     </>
   );
