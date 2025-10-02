@@ -7,7 +7,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Category2 } from "iconsax-reactjs";
-import { DollarSign } from "lucide-react";
+import { ArrowDownWideNarrow } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 type Props = {
@@ -36,7 +36,7 @@ const Filter = ({ typeOfFilter, items }: Props) => {
         {typeOfFilter === "category" ? (
           <Category2 size="32" variant="Outline" />
         ) : (
-          <DollarSign className=" h-4 w-4 text-gray-500 pointer-events-none" />
+          <ArrowDownWideNarrow className=" h-4 w-4 text-gray-500 pointer-events-none" />
         )}
 
         <SelectValue
