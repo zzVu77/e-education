@@ -4,7 +4,7 @@ import RegisterForm from "@/components/auth/RegisterForm";
 
 export default function RegisterPage() {
   return (
-    <main className="h-fit w-full flex items-center justify-center px-4 py-8">
+    <main className="h-fit w-full flex items-center justify-center px-4 py-2">
       <div className="w-full max-w-2xl">
         <div className="flex flex-col items-center text-center mb-6">
           {/* header icon */}
