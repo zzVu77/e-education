@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import Link from "next/link";
 import { useState } from "react";
+import axiosInstance from "@/config/axiosConfig";
 
 type FieldErrors = Partial<{
   name: string;
@@ -47,21 +49,18 @@ export default function RegisterForm() {
     setErrors((p) => ({ ...p, global: undefined }));
 
     try {
-      // Wire this to your backend
-      // const res = await fetch("/api/auth/register", {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify({ name, username, password, agree }),
-      //   credentials: "include",
-      // });
-      // if (!res.ok) throw new Error("Registration failed.");
-
-      await new Promise((r) => setTimeout(r, 800));
-      window.location.href = "/login?new=1";
-    } catch {
-      setErrors({
-        global: "Something went wrong creating your account. Please try again.",
+      await axiosInstance.post("/users/signup", {
+        fullName: name.trim(),
+        username: username.trim(),
+        password,
       });
+      window.location.href = "/login?new=1";
+    } catch (err: unknown) {
+      const message =
+        (err as any)?.response?.data?.error ||
+        (err as Error).message ||
+        "Something went wrong creating your account. Please try again.";
+      setErrors({ global: message });
       setLoading(false);
     }
   };

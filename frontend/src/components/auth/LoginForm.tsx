@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 import Link from "next/link";
 import { useState } from "react";
+import axiosInstance from "@/config/axiosConfig";
 
 type FieldErrors = Partial<{
   username: string;
@@ -33,27 +35,17 @@ export default function LoginForm() {
     setErrors((prev) => ({ ...prev, global: undefined }));
 
     try {
-      // replace w ur real auth endpoint
-      // e.g:
-      // const res = await fetch("/api/auth/login", {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify({ username, password, remember }),
-      //   credentials: "include",
-      // });
-      // if (!res.ok) throw new Error("Invalid username or password.");
-
-      // Simulate latency
-      await new Promise((r) => setTimeout(r, 800));
+      await axiosInstance.post("/auth/login", { username, password });
 
       // redirect to app logic
       window.location.href = "/"; // or use next/navigation's redirect()
-    } catch {
+    } catch (err: unknown) {
+      const message =
+        (err as any)?.response?.data?.message ||
+        (err as Error).message ||
+        "We couldn’t sign you in. Please check your credentials and try again.";
       // dont enumerate which part failed (prevents account enumeration)
-      setErrors({
-        global:
-          "We couldn’t sign you in. Please check your credentials and try again.",
-      });
+      setErrors({ global: message });
       setLoading(false);
     }
   };
