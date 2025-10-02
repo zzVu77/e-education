@@ -13,15 +13,14 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -31,72 +30,71 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ChevronDown } from "lucide-react";
-import { UserModal } from "./UserModal"; // Tương tự CourseInfoModal
+import { CourseInfoModal } from "../../../components/admin/CourseInfoModal";
 
-// 🔹 Định nghĩa kiểu User
-interface User {
-  _id: string;
-  username: string;
-  fullName: string;
-  createdAt: string;
-  updatedAt: string;
+interface Course {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  category: string;
+  level: string;
+  instructor: string;
 }
-interface UserForm {
-  _id?: string;
-  username: string;
-  fullName: string;
-  password?: string;
-}
-// 🔹 Columns type-safe
-const columns: ColumnDef<User>[] = [
+
+const columns: ColumnDef<Course>[] = [
   {
-    accessorKey: "_id",
-    header: "User ID",
-    cell: (info) => info.getValue() as string,
+    accessorKey: "title",
+    header: "Course Title",
+    cell: (info) => info.getValue(),
   },
   {
-    accessorKey: "username",
-    header: "Username",
-    cell: (info) => info.getValue() as string,
+    accessorKey: "description",
+    header: "Description",
+    cell: (info) => (
+      <span className="max-w-[250px] truncate inline-block">
+        {info.getValue() as string}
+      </span>
+    ),
   },
   {
-    accessorKey: "fullName",
-    header: "Full Name",
-    cell: (info) => info.getValue() as string,
+    accessorKey: "level",
+    header: "Level",
+    cell: (info) => info.getValue(),
   },
   {
-    accessorKey: "createdAt",
-    header: "Created At",
-    cell: (info) =>
-      new Date(info.getValue() as string).toLocaleString("en-GB", {
-        dateStyle: "short",
-        timeStyle: "short",
-      }),
+    accessorKey: "instructor",
+    header: "Instructor",
+    cell: (info) => info.getValue(),
   },
   {
-    accessorKey: "updatedAt",
-    header: "Updated At",
-    cell: (info) =>
-      new Date(info.getValue() as string).toLocaleString("en-GB", {
-        dateStyle: "short",
-        timeStyle: "short",
-      }),
+    accessorKey: "category",
+    header: "Category",
+    cell: (info) => info.getValue(),
+  },
+  {
+    accessorKey: "price",
+    header: "Price",
+    cell: (info) => `$${info.getValue()}`,
   },
   {
     accessorKey: "actions",
     header: "Actions",
     cell: ({ row }) => (
       <div className="flex gap-2 justify-center">
-        <UserModal
+        <CourseInfoModal
           type="update"
           defaultValues={row.original}
-          onSubmitUser={(data: UserForm) => console.log("Updated:", data)}
+          onSubmitCourse={(data) => console.log("Updated:", data)}
         >
-          <Button size="sm" variant="outline">
+          <Button
+            size="sm"
+            className="bg-green-500 text-white hover:bg-green-600"
+          >
             Edit
           </Button>
-        </UserModal>
-        <Button size="sm" variant="destructive">
+        </CourseInfoModal>
+        <Button size="sm" className="bg-red-500 text-white hover:bg-red-600">
           Delete
         </Button>
       </div>
@@ -104,32 +102,45 @@ const columns: ColumnDef<User>[] = [
   },
 ];
 
-// 🔹 Mock data
-const mockUsers: User[] = [
+const mockData: Course[] = [
   {
-    _id: "68d3f5cf46d1da4667f55ac7",
-    username: "john_doe",
-    fullName: "John Doe",
-    createdAt: "2025-09-24T13:44:47.676+00:00",
-    updatedAt: "2025-09-24T13:44:47.676+00:00",
+    id: "1",
+    title: "React Native Fundamentals",
+    description:
+      "This beginner course on React Native offers a thorough introduction…",
+    price: 90.9,
+    category: "Programming",
+    level: "Beginner",
+    instructor: "John Doe",
   },
   {
-    _id: "68d3f5cf46d1da4667f55ac8",
-    username: "alice_smith",
-    fullName: "Alice Smith",
-    createdAt: "2025-09-25T08:30:00.000+00:00",
-    updatedAt: "2025-09-25T08:30:00.000+00:00",
+    id: "2",
+    title: "Node.js API Development",
+    description: "Build REST APIs with Express and MongoDB.",
+    price: 59,
+    category: "Backend",
+    level: "Intermediate",
+    instructor: "Jane Smith",
+  },
+  {
+    id: "3",
+    title: "MongoDB Mastery",
+    description: "Learn MongoDB from scratch and advanced queries.",
+    price: 39,
+    category: "Database",
+    level: "Beginner",
+    instructor: "Alex Johnson",
   },
 ];
 
-export default function ManageUsers() {
-  const [data] = useState<User[]>(mockUsers);
+export default function ManageCourses() {
+  const [data] = useState<Course[]>(mockData);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
 
-  const table = useReactTable<User>({
+  const table = useReactTable<Course>({
     data,
     columns,
     onSortingChange: setSorting,
@@ -150,31 +161,23 @@ export default function ManageUsers() {
 
   return (
     <div className="w-full flex flex-col gap-4 p-2">
-      {/* 🔹 Filter */}
-      <div className="flex items-center gap-2 flex-wrap">
+      {/* Filter + Toggle Columns */}
+      <div className="flex items-center gap-2">
         <Input
-          placeholder="Filter by username..."
-          value={
-            (table.getColumn("username")?.getFilterValue() as string) ?? ""
-          }
+          placeholder="Filter by title..."
+          value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
           onChange={(e) =>
-            table.getColumn("username")?.setFilterValue(e.target.value)
+            table.getColumn("title")?.setFilterValue(e.target.value)
           }
           className="max-w-sm text-xs"
         />
-        <Input
-          placeholder="Filter by full name..."
-          value={
-            (table.getColumn("fullName")?.getFilterValue() as string) ?? ""
-          }
-          onChange={(e) =>
-            table.getColumn("fullName")?.setFilterValue(e.target.value)
-          }
-          className="max-w-sm text-xs"
-        />
+
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto text-xs">
+            <Button
+              variant="outline"
+              className="ml-auto text-xs border-green-500 text-green-500 hover:bg-green-50"
+            >
               Columns <ChevronDown className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -196,24 +199,29 @@ export default function ManageUsers() {
         </DropdownMenu>
       </div>
 
-      {/* 🔹 Add New */}
+      {/* Add New */}
       <div className="self-end">
-        <UserModal
+        <CourseInfoModal
           type="create"
-          onSubmitUser={(data: UserForm) => console.log("Created:", data)}
+          onSubmitCourse={(data) => console.log("Created:", data)}
         >
-          <Button>Add new user</Button>
-        </UserModal>
+          <Button className="bg-green-500 text-white hover:bg-green-600">
+            Add new course
+          </Button>
+        </CourseInfoModal>
       </div>
 
-      {/* 🔹 Table */}
+      {/* Table */}
       <div className="rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className="text-center">
+                  <TableHead
+                    key={header.id}
+                    className="text-center font-semibold"
+                  >
                     {flexRender(
                       header.column.columnDef.header,
                       header.getContext(),
@@ -226,7 +234,7 @@ export default function ManageUsers() {
           <TableBody>
             {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
+                <TableRow key={row.id} className="hover:bg-green-50">
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="text-center">
                       {flexRender(
@@ -251,11 +259,12 @@ export default function ManageUsers() {
         </Table>
       </div>
 
-      {/* 🔹 Pagination */}
+      {/* Pagination */}
       <div className="flex items-center justify-end space-x-2 py-4">
         <Button
           variant="outline"
           size="sm"
+          className="border-green-500 text-green-500 hover:bg-green-50"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
         >
@@ -264,6 +273,7 @@ export default function ManageUsers() {
         <Button
           variant="outline"
           size="sm"
+          className="border-green-500 text-green-500 hover:bg-green-50"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
         >

@@ -33,9 +33,8 @@ import {
 } from "@/components/ui/table";
 
 import { ChevronDown } from "lucide-react";
-import { OrderModal } from "./OrderInfoModal";
+import { OrderModal } from "../../../components/admin/OrderInfoModal";
 
-// 🔹 Định nghĩa kiểu dữ liệu Order
 interface Order {
   _id: string;
   userName: string;
@@ -46,7 +45,6 @@ interface Order {
   createdAt: string;
 }
 
-// 🔹 Columns type-safe cho Order
 const columns: ColumnDef<Order>[] = [
   {
     accessorKey: "_id",
@@ -62,7 +60,6 @@ const columns: ColumnDef<Order>[] = [
     accessorKey: "courses",
     header: "Courses",
     cell: (info) => {
-      // Cast value từ unknown sang array đúng type
       const courses = info.getValue() as { id: number; title: string }[];
       if (!courses || courses.length === 0) return "No courses";
 
@@ -76,7 +73,10 @@ const columns: ColumnDef<Order>[] = [
           ))}
           {extraCount > 0 && (
             <OrderModal courses={courses}>
-              <Button size="sm" variant="outline">
+              <Button
+                size="sm"
+                className="bg-green-500 text-white hover:bg-green-600"
+              >
                 +{extraCount} more
               </Button>
             </OrderModal>
@@ -89,11 +89,10 @@ const columns: ColumnDef<Order>[] = [
     accessorKey: "totalAmount",
     header: "Total Amount",
     cell: (info) => {
-      const value = info.getValue() as number; // ép kiểu sang number
+      const value = info.getValue() as number;
       return `$${value.toFixed(2)}`;
     },
   },
-
   {
     accessorKey: "paymentStatus",
     header: "Status",
@@ -108,7 +107,7 @@ const columns: ColumnDef<Order>[] = [
     accessorKey: "createdAt",
     header: "Created At",
     cell: (info) => {
-      const value = info.getValue() as string; // ép kiểu sang string
+      const value = info.getValue() as string;
       return new Date(value).toLocaleString("en-GB", {
         dateStyle: "short",
         timeStyle: "short",
@@ -117,7 +116,6 @@ const columns: ColumnDef<Order>[] = [
   },
 ];
 
-// 🔹 Mock data
 const mockOrders: Order[] = [
   {
     _id: "68d4074c61dbbcf56a047b61",
@@ -174,7 +172,7 @@ export default function ManageOrders() {
 
   return (
     <div className="w-full flex flex-col gap-4 p-2">
-      {/* 🔹 Filter */}
+      {/* Filter */}
       <div className="flex items-center gap-2 flex-wrap">
         <Input
           placeholder="Filter by Order ID..."
@@ -221,7 +219,10 @@ export default function ManageOrders() {
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto text-xs">
+            <Button
+              variant="outline"
+              className="ml-auto text-xs border-green-500 text-green-500 hover:bg-green-50"
+            >
               Columns <ChevronDown className="ml-2 h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -243,14 +244,17 @@ export default function ManageOrders() {
         </DropdownMenu>
       </div>
 
-      {/* 🔹 Table */}
+      {/* Table */}
       <div className="rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id} className="text-center">
+                  <TableHead
+                    key={header.id}
+                    className="text-center font-semibold"
+                  >
                     {flexRender(
                       header.column.columnDef.header,
                       header.getContext(),
@@ -263,7 +267,7 @@ export default function ManageOrders() {
           <TableBody>
             {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
+                <TableRow key={row.id} className="hover:bg-green-50">
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id} className="text-center">
                       {flexRender(
@@ -288,11 +292,12 @@ export default function ManageOrders() {
         </Table>
       </div>
 
-      {/* 🔹 Pagination */}
+      {/* Pagination */}
       <div className="flex items-center justify-end space-x-2 py-4">
         <Button
           variant="outline"
           size="sm"
+          className="border-green-500 text-green-500 hover:bg-green-50"
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
         >
@@ -301,6 +306,7 @@ export default function ManageOrders() {
         <Button
           variant="outline"
           size="sm"
+          className="border-green-500 text-green-500 hover:bg-green-50"
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
         >
