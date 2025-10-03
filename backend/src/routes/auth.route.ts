@@ -2,6 +2,7 @@ import { Router } from "express";
 import { authController } from "../controller/auth.controller";
 import { validate } from "../middleware/validation.middleware";
 import { loginUserSchema } from "../dtos/users.dto";
+import { authenticate, AuthRequest } from "../middleware/auth.middleware";
 
 const authRouter = Router();
 
@@ -29,6 +30,24 @@ const authRouter = Router();
  *         description: Login success
  */
 authRouter.post("/login", validate(loginUserSchema), (req, res) => authController.login(req, res));
+/**
+ * @swagger
+ * /api/auth/me:
+ *   get:
+ *     summary: Get current user
+ *     tags: [Auth]
+ *     responses:
+ *       200:
+ *         description: Current user info
+ *       401:
+ *         description: Unauthorized
+ */
+authRouter.get("/me", authenticate, (req: AuthRequest, res) => {
+  if (!req.user) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  return res.json({ id: req.user.id, fullName: req.user.fullName });
+});
 /**
  * @swagger
  * /api/auth/logout:

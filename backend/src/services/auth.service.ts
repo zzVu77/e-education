@@ -11,22 +11,22 @@ export const authService = {
     }
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) throw new Error("Invalid credentials");
-    const payload = { id: user._id, username: user.username, fullName: user.fullName };
+    const payload = { id: user._id, fullName: user.fullName };
     const accessToken = jwt.sign(payload, JWT_CONFIG.ACCESS_SECRET, {
       expiresIn: JWT_CONFIG.ACCESS_EXPIRES_IN,
     });
     const refreshToken = jwt.sign(payload, JWT_CONFIG.REFRESH_SECRET, {
       expiresIn: JWT_CONFIG.REFRESH_EXPIRES_IN,
     });
-    return { accessToken, refreshToken };
+    return { accessToken, refreshToken, user: payload };
   },
+
   refreshToken(token: string) {
     try {
       const decoded = jwt.verify(token, JWT_CONFIG.REFRESH_SECRET) as JwtPayloadDto;
       const accessToken = jwt.sign(
         {
           id: decoded.id,
-          username: decoded.username,
           fullName: decoded.fullName,
         },
         JWT_CONFIG.ACCESS_SECRET,
