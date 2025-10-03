@@ -21,7 +21,7 @@ import {
 
 interface OrderModalProps {
   children?: React.ReactNode;
-  courses: { id: number; title: string }[];
+  courses: { id: number; name: string; price: number }[];
 }
 
 export function OrderModal({ children, courses }: OrderModalProps) {
@@ -39,13 +39,17 @@ export function OrderModal({ children, courses }: OrderModalProps) {
             <TableRow>
               <TableHead className="text-center">#</TableHead>
               <TableHead className="text-center">Course Title</TableHead>
+              <TableHead className="text-center">Price</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {courses.map((course, index) => (
               <TableRow key={course.id}>
                 <TableCell className="text-center">{index + 1}</TableCell>
-                <TableCell className="text-center">{course.title}</TableCell>
+                <TableCell className="text-center">{course.name}</TableCell>
+                <TableCell className="text-center">
+                  ${course.price.toFixed(2)}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

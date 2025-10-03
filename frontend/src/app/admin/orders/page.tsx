@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -34,25 +34,17 @@ import {
 
 import { ChevronDown } from "lucide-react";
 import { OrderModal } from "../../../components/admin/OrderInfoModal";
+import { OrdersDataResponse, OrderItem } from "@/types";
+import axiosInstance from "@/config/axiosConfig";
 
-interface Order {
-  _id: string;
-  userName: string;
-  courses: { id: number; title: string }[];
-  totalAmount: number;
-  paymentStatus: string;
-  paymentMethod: string;
-  createdAt: string;
-}
-
-const columns: ColumnDef<Order>[] = [
+const columns: ColumnDef<OrderItem>[] = [
   {
-    accessorKey: "_id",
+    accessorKey: "id",
     header: "Order ID",
     cell: (info) => info.getValue(),
   },
   {
-    accessorKey: "userName",
+    accessorKey: "user.username",
     header: "User",
     cell: (info) => info.getValue(),
   },
@@ -60,16 +52,20 @@ const columns: ColumnDef<Order>[] = [
     accessorKey: "courses",
     header: "Courses",
     cell: (info) => {
-      const courses = info.getValue() as { id: number; title: string }[];
+      const courses = info.getValue() as {
+        id: number;
+        name: string;
+        price: number;
+      }[];
       if (!courses || courses.length === 0) return "No courses";
 
-      const displayCourses: string[] = courses.slice(0, 2).map((c) => c.title);
+      const displayCourses: string[] = courses.slice(0, 2).map((c) => c.name);
       const extraCount = courses.length > 2 ? courses.length - 2 : 0;
 
       return (
         <div className="flex flex-col items-center text-xs gap-1">
-          {displayCourses.map((title: string, i: number) => (
-            <span key={i}>{title}</span>
+          {displayCourses.map((name: string, i: number) => (
+            <span key={i}>{name}</span>
           ))}
           {extraCount > 0 && (
             <OrderModal courses={courses}>
@@ -116,42 +112,49 @@ const columns: ColumnDef<Order>[] = [
   },
 ];
 
-const mockOrders: Order[] = [
-  {
-    _id: "68d4074c61dbbcf56a047b61",
-    userName: "John Doe",
-    courses: [
-      { id: 1, title: "Node.js API Development" },
-      { id: 2, title: "Next.js Mastery" },
-      { id: 3, title: "React.js Basics" },
-    ],
-    totalAmount: 23.78,
-    paymentStatus: "Pending",
-    paymentMethod: "Paypal",
-    createdAt: "2025-07-25T16:01:00.000+00:00",
-  },
-  {
-    _id: "68d4074c61dbbcf56a047b62",
-    userName: "Alice Smith",
-    courses: [
-      { id: 1, title: "Node.js API Development" },
-      { id: 2, title: "Next.js Mastery" },
-    ],
-    totalAmount: 59,
-    paymentStatus: "Paid",
-    paymentMethod: "Credit Card",
-    createdAt: "2025-08-01T10:15:00.000+00:00",
-  },
-];
+// const mockOrders: Order[] = [
+//   {
+//     _id: "68d4074c61dbbcf56a047b61",
+//     userName: "John Doe",
+//     courses: [
+//       { id: 1, title: "Node.js API Development" },
+//       { id: 2, title: "Next.js Mastery" },
+//       { id: 3, title: "React.js Basics" },
+//     ],
+//     totalAmount: 23.78,
+//     paymentStatus: "Pending",
+//     paymentMethod: "Paypal",
+//     createdAt: "2025-07-25T16:01:00.000+00:00",
+//   },
+//   {
+//     _id: "68d4074c61dbbcf56a047b62",
+//     userName: "Alice Smith",
+//     courses: [
+//       { id: 1, title: "Node.js API Development" },
+//       { id: 2, title: "Next.js Mastery" },
+//     ],
+//     totalAmount: 59,
+//     paymentStatus: "Paid",
+//     paymentMethod: "Credit Card",
+//     createdAt: "2025-08-01T10:15:00.000+00:00",
+//   },
+// ];
 
 export default function ManageOrders() {
-  const [data] = useState<Order[]>(mockOrders);
+  const [data, setData] = useState<OrderItem[]>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
 
-  const table = useReactTable<Order>({
+  useEffect(() => {
+    axiosInstance
+      .get<OrdersDataResponse>("/orders")
+      .then((res) => setData(res)) // nhớ res.data.data
+      .catch((err) => console.error(err));
+    // .finally(() => setLoading(false));
+  }, []);
+  const table = useReactTable<OrderItem>({
     data,
     columns,
     onSortingChange: setSorting,
