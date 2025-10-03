@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -31,18 +31,20 @@ import {
 } from "@/components/ui/table";
 import { ChevronDown } from "lucide-react";
 import { CourseInfoModal } from "../../../components/admin/CourseInfoModal";
+import { ProductCardProps, CoursesDataResponse } from "@/types";
+import axiosInstance from "@/config/axiosConfig";
 
-interface Course {
-  id: string;
-  title: string;
-  description: string;
-  price: number;
-  category: string;
-  level: string;
-  instructor: string;
-}
+// interface Course {
+//   id: string;
+//   title: string;
+//   description: string;
+//   price: number;
+//   category: string;
+//   level: string;
+//   instructor: string;
+// }
 
-const columns: ColumnDef<Course>[] = [
+const columns: ColumnDef<ProductCardProps>[] = [
   {
     accessorKey: "title",
     header: "Course Title",
@@ -102,46 +104,59 @@ const columns: ColumnDef<Course>[] = [
   },
 ];
 
-const mockData: Course[] = [
-  {
-    id: "1",
-    title: "React Native Fundamentals",
-    description:
-      "This beginner course on React Native offers a thorough introduction…",
-    price: 90.9,
-    category: "Programming",
-    level: "Beginner",
-    instructor: "John Doe",
-  },
-  {
-    id: "2",
-    title: "Node.js API Development",
-    description: "Build REST APIs with Express and MongoDB.",
-    price: 59,
-    category: "Backend",
-    level: "Intermediate",
-    instructor: "Jane Smith",
-  },
-  {
-    id: "3",
-    title: "MongoDB Mastery",
-    description: "Learn MongoDB from scratch and advanced queries.",
-    price: 39,
-    category: "Database",
-    level: "Beginner",
-    instructor: "Alex Johnson",
-  },
-];
+// const mockData: Course[] = [
+//   {
+//     id: "1",
+//     title: "React Native Fundamentals",
+//     description:
+//       "This beginner course on React Native offers a thorough introduction…",
+//     price: 90.9,
+//     category: "Programming",
+//     level: "Beginner",
+//     instructor: "John Doe",
+//   },
+//   {
+//     id: "2",
+//     title: "Node.js API Development",
+//     description: "Build REST APIs with Express and MongoDB.",
+//     price: 59,
+//     category: "Backend",
+//     level: "Intermediate",
+//     instructor: "Jane Smith",
+//   },
+//   {
+//     id: "3",
+//     title: "MongoDB Mastery",
+//     description: "Learn MongoDB from scratch and advanced queries.",
+//     price: 39,
+//     category: "Database",
+//     level: "Beginner",
+//     instructor: "Alex Johnson",
+//   },
+// ];
 
 export default function ManageCourses() {
-  const [data] = useState<Course[]>(mockData);
+  const [data, setData] = useState<ProductCardProps[]>([]);
+  const [loading, setLoading] = useState(true);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
+  // const [mounted, setMounted] = useState(false);
 
-  const table = useReactTable<Course>({
-    data,
+  // useEffect(() => {
+  //   setMounted(true); // đánh dấu đã mount
+  // }, []);
+  useEffect(() => {
+    axiosInstance
+      .get<CoursesDataResponse>("/courses")
+      .then((res) => setData(res.data)) // nhớ res.data.data
+      .catch((err) => console.error(err))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const table = useReactTable<ProductCardProps>({
+    data: data || [], // data mặc định []
     columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
@@ -158,6 +173,9 @@ export default function ManageCourses() {
       rowSelection,
     },
   });
+  // if (!mounted) return null;
+
+  if (loading) return <p>Loading...</p>;
 
   return (
     <div className="w-full flex flex-col gap-4 p-2">
