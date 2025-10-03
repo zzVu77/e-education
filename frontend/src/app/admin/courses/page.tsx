@@ -31,7 +31,11 @@ import {
 } from "@/components/ui/table";
 import { ChevronDown } from "lucide-react";
 import { CourseInfoModal } from "../../../components/admin/CourseInfoModal";
-import { ProductCardProps, CoursesDataResponse } from "@/types";
+import {
+  ProductCardProps,
+  CoursesDataResponse,
+  CategoryDataResponse,
+} from "@/types";
 import axiosInstance from "@/config/axiosConfig";
 
 // interface Course {
@@ -43,66 +47,6 @@ import axiosInstance from "@/config/axiosConfig";
 //   level: string;
 //   instructor: string;
 // }
-
-const columns: ColumnDef<ProductCardProps>[] = [
-  {
-    accessorKey: "title",
-    header: "Course Title",
-    cell: (info) => info.getValue(),
-  },
-  {
-    accessorKey: "description",
-    header: "Description",
-    cell: (info) => (
-      <span className="max-w-[250px] truncate inline-block">
-        {info.getValue() as string}
-      </span>
-    ),
-  },
-  {
-    accessorKey: "level",
-    header: "Level",
-    cell: (info) => info.getValue(),
-  },
-  {
-    accessorKey: "instructor",
-    header: "Instructor",
-    cell: (info) => info.getValue(),
-  },
-  {
-    accessorKey: "category",
-    header: "Category",
-    cell: (info) => info.getValue(),
-  },
-  {
-    accessorKey: "price",
-    header: "Price",
-    cell: (info) => `$${info.getValue()}`,
-  },
-  {
-    accessorKey: "actions",
-    header: "Actions",
-    cell: ({ row }) => (
-      <div className="flex gap-2 justify-center">
-        <CourseInfoModal
-          type="update"
-          defaultValues={row.original}
-          onSubmitCourse={(data) => console.log("Updated:", data)}
-        >
-          <Button
-            size="sm"
-            className="bg-green-500 text-white hover:bg-green-600"
-          >
-            Edit
-          </Button>
-        </CourseInfoModal>
-        <Button size="sm" className="bg-red-500 text-white hover:bg-red-600">
-          Delete
-        </Button>
-      </div>
-    ),
-  },
-];
 
 // const mockData: Course[] = [
 //   {
@@ -137,6 +81,7 @@ const columns: ColumnDef<ProductCardProps>[] = [
 
 export default function ManageCourses() {
   const [data, setData] = useState<ProductCardProps[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -154,6 +99,75 @@ export default function ManageCourses() {
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
   }, []);
+  useEffect(() => {
+    axiosInstance
+      .get<CategoryDataResponse>("/courses/categories")
+      .then((res) => setCategories(res.data))
+      .catch((err) => console.error("Failed to fetch categories:", err));
+  }, []);
+  const columns: ColumnDef<ProductCardProps>[] = [
+    {
+      accessorKey: "title",
+      header: "Course Title",
+      cell: (info) => info.getValue(),
+    },
+    {
+      accessorKey: "description",
+      header: "Description",
+      cell: (info) => (
+        <span className="max-w-[250px] truncate inline-block">
+          {info.getValue() as string}
+        </span>
+      ),
+    },
+    {
+      accessorKey: "level",
+      header: "Level",
+      cell: (info) => info.getValue(),
+    },
+    {
+      accessorKey: "instructor",
+      header: "Instructor",
+      cell: (info) => info.getValue(),
+    },
+    {
+      accessorKey: "category",
+      header: "Category",
+      cell: (info) => info.getValue(),
+    },
+    {
+      accessorKey: "price",
+      header: "Price",
+      cell: (info) => `$${info.getValue()}`,
+    },
+    {
+      accessorKey: "actions",
+      header: "Actions",
+      cell: ({ row }) => (
+        <div className="flex gap-2 justify-center">
+          <CourseInfoModal
+            type="update"
+            categories={categories} // <- thêm prop categories
+            defaultValues={{
+              ...row.original,
+              image: row.original.imgUrl,
+            }}
+            onSubmitCourse={(data) => console.log("Updated:", data)}
+          >
+            <Button
+              size="sm"
+              className="bg-green-500 text-white hover:bg-green-600"
+            >
+              Edit
+            </Button>
+          </CourseInfoModal>
+          <Button size="sm" className="bg-red-500 text-white hover:bg-red-600">
+            Delete
+          </Button>
+        </div>
+      ),
+    },
+  ];
 
   const table = useReactTable<ProductCardProps>({
     data: data || [], // data mặc định []
@@ -221,6 +235,7 @@ export default function ManageCourses() {
       <div className="self-end">
         <CourseInfoModal
           type="create"
+          categories={categories} // <- thêm prop categories
           onSubmitCourse={(data) => console.log("Created:", data)}
         >
           <Button className="bg-green-500 text-white hover:bg-green-600">

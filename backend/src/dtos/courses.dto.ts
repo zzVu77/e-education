@@ -49,3 +49,8 @@ export type FilterCriteria = {
   title?: string;
   category?: string;
 };
+export const getAllCategoriesResponseSchema = z.object({
+  data: z.array(z.string()), // danh sách category
+});
+
+export type GetAllCategoriesResponseDto = z.infer<typeof getAllCategoriesResponseSchema>;

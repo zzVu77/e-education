@@ -13,3 +13,6 @@ export type CoursesDataResponse = {
   data: ProductCardProps[];
   totalPages: number;
 };
+export type CategoryDataResponse = {
+  data: string[];
+};

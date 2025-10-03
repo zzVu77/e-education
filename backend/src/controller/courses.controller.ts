@@ -27,6 +27,15 @@ export const courseController = {
       res.status(500).json({ error: "Internal Server Error" });
     }
   },
+  async getAllCategories(req: Request, res: Response) {
+    try {
+      const categories = await courseService.getAllCategories(); // giả sử service trả về string[]
+      return res.status(200).json(categories);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      return res.status(500).json({ error: "Internal Server Error" });
+    }
+  },
 
   async searchCoursesByTitle(req: Request, res: Response) {
     const { title } = req.query;

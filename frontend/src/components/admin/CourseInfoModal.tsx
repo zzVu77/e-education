@@ -24,6 +24,13 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
 
 const courseSchema = z.object({
   id: z.string().optional(),
@@ -42,6 +49,7 @@ interface CourseInfoModalProps {
   children?: React.ReactNode;
   type?: "create" | "update";
   defaultValues?: Partial<CourseFormValues>;
+  categories?: string[]; // thêm prop categories
   onSubmitCourse?: (data: CourseFormValues) => void;
 }
 
@@ -49,6 +57,7 @@ export function CourseInfoModal({
   children,
   type = "create",
   defaultValues,
+  categories = [], // mặc định rỗng nếu ko truyền
   onSubmitCourse,
 }: CourseInfoModalProps) {
   const form = useForm<CourseFormValues>({
@@ -174,10 +183,23 @@ export function CourseInfoModal({
                     <FormItem>
                       <FormLabel>Level</FormLabel>
                       <FormControl>
-                        <Input
-                          placeholder="Beginner / Intermediate / Advanced"
-                          {...field}
-                        />
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select level" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {["Beginner", "Intermediate", "Advanced"].map(
+                              (lvl) => (
+                                <SelectItem key={lvl} value={lvl}>
+                                  {lvl}
+                                </SelectItem>
+                              ),
+                            )}
+                          </SelectContent>
+                        </Select>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -205,7 +227,21 @@ export function CourseInfoModal({
                     <FormItem>
                       <FormLabel>Category</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter category" {...field} />
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a category" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {categories.map((cat) => (
+                              <SelectItem key={cat} value={cat}>
+                                {cat}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
