@@ -4,6 +4,7 @@ import { Check, Info } from "lucide-react";
 import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
 import "./globals.css";
+import { UserProvider } from "@/context/UserContext";
 
 const openSans = Open_Sans({
   variable: "--font-open-sans",
@@ -26,15 +27,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${openSans.variable}  antialiased`}>
-        <Header />
-        {/* <AIChat></AIChat> */}
-        <Toaster
-          icons={{
-            success: <Check className="text-green-500 h-5 w-5 mr-4" />,
-            info: <Info className="text-blue-500 h-5 w-5 mr-4  " />,
-          }}
-        />
-        {children}
+        <UserProvider>
+          <Header />
+          {/* <AIChat></AIChat> */}
+          <Toaster
+            icons={{
+              success: <Check className="text-green-500 h-5 w-5 mr-4" />,
+              info: <Info className="text-blue-500 h-5 w-5 mr-4  " />,
+            }}
+          />
+          {children}
+        </UserProvider>
       </body>
     </html>
   );

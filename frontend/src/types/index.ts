@@ -13,3 +13,14 @@ export type CoursesDataResponse = {
   data: ProductCardProps[];
   totalPages: number;
 };
+export type LoginResponse = {
+  message: string;
+  user: {
+    id: string;
+    fullName: string;
+  };
+};
+export type UserInfo = {
+  id: string;
+  fullName: string;
+};

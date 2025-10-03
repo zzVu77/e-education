@@ -1,10 +1,33 @@
+"use client";
 import HamburgerMenu from "@/components/HamburgerMenu";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import axiosInstance from "@/config/axiosConfig";
+import { useUser } from "@/context/UserContext";
 import { cn } from "@/lib/utils";
 import { CircleUser, LogIn, LogOut, ShoppingCartIcon } from "lucide-react";
 import Link from "next/link";
 
 const Header = () => {
+  const { user, setUser } = useUser();
+  const handleLogout = () => {
+    try {
+      axiosInstance.post("/auth/logout").then(() => {
+        setUser(null);
+        window.location.href = "/";
+      });
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
+
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
       <div className="container mx-auto px-4 py-4">
@@ -21,47 +44,48 @@ const Header = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-4">
-            <Link
-              href="/"
-              className={cn(
-                buttonVariants({ variant: "ghost", size: "sm" }),
-                "flex items-center space-x-1 text-sm font-medium text-black hover:bg-transparent hover:text-green-500",
-              )}
-            >
-              <ShoppingCartIcon className="h-5 w-5 " />
-              Cart
-            </Link>
-
-            <Link
-              href="/login"
-              className={cn(
-                buttonVariants({ variant: "ghost", size: "sm" }),
-                "flex items-center space-x-1 text-sm font-medium text-black hover:bg-transparent hover:text-green-500",
-              )}
-            >
-              <LogIn className="h-5 w-5" />
-              Login
-            </Link>
-            <Link
-              href="/login"
-              className={cn(
-                buttonVariants({ variant: "ghost", size: "sm" }),
-                "flex items-center space-x-1 text-sm font-medium text-black hover:bg-transparent hover:text-green-500",
-              )}
-            >
-              <LogOut className="h-5 w-5" />
-              Logout
-            </Link>
-            <Link
-              href="/login"
-              className={cn(
-                buttonVariants({ variant: "ghost", size: "sm" }),
-                "flex items-center space-x-1 text-sm font-medium text-black hover:bg-transparent hover:text-green-500",
-              )}
-            >
-              <CircleUser className="h-5 w-5" />
-              Hi, User
-            </Link>
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="flex items-center space-x-2 font-medium text-black hover:bg-transparent hover:text-green-500 cursor-pointer"
+                  >
+                    <CircleUser className="h-5 w-5" />
+                    <span>Hi, {user.fullName}</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-48">
+                  <DropdownMenuLabel>Account</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link href="#" className="flex items-center cursor-pointer">
+                      <ShoppingCartIcon className="h-4 w-4 mr-2" />
+                      Cart
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    className="flex items-center text-red-600 cursor-pointer"
+                    onClick={handleLogout}
+                  >
+                    <LogOut className="h-4 w-4 mr-2 text-red-500" />
+                    Logout
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link
+                href="/login"
+                className={cn(
+                  buttonVariants({ variant: "ghost", size: "sm" }),
+                  "flex items-center space-x-1 text-sm font-medium text-black hover:bg-transparent hover:text-green-500",
+                )}
+              >
+                <LogIn className="h-5 w-5" />
+                Login
+              </Link>
+            )}
           </nav>
 
           {/* Mobile Hamburger */}

@@ -1,7 +1,9 @@
 "use client";
+import axiosInstance from "@/config/axiosConfig";
 import Link from "next/link";
 import { useState } from "react";
-
+import { toast } from "sonner";
+import * as z from "zod";
 type FieldErrors = Partial<{
   username: string;
   password: string;
@@ -15,16 +17,26 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
 
-  const validate = () => {
-    const e: FieldErrors = {};
-    if (!username) e.username = "Username is required.";
-    else if (username.length < 1)
-      e.username = "Username must be at least 1 character";
-    if (!password) e.password = "Password is required.";
-    setErrors(e);
-    return Object.keys(e).length === 0;
-  };
+  const validateSchema = z.object({
+    username: z.string().min(3, "Username must be at least 3 characters long"),
+    password: z.string().min(6, "Password must be at least 6 characters long"),
+  });
 
+  const validate = () => {
+    const result = validateSchema.safeParse({ username, password });
+    if (!result.success) {
+      const fieldErrors: FieldErrors = {};
+      result.error.issues.forEach((err) => {
+        if (err.path[0] && !fieldErrors[err.path[0] as keyof FieldErrors]) {
+          fieldErrors[err.path[0] as keyof FieldErrors] = err.message;
+        }
+      });
+      setErrors(fieldErrors);
+      return false;
+    }
+    setErrors({});
+    return true;
+  };
   const onSubmit = async (ev: React.FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
     if (!validate()) return;
@@ -33,26 +45,18 @@ export default function LoginForm() {
     setErrors((prev) => ({ ...prev, global: undefined }));
 
     try {
-      // replace w ur real auth endpoint
-      // e.g:
-      // const res = await fetch("/api/auth/login", {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify({ username, password, remember }),
-      //   credentials: "include",
-      // });
-      // if (!res.ok) throw new Error("Invalid username or password.");
-
-      // Simulate latency
-      await new Promise((r) => setTimeout(r, 800));
-
-      // redirect to app logic
-      window.location.href = "/"; // or use next/navigation's redirect()
+      const response = await axiosInstance.post("/auth/login", {
+        username,
+        password,
+      });
+      toast.success(response.message, { duration: 2000 });
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 500);
     } catch {
-      // dont enumerate which part failed (prevents account enumeration)
       setErrors({
         global:
-          "We couldn’t sign you in. Please check your credentials and try again.",
+          "Something went wrong ! Please check your credentials and try again.",
       });
       setLoading(false);
     }

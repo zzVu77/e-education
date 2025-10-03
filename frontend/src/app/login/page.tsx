@@ -1,11 +1,9 @@
-"use client"; // This is a client component 👈🏽
-
 import Link from "next/link";
 import LoginForm from "@/components/auth/LoginForm";
 
 export default function LoginPage() {
   return (
-    <main className="h-auto w-full flex items-center justify-center px-4 py-10">
+    <main className="h-auto w-full flex items-center justify-center px-4 py-2">
       <div className="w-full max-w-xl">
         <div className="flex flex-col items-center text-center mb-6">
           {/* App glyph */}
