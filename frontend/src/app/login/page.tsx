@@ -1,7 +1,7 @@
-import Link from "next/link";
 import LoginForm from "@/components/auth/LoginForm";
+import Link from "next/link";
 
-export default function LoginPage() {
+export default async function LoginPage() {
   return (
     <main className="h-auto w-full flex items-center justify-center px-4 py-2">
       <div className="w-full max-w-xl">
@@ -30,7 +30,7 @@ export default function LoginPage() {
           </h1>
 
           <p className="mt-2 text-sm text-muted-foreground">
-            Or{" "}
+            or{" "}
             <Link
               href="/signup"
               className="font-medium text-green-600 hover:text-green-500"

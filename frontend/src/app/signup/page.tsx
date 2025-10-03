@@ -1,4 +1,3 @@
-"use client"; // This is a client component
 import Link from "next/link";
 import RegisterForm from "@/components/auth/RegisterForm";
 
@@ -31,12 +30,12 @@ export default function RegisterPage() {
           </h1>
 
           <p className="mt-2 text-sm text-muted-foreground">
-            Or{" "}
+            or{" "}
             <Link
               href="/login"
               className="font-medium text-green-600 hover:text-green-500"
             >
-              sign in to your existing account
+              Sign in to your existing account
             </Link>
           </p>
         </div>
