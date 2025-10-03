@@ -27,6 +27,9 @@ const Filter = ({ typeOfFilter, items }: Props) => {
     } else {
       params.delete(typeOfFilter);
     }
+    if (typeOfFilter === "category") {
+      params.delete("page");
+    }
     router.replace(`?${params.toString()}`);
   };
 

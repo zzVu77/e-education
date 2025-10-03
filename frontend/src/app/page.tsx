@@ -77,7 +77,10 @@ const Home = async ({
             ))}
           </div>
         )}
-        <CustomPagination totalPages={coursesData.totalPages} />
+        <CustomPagination
+          totalPages={coursesData.totalPages}
+          currPage={Number(resolvedParams.page) || 1}
+        />
       </Wrapper>
     </>
   );
