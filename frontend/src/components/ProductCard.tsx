@@ -1,4 +1,3 @@
-import { formatCurrency } from "@/lib/utils";
 import { ShoppingCart, Tag } from "lucide-react";
 import Image from "next/image";
 import { ASSSETS } from "../constants/assets";
@@ -14,6 +13,7 @@ import {
 import { Text, Title } from "./ui/typography";
 import { ProductCardProps } from "@/types";
 import { Button } from "./ui/button";
+import { formatCurrency } from "@/utils/formatCurrency";
 
 const ProductCard = ({
   id,
