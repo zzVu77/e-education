@@ -33,7 +33,6 @@ const Home = async ({
   } else if (resolvedParams.sort === "desc") {
     coursesData.data.sort((a, b) => b.price - a.price);
   }
-  console.log(coursesData);
 
   return (
     <>
