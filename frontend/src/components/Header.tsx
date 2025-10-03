@@ -1,5 +1,4 @@
 "use client";
-import HamburgerMenu from "@/components/HamburgerMenu";
 import { Button, buttonVariants } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -14,6 +13,7 @@ import { useUser } from "@/context/UserContext";
 import { cn } from "@/lib/utils";
 import { CircleUser, LogIn, LogOut, ShoppingCartIcon } from "lucide-react";
 import Link from "next/link";
+import Desktop from "./shared/Desktop";
 
 const Header = () => {
   const { user, setUser } = useUser();
@@ -43,7 +43,7 @@ const Header = () => {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-4">
+          <nav className="items-center space-x-4">
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -52,12 +52,21 @@ const Header = () => {
                     size="sm"
                     className="flex items-center space-x-2 font-medium text-black hover:bg-transparent hover:text-green-500 cursor-pointer"
                   >
-                    <CircleUser className="h-5 w-5" />
-                    <span>Hi, {user.fullName}</span>
+                    <CircleUser className="h-6 w-6 md:h-5 md:w-5" />
+                    <Desktop.Show>
+                      <span>Hi, {user.fullName}</span>
+                    </Desktop.Show>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className="w-48">
-                  <DropdownMenuLabel>Account</DropdownMenuLabel>
+                  <Desktop.Show>
+                    <DropdownMenuLabel>Account</DropdownMenuLabel>
+                  </Desktop.Show>
+                  <Desktop.Hide>
+                    <DropdownMenuLabel>
+                      <span>Hi, {user.fullName}</span>
+                    </DropdownMenuLabel>
+                  </Desktop.Hide>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
                     <Link href="#" className="flex items-center cursor-pointer">
@@ -87,9 +96,6 @@ const Header = () => {
               </Link>
             )}
           </nav>
-
-          {/* Mobile Hamburger */}
-          <HamburgerMenu />
         </div>
       </div>
     </header>
