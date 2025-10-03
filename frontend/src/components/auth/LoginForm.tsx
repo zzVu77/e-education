@@ -1,8 +1,8 @@
 "use client";
+import axiosInstance from "@/config/axiosConfig";
 import Link from "next/link";
 import { useState } from "react";
-import axiosInstance from "@/config/axiosConfig";
-import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import * as z from "zod";
 type FieldErrors = Partial<{
   username: string;
@@ -16,20 +16,12 @@ export default function LoginForm() {
   const [showPwd, setShowPwd] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
-  const router = useRouter();
+
   const validateSchema = z.object({
     username: z.string().min(3, "Username must be at least 3 characters long"),
     password: z.string().min(6, "Password must be at least 6 characters long"),
   });
-  // const validate = () => {
-  //   const e: FieldErrors = {};
-  //   if (!username) e.username = "Username is required.";
-  //   else if (username.length < 1)
-  //     e.username = "Username must be at least 1 character";
-  //   if (!password) e.password = "Password is required.";
-  //   setErrors(e);
-  //   return Object.keys(e).length === 0;
-  // };
+
   const validate = () => {
     const result = validateSchema.safeParse({ username, password });
     if (!result.success) {
@@ -53,8 +45,14 @@ export default function LoginForm() {
     setErrors((prev) => ({ ...prev, global: undefined }));
 
     try {
-      await axiosInstance.post("/auth/login", { username, password });
-      router.replace("/");
+      const response = await axiosInstance.post("/auth/login", {
+        username,
+        password,
+      });
+      toast.success(response.message, { duration: 2000 });
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 500);
     } catch {
       setErrors({
         global:
