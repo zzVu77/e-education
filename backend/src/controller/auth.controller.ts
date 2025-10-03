@@ -7,10 +7,7 @@ export const authController = {
   async login(req: Request, res: Response) {
     try {
       const body = req.body as LoginUserDto;
-      const { accessToken, refreshToken, user } = await authService.login(
-        body.username,
-        body.password,
-      );
+      const { accessToken, refreshToken } = await authService.login(body.username, body.password);
       res.cookie("accessToken", accessToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
@@ -21,7 +18,7 @@ export const authController = {
         secure: process.env.NODE_ENV === "production",
         maxAge: JWT_CONFIG.REFRESH_EXPIRES_IN,
       });
-      return res.json({ message: "Login success", user });
+      return res.json({ message: "Login success" });
     } catch {
       return res.status(401).json({ message: "Invalid credentials" });
     }

@@ -18,7 +18,7 @@ export const authService = {
     const refreshToken = jwt.sign(payload, JWT_CONFIG.REFRESH_SECRET, {
       expiresIn: JWT_CONFIG.REFRESH_EXPIRES_IN,
     });
-    return { accessToken, refreshToken, user: payload };
+    return { accessToken, refreshToken };
   },
 
   refreshToken(token: string) {
