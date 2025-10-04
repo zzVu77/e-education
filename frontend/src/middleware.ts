@@ -25,7 +25,9 @@ export async function middleware(req: NextRequest) {
     if (isPublicRoute) {
       return NextResponse.next();
     } else {
-      return NextResponse.redirect(new URL("/login", req.url));
+      const loginUrl = new URL("/login", req.url);
+      loginUrl.searchParams.set("returnTo", req.nextUrl.pathname);
+      return NextResponse.redirect(loginUrl);
     }
   }
   // If access token is present
@@ -34,6 +36,10 @@ export async function middleware(req: NextRequest) {
     const validPayload = await verifyToken(accessToken);
     // If the token is valid and the user is trying to access a public route, redirect to home
     if (validPayload && isPublicRoute) {
+      const returnTo = req.nextUrl.searchParams.get("returnTo");
+      if (returnTo) {
+        return NextResponse.redirect(new URL(returnTo, req.url));
+      }
       return NextResponse.redirect(new URL("/", req.url));
     }
     // If the token is invalid and there's a refresh token, attempt to refresh
@@ -44,10 +50,6 @@ export async function middleware(req: NextRequest) {
       refreshUrl.searchParams.set("returnTo", pathname);
       // Redirect to the refresh URL to get a new access token
       return NextResponse.redirect(refreshUrl);
-    }
-    // If the token is invalid and there's no refresh token, redirect to login
-    if (!validPayload && !refreshToken) {
-      return NextResponse.redirect(new URL("/login", req.url));
     }
     // If the token is valid, allow the request to proceed
     if (validPayload) {
@@ -62,7 +64,8 @@ export async function middleware(req: NextRequest) {
     }
     // If no refresh token, redirect to login
     if (!refreshToken) {
-      return NextResponse.redirect(new URL("/login", req.url));
+      const loginUrl = new URL("/login", req.url);
+      return NextResponse.redirect(loginUrl);
     }
   }
 

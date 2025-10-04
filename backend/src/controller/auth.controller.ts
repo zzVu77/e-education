@@ -31,7 +31,6 @@ export const authController = {
   refresh(req: Request, res: Response) {
     try {
       const refreshToken = req.cookies["refreshToken"] as string;
-      console.log("Refresh token:", refreshToken);
       if (!refreshToken) {
         return res.status(401).json({ message: "Refresh token missing" });
       }

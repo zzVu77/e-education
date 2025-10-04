@@ -32,7 +32,9 @@ export async function GET(req: NextRequest) {
     });
     // If the backend response is not ok, clear cookies and redirect to login. To make sure invalid refresh token is removed.
     if (!backendResponse.ok) {
-      const response = NextResponse.redirect(new URL("/login", req.url));
+      const loginUrl = new URL("/login", req.url);
+      loginUrl.searchParams.set("returnTo", returnTo);
+      const response = NextResponse.redirect(loginUrl);
       response.cookies.delete("accessToken");
       response.cookies.delete("refreshToken");
       return response;

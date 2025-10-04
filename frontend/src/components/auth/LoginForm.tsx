@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { toast } from "sonner";
 import * as z from "zod";
+import { useRouter, useSearchParams } from "next/navigation";
+
 type FieldErrors = Partial<{
   username: string;
   password: string;
@@ -16,7 +18,9 @@ export default function LoginForm() {
   const [showPwd, setShowPwd] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
-
+  const searchParams = useSearchParams();
+  const returnTo = searchParams.get("returnTo");
+  const router = useRouter();
   const validateSchema = z.object({
     username: z.string().min(3, "Username must be at least 3 characters long"),
     password: z.string().min(6, "Password must be at least 6 characters long"),
@@ -51,7 +55,11 @@ export default function LoginForm() {
       });
       toast.success(response.message, { duration: 2000 });
       setTimeout(() => {
-        window.location.href = "/";
+        if (returnTo) {
+          router.push(returnTo);
+        } else {
+          router.push("/");
+        }
       }, 500);
     } catch {
       setErrors({
