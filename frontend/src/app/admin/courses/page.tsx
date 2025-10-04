@@ -43,68 +43,10 @@ import {
 import axiosInstance from "@/config/axiosConfig";
 import { toast } from "sonner";
 
-// interface Course {
-//   id: string;
-//   title: string;
-//   description: string;
-//   price: number;
-//   category: string;
-//   level: string;
-//   instructor: string;
-// }
-
-// const mockData: Course[] = [
-//   {
-//     id: "1",
-//     title: "React Native Fundamentals",
-//     description:
-//       "This beginner course on React Native offers a thorough introduction…",
-//     price: 90.9,
-//     category: "Programming",
-//     level: "Beginner",
-//     instructor: "John Doe",
-//   },
-//   {
-//     id: "2",
-//     title: "Node.js API Development",
-//     description: "Build REST APIs with Express and MongoDB.",
-//     price: 59,
-//     category: "Backend",
-//     level: "Intermediate",
-//     instructor: "Jane Smith",
-//   },
-//   {
-//     id: "3",
-//     title: "MongoDB Mastery",
-//     description: "Learn MongoDB from scratch and advanced queries.",
-//     price: 39,
-//     category: "Database",
-//     level: "Beginner",
-//     instructor: "Alex Johnson",
-//   },
-// ];
-// Định nghĩa hàm ở ngoài
 const onSubmitCourse = async (values: CourseFormValues) => {
   try {
     const imgUrl =
       "https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80";
-
-    // Nếu có file ảnh thì upload trước
-    // if (values.imageFile && values.imageFile[0]) {
-    //   const formData = new FormData();
-    //   formData.append("file", values.imageFile[0]);
-
-    //   // Gọi backend để upload
-    //   const uploadRes = await axiosInstance.post<{ url: string }>(
-    //     "/uploads",
-    //     formData,
-    //     {
-    //       headers: { "Content-Type": "multipart/form-data" },
-    //     }
-    //   );
-
-    //   imgUrl = uploadRes.data.url;
-    // }
 
     // Gọi API createCourse
     const createRes = await axiosInstance.post<CreateCourseResponse>(
