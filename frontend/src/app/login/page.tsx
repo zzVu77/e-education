@@ -1,5 +1,6 @@
 import LoginForm from "@/components/auth/LoginForm";
 import Link from "next/link";
+import { Suspense } from "react";
 
 export default async function LoginPage() {
   return (
@@ -39,8 +40,9 @@ export default async function LoginPage() {
             </Link>
           </p>
         </div>
-
-        <LoginForm />
+        <Suspense fallback={<div>Loading...</div>}>
+          <LoginForm />
+        </Suspense>
       </div>
     </main>
   );
