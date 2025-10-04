@@ -10,7 +10,7 @@ export const courseController = {
       if (!newCourse) {
         return res.status(400).json({ error: "Failed to create course" });
       }
-      return res.status(201).json({ message: "Course created successfully" });
+      return res.status(201).json({ message: "Course created successfully", data: newCourse });
     } catch {
       return res.status(500).json({ error: "Internal Server Error" });
     }

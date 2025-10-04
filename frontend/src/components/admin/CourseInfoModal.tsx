@@ -1,5 +1,7 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -33,23 +35,23 @@ import {
 } from "../ui/select";
 
 const courseSchema = z.object({
-  id: z.string().optional(),
-  image: z.string().optional(),
-  title: z.string().min(1, "Title is required"),
-  description: z.string().min(1, "Description is required"),
-  level: z.string().min(1, "Level is required"),
+  image: z.union([z.instanceof(File), z.string()]), // File mới hoặc URL string
+  title: z.string().min(3, "Title must be at least 3 characters long"),
+  description: z.string().optional(),
+  level: z.enum(["Beginner", "Intermediate", "Advanced"]),
   instructor: z.string().min(1, "Instructor is required"),
-  category: z.string().min(1, "Category is required"),
-  price: z.number().min(0, "Price must be >= 0"),
+  category: z.string().min(2, "Category must be at least 2 characters long"),
+  price: z.number().min(0, "Price must be a positive number"),
+  duration: z.number().min(1, "Duration must be at least 1 hour"),
 });
 
-type CourseFormValues = z.infer<typeof courseSchema>;
+export type CourseFormValues = z.infer<typeof courseSchema>;
 
 interface CourseInfoModalProps {
   children?: React.ReactNode;
   type?: "create" | "update";
   defaultValues?: Partial<CourseFormValues>;
-  categories?: string[]; // thêm prop categories
+  categories?: string[];
   onSubmitCourse?: (data: CourseFormValues) => void;
 }
 
@@ -57,33 +59,37 @@ export function CourseInfoModal({
   children,
   type = "create",
   defaultValues,
-  categories = [], // mặc định rỗng nếu ko truyền
+  categories = [],
   onSubmitCourse,
 }: CourseInfoModalProps) {
   const form = useForm<CourseFormValues>({
     resolver: zodResolver(courseSchema),
     defaultValues: {
-      id: defaultValues?.id,
       image: defaultValues?.image || "",
       title: defaultValues?.title || "",
       description: defaultValues?.description || "",
-      level: defaultValues?.level || "",
+      level: defaultValues?.level || "Beginner",
       instructor: defaultValues?.instructor || "",
       category: defaultValues?.category || "",
       price: defaultValues?.price || 0,
+      duration: defaultValues?.duration || 0,
     },
   });
+
+  const [previewUrl, setPreviewUrl] = useState<string>(
+    typeof defaultValues?.image === "string" ? defaultValues.image : "",
+  );
 
   const handleSubmit = (data: CourseFormValues) => {
     onSubmitCourse?.(data);
     toast.success(type === "create" ? "Course created!" : "Course updated!");
     form.reset();
+    setPreviewUrl(""); // reset preview
   };
 
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      {/* Modal nhỏ gọn hơn */}
       <DialogContent className="w-full max-w-sm md:max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
@@ -95,14 +101,14 @@ export function CourseInfoModal({
               : "Update the course information here."}
           </DialogDescription>
         </DialogHeader>
+
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(handleSubmit)}
             className="space-y-4"
           >
-            {/* Grid responsive */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
-              {/* Upload ảnh luôn ở trên đầu ở mobile */}
+              {/* Upload & Preview ảnh */}
               <div className="flex flex-col space-y-3 md:h-full">
                 <FormField
                   control={form.control}
@@ -117,11 +123,8 @@ export function CourseInfoModal({
                           onChange={(e) => {
                             const file = e.target.files?.[0];
                             if (file) {
-                              const reader = new FileReader();
-                              reader.onload = () => {
-                                field.onChange(reader.result as string);
-                              };
-                              reader.readAsDataURL(file);
+                              field.onChange(file); // lưu File vào form
+                              setPreviewUrl(URL.createObjectURL(file)); // preview
                             }
                           }}
                         />
@@ -130,12 +133,10 @@ export function CourseInfoModal({
                     </FormItem>
                   )}
                 />
-
-                {/* Preview ảnh: ở desktop full height bằng cột input */}
-                {form.watch("image") && (
+                {previewUrl && (
                   <div className="flex-1">
                     <img
-                      src={form.watch("image")}
+                      src={previewUrl}
                       alt="Preview"
                       className="w-full h-full object-cover rounded-md border"
                     />
@@ -143,7 +144,7 @@ export function CourseInfoModal({
                 )}
               </div>
 
-              {/* Các input */}
+              {/* Các input còn lại */}
               <div className="space-y-4 md:flex md:flex-col md:justify-between">
                 <FormField
                   control={form.control}
@@ -242,6 +243,28 @@ export function CourseInfoModal({
                             ))}
                           </SelectContent>
                         </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="duration"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Duration (minutes)</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          step="30"
+                          placeholder="Enter course duration"
+                          value={field.value}
+                          onChange={(e) =>
+                            field.onChange(parseInt(e.target.value, 10))
+                          }
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

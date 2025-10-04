@@ -15,7 +15,7 @@ async function bootstrap() {
   const app = express();
   app.use(
     cors({
-      origin: ["http://localhost:3000", "http://192.168.1.112:3000"],
+      origin: ["http://localhost:3000", "http://10.0.40.208:3000"],
       credentials: true,
     }),
   );

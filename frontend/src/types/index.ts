@@ -9,10 +9,28 @@ export type ProductCardProps = {
   instructor: string;
   duration: string;
 };
+export type CourseApiResponse = {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  category: string;
+  level: "Beginner" | "Intermediate" | "Advanced";
+  instructor: string;
+  duration: number; // số giờ (hoặc phút)
+  imgUrl: string;
+  createdAt: string;
+  updatedAt: string;
+};
 export type CoursesDataResponse = {
-  data: ProductCardProps[];
+  data: CourseApiResponse[];
   totalPages: number;
 };
+export type CreateCourseResponse = {
+  message: string;
+  data: CourseApiResponse;
+};
+
 export type CategoryDataResponse = {
   data: string[];
 };

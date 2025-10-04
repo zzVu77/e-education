@@ -30,13 +30,18 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { ChevronDown } from "lucide-react";
-import { CourseInfoModal } from "../../../components/admin/CourseInfoModal";
 import {
-  ProductCardProps,
+  CourseFormValues,
+  CourseInfoModal,
+} from "../../../components/admin/CourseInfoModal";
+import {
   CoursesDataResponse,
   CategoryDataResponse,
+  CreateCourseResponse,
+  CourseApiResponse,
 } from "@/types";
 import axiosInstance from "@/config/axiosConfig";
+import { toast } from "sonner";
 
 // interface Course {
 //   id: string;
@@ -78,9 +83,54 @@ import axiosInstance from "@/config/axiosConfig";
 //     instructor: "Alex Johnson",
 //   },
 // ];
+// Định nghĩa hàm ở ngoài
+const onSubmitCourse = async (values: CourseFormValues) => {
+  try {
+    const imgUrl =
+      "https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80";
+
+    // Nếu có file ảnh thì upload trước
+    // if (values.imageFile && values.imageFile[0]) {
+    //   const formData = new FormData();
+    //   formData.append("file", values.imageFile[0]);
+
+    //   // Gọi backend để upload
+    //   const uploadRes = await axiosInstance.post<{ url: string }>(
+    //     "/uploads",
+    //     formData,
+    //     {
+    //       headers: { "Content-Type": "multipart/form-data" },
+    //     }
+    //   );
+
+    //   imgUrl = uploadRes.data.url;
+    // }
+
+    // Gọi API createCourse
+    const createRes = await axiosInstance.post<CreateCourseResponse>(
+      "/courses",
+      {
+        title: values.title,
+        description: values.description,
+        price: Number(values.price),
+        category: values.category,
+        level: values.level,
+        instructor: values.instructor,
+        duration: Number(values.duration),
+        imgUrl,
+      },
+    );
+
+    console.log("Course created:", createRes.data);
+    toast.success(createRes.message); // dùng sonner thay alert
+  } catch (err) {
+    console.error("Error creating course:", err);
+    toast.error("Failed to create course");
+  }
+};
 
 export default function ManageCourses() {
-  const [data, setData] = useState<ProductCardProps[]>([]);
+  const [data, setData] = useState<CourseApiResponse[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -105,7 +155,7 @@ export default function ManageCourses() {
       .then((res) => setCategories(res.data))
       .catch((err) => console.error("Failed to fetch categories:", err));
   }, []);
-  const columns: ColumnDef<ProductCardProps>[] = [
+  const columns: ColumnDef<CourseApiResponse>[] = [
     {
       accessorKey: "title",
       header: "Course Title",
@@ -169,7 +219,7 @@ export default function ManageCourses() {
     },
   ];
 
-  const table = useReactTable<ProductCardProps>({
+  const table = useReactTable<CourseApiResponse>({
     data: data || [], // data mặc định []
     columns,
     onSortingChange: setSorting,
@@ -236,7 +286,7 @@ export default function ManageCourses() {
         <CourseInfoModal
           type="create"
           categories={categories} // <- thêm prop categories
-          onSubmitCourse={(data) => console.log("Created:", data)}
+          onSubmitCourse={onSubmitCourse}
         >
           <Button className="bg-green-500 text-white hover:bg-green-600">
             Add new course
