@@ -5,6 +5,8 @@ import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
 import "./globals.css";
 import { UserProvider } from "@/context/UserContext";
+import { cookies } from "next/headers";
+import { getUserFromToken } from "@/utils/auth";
 
 const openSans = Open_Sans({
   variable: "--font-open-sans",
@@ -19,15 +21,18 @@ export const metadata: Metadata = {
     "A modern platform for interactive online learning and education.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("accessToken")?.value;
+  const user = token ? await getUserFromToken(token) : null;
   return (
     <html lang="en">
       <body className={`${openSans.variable}  antialiased`}>
-        <UserProvider>
+        <UserProvider initialUser={user}>
           <Header />
           {/* <AIChat></AIChat> */}
           <Toaster

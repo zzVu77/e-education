@@ -1,15 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+ 
 // context/UserContext.tsx
 "use client";
-import axiosInstance from "@/config/axiosConfig";
-import { UserInfo } from "@/types";
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { createContext, ReactNode, useContext, useState } from "react";
 
 export type User = { id: string; fullName: string };
 type UserContextType = {
@@ -19,25 +11,14 @@ type UserContextType = {
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-export const UserProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const res = await axiosInstance.get<UserInfo>("/auth/me");
-        setUser(res);
-      } catch (err: any) {
-        if (err.response?.status === 401) {
-          console.log(err.response?.data?.message);
-          setUser(null);
-        } else {
-          console.error("Error fetching user", err);
-        }
-      }
-    };
-    fetchUser();
-  }, []);
+export const UserProvider = ({
+  children,
+  initialUser = null,
+}: {
+  children: ReactNode;
+  initialUser?: User | null;
+}) => {
+  const [user, setUser] = useState<User | null>(initialUser);
 
   return (
     <UserContext.Provider value={{ user, setUser }}>
