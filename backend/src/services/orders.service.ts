@@ -2,9 +2,8 @@ import {
   CreateOrderDto,
   OrderResponseDto,
   OrderResponseSchema,
-  CourseInOrderSchema,
   OrderResponseDtoForGetAllOrders,
-  CourseInOrderDtoForGetAllOrders,
+  // CourseInOrderDtoForGetAllOrders,
   OrderResponseSchemaForGetAllOrders,
 } from "../dtos/orders.dto";
 import { OrderModel } from "../models/order.model";
