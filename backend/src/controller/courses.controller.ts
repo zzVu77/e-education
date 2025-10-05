@@ -77,7 +77,7 @@ export const courseController = {
       if (!updatedCourse) {
         return res.status(404).json({ error: "Course not found" });
       }
-      res.status(200).json({ message: "Course updated successfully" });
+      res.status(200).json({ message: "Course updated successfully", data: updatedCourse });
     } catch (error) {
       console.error("Error updating course:", error);
       return res.status(400).json({ error: (error as Error).message });

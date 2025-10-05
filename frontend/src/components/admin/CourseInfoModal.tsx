@@ -25,7 +25,7 @@ import {
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
+// import { toast } from "sonner";
 import {
   Select,
   SelectContent,
@@ -34,8 +34,13 @@ import {
   SelectValue,
 } from "../ui/select";
 
+// ✅ Fix lỗi File is not defined khi SSR
+const FileClass = typeof File !== "undefined" ? File : class {};
+
+// ✅ Định nghĩa schema an toàn với SSR
 const courseSchema = z.object({
-  image: z.union([z.instanceof(File), z.string()]), // File mới hoặc URL string
+  id: z.string().optional(), // ✅ thêm dòng này
+  imgUrl: z.union([z.instanceof(FileClass), z.string()]), // Cho phép File hoặc URL string
   title: z.string().min(3, "Title must be at least 3 characters long"),
   description: z.string().optional(),
   level: z.enum(["Beginner", "Intermediate", "Advanced"]),
@@ -65,7 +70,8 @@ export function CourseInfoModal({
   const form = useForm<CourseFormValues>({
     resolver: zodResolver(courseSchema),
     defaultValues: {
-      image: defaultValues?.image || "",
+      id: defaultValues?.id || undefined,
+      imgUrl: defaultValues?.imgUrl || "",
       title: defaultValues?.title || "",
       description: defaultValues?.description || "",
       level: defaultValues?.level || "Beginner",
@@ -77,12 +83,14 @@ export function CourseInfoModal({
   });
 
   const [previewUrl, setPreviewUrl] = useState<string>(
-    typeof defaultValues?.image === "string" ? defaultValues.image : "",
+    typeof defaultValues?.imgUrl === "string" ? defaultValues.imgUrl : "",
   );
 
   const handleSubmit = (data: CourseFormValues) => {
+    console.log("Form submitted:", data);
+    console.log("defaultValues:", defaultValues);
     onSubmitCourse?.(data);
-    toast.success(type === "create" ? "Course created!" : "Course updated!");
+    // toast.success(type === "create" ? "Course created!" : "Course updated!");
     form.reset();
     setPreviewUrl(""); // reset preview
   };
@@ -107,12 +115,17 @@ export function CourseInfoModal({
             onSubmit={form.handleSubmit(handleSubmit)}
             className="space-y-4"
           >
+            <FormField
+              control={form.control}
+              name="id"
+              render={({ field }) => <input type="hidden" {...field} />}
+            />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
               {/* Upload & Preview ảnh */}
               <div className="flex flex-col space-y-3 md:h-full">
                 <FormField
                   control={form.control}
-                  name="image"
+                  name="imgUrl"
                   render={({ field }) => (
                     <FormItem className="w-full">
                       <FormLabel>Course Image</FormLabel>
@@ -123,8 +136,8 @@ export function CourseInfoModal({
                           onChange={(e) => {
                             const file = e.target.files?.[0];
                             if (file) {
-                              field.onChange(file); // lưu File vào form
-                              setPreviewUrl(URL.createObjectURL(file)); // preview
+                              field.onChange(file); // Lưu File vào form
+                              setPreviewUrl(URL.createObjectURL(file)); // Hiển thị preview
                             }
                           }}
                         />

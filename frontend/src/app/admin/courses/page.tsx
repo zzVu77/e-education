@@ -43,7 +43,7 @@ import {
 import axiosInstance from "@/config/axiosConfig";
 import { toast } from "sonner";
 
-const onSubmitCourse = async (values: CourseFormValues) => {
+const onSubmitCreateCourse = async (values: CourseFormValues) => {
   try {
     const imgUrl =
       "https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80";
@@ -84,10 +84,60 @@ export default function ManageCourses() {
   // useEffect(() => {
   //   setMounted(true); // đánh dấu đã mount
   // }, []);
+  const onSubmitEditCourse = async (dataForm: CourseFormValues) => {
+    try {
+      const { id, ...newValues } = dataForm;
+      // toast.info(id, dataForm);
+      const oldCourse = data.find((c) => c.id === id);
+      if (!oldCourse) return toast.error("Course not found");
+
+      const changedFields: Partial<CourseFormValues> = {};
+
+      // ✅ So sánh và ánh xạ giữa image ↔ imgUrl
+      (
+        Object.keys(newValues) as (keyof Omit<CourseFormValues, "id">)[]
+      ).forEach((key) => {
+        if (newValues[key] !== oldCourse[key]) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (changedFields as any)[key] = newValues[key]!;
+        }
+      });
+
+      if (Object.keys(changedFields).length === 0) {
+        return toast.info("No changes detected");
+      }
+
+      let imgUrl = oldCourse.imgUrl;
+      console.log("changedFields", changedFields);
+      if (changedFields.imgUrl instanceof File) {
+        // Upload ảnh thật sự ở đây nếu có
+        imgUrl = "https://yourcdn.com/uploaded-image.jpg";
+        changedFields.imgUrl = imgUrl;
+      }
+      console.log("changedFields after image upload", changedFields);
+
+      await axiosInstance.put(`/courses/${id}`, {
+        ...changedFields,
+        imgUrl: imgUrl,
+      });
+
+      setData((prev) =>
+        prev.map((course) =>
+          course.id === id ? { ...course, ...changedFields, imgUrl } : course,
+        ),
+      );
+
+      toast.success("Course changed successfully");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to update course");
+    }
+  };
+
   useEffect(() => {
     axiosInstance
       .get<CoursesDataResponse>("/courses")
-      .then((res) => setData(res.data)) // nhớ res.data.data
+      .then((res) => setData(res.data))
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
   }, []);
@@ -144,7 +194,7 @@ export default function ManageCourses() {
               ...row.original,
               image: row.original.imgUrl,
             }}
-            onSubmitCourse={(data) => console.log("Updated:", data)}
+            onSubmitCourse={onSubmitEditCourse}
           >
             <Button
               size="sm"
@@ -228,7 +278,7 @@ export default function ManageCourses() {
         <CourseInfoModal
           type="create"
           categories={categories} // <- thêm prop categories
-          onSubmitCourse={onSubmitCourse}
+          onSubmitCourse={onSubmitCreateCourse}
         >
           <Button className="bg-green-500 text-white hover:bg-green-600">
             Add new course
