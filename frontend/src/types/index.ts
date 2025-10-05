@@ -22,6 +22,10 @@ export type CourseApiResponse = {
   createdAt: string;
   updatedAt: string;
 };
+export type CoursesDataResponseForCard = {
+  data: ProductCardProps[];
+  totalPages: number;
+};
 export type CoursesDataResponse = {
   data: CourseApiResponse[];
   totalPages: number;

@@ -4,7 +4,7 @@ import SearchAndFilterSection from "@/components/SearchAndFilterSection";
 import SectionHeader from "@/components/shared/SectionHeader";
 import Wrapper from "@/components/shared/Wrapper";
 import axiosInstance from "@/config/axiosConfig";
-import { CoursesDataResponse, ProductCardProps } from "@/types";
+import { CoursesDataResponseForCard, ProductCardProps } from "@/types";
 import { SearchParamsPromise } from "@/utils/client/searchParams";
 import { Bookmark } from "lucide-react";
 import Image from "next/image";
@@ -15,11 +15,11 @@ const Home = async ({
   searchParams: SearchParamsPromise;
 }) => {
   const resolvedParams = await searchParams;
-  let coursesData: CoursesDataResponse = { data: [], totalPages: 0 };
+  let coursesData: CoursesDataResponseForCard = { data: [], totalPages: 0 };
   try {
     const response = !resolvedParams
-      ? await axiosInstance.get<CoursesDataResponse>("/courses")
-      : await axiosInstance.get<CoursesDataResponse>(
+      ? await axiosInstance.get<CoursesDataResponseForCard>("/courses")
+      : await axiosInstance.get<CoursesDataResponseForCard>(
           `/courses/filter?title=${resolvedParams.title ?? ""}&category=${
             resolvedParams.category ?? ""
           }&page=${resolvedParams.page || 1}&limit=${resolvedParams.limit || 8}`,
