@@ -53,9 +53,7 @@ export default function LoginForm() {
         password,
       });
       toast.success(response.message, { duration: 2000 });
-      setTimeout(() => {
-        window.location.href = returnTo || "/";
-      }, 500);
+      window.location.href = returnTo || "/";
     } catch {
       setErrors({
         global:
