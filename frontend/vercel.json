@@ -1,5 +1,5 @@
 {
   "env": {
-    "ACCESS_SECRET": "@access_secret"
+    "ACCESS_SECRET": "@ACCESS_SECRET"
   }
 }
