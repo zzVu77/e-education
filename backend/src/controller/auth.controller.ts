@@ -9,6 +9,7 @@ const setTokenCookie = (res: Response, tokenName: string, token: string, maxAge:
     maxAge,
     sameSite: "none",
     path: "/",
+    partitioned: true,
   });
 };
 export const authController = {
