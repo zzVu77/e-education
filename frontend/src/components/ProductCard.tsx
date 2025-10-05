@@ -13,7 +13,7 @@ import {
 import { Text, Title } from "./ui/typography";
 import { ProductCardProps } from "@/types";
 import { Button } from "./ui/button";
-import { formatCurrency } from "@/utils/formatCurrency";
+import { formatCurrency } from "@/utils/client/formatCurrency";
 
 const ProductCard = ({
   id,

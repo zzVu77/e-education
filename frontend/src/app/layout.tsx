@@ -6,7 +6,7 @@ import { Open_Sans } from "next/font/google";
 import "./globals.css";
 import { UserProvider } from "@/context/UserContext";
 import { cookies } from "next/headers";
-import { getUserFromToken } from "@/utils/auth";
+import { getUserFromToken } from "@/utils/server/auth.server";
 
 const openSans = Open_Sans({
   variable: "--font-open-sans",

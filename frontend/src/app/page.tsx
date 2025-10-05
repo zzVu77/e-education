@@ -5,7 +5,7 @@ import SectionHeader from "@/components/shared/SectionHeader";
 import Wrapper from "@/components/shared/Wrapper";
 import axiosInstance from "@/config/axiosConfig";
 import { CoursesDataResponse, ProductCardProps } from "@/types";
-import { SearchParamsPromise } from "@/utils/searchParams";
+import { SearchParamsPromise } from "@/utils/client/searchParams";
 import { Bookmark } from "lucide-react";
 import Image from "next/image";
 

@@ -1,3 +1,4 @@
+"user server";
 import { UserInfo } from "@/types";
 import jwt from "jsonwebtoken";
 

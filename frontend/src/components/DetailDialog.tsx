@@ -12,7 +12,7 @@ import {
 } from "./ui/dialog";
 import { Text } from "./ui/typography";
 import { ProductCardProps } from "@/types";
-import { formatCurrency } from "@/utils/formatCurrency";
+import { formatCurrency } from "@/utils/client/formatCurrency";
 
 type DetailDialogProps = {
   productProps: ProductCardProps;
