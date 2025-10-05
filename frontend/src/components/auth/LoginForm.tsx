@@ -1,7 +1,7 @@
 "use client";
 import axiosInstance from "@/config/axiosConfig";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 import * as z from "zod";
@@ -24,6 +24,7 @@ export default function LoginForm() {
     username: z.string().min(3, "Username must be at least 3 characters long"),
     password: z.string().min(6, "Password must be at least 6 characters long"),
   });
+  const router = useRouter();
 
   const validate = () => {
     const result = validateSchema.safeParse({ username, password });
@@ -53,7 +54,7 @@ export default function LoginForm() {
         password,
       });
       toast.success(response.message, { duration: 2000 });
-      window.location.href = returnTo || "/";
+      router.push(returnTo || "/");
     } catch {
       setErrors({
         global:
