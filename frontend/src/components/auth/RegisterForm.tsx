@@ -1,6 +1,9 @@
 "use client";
 import Link from "next/link";
 import { useState } from "react";
+import axiosInstance from "@/config/axiosConfig";
+import { useRouter } from "next/navigation";
+import z from "zod";
 
 type FieldErrors = Partial<{
   name: string;
@@ -19,26 +22,46 @@ export default function RegisterForm() {
   const [agree, setAgree] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
+  const router = useRouter();
 
+  const validateSchema = z
+    .object({
+      name: z.string().trim().nonempty("Full name is required."),
+      username: z
+        .string()
+        .trim()
+        .min(3, "Username must be at least 3 characters"),
+      password: z.string().min(6, "Use at least 6 characters."),
+      confirm: z.string().nonempty("Please confirm your password."),
+      terms: z.boolean().refine((val) => val === true, {
+        message: "You must agree to continue.",
+      }),
+    })
+    .refine((data) => data.password === data.confirm, {
+      message: "Passwords don’t match.",
+      path: ["confirm"],
+    });
   const validate = () => {
-    const e: FieldErrors = {};
-    if (!name.trim()) e.name = "Full name is required.";
-
-    if (!username.trim()) e.username = "Username is required.";
-    else if (username.length < 1)
-      e.username = "Username must be at least 1 character";
-    if (!password) e.password = "Password is required.";
-    else if (password.length < 8) e.password = "Use at least 8 characters.";
-
-    if (!confirm) e.confirm = "Please confirm your password.";
-    else if (confirm !== password) e.confirm = "Passwords don’t match.";
-
-    if (!agree) e.terms = "You must agree to continue.";
-
-    setErrors(e);
-    return Object.keys(e).length === 0;
+    const result = validateSchema.safeParse({
+      name,
+      username,
+      password,
+      confirm,
+      terms: agree,
+    });
+    if (!result.success) {
+      const fieldErrors: FieldErrors = {};
+      result.error.issues.forEach((err) => {
+        if (err.path[0] && !fieldErrors[err.path[0] as keyof FieldErrors]) {
+          fieldErrors[err.path[0] as keyof FieldErrors] = err.message;
+        }
+      });
+      setErrors(fieldErrors);
+      return false;
+    }
+    setErrors({});
+    return true;
   };
-
   const onSubmit = async (ev: React.FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
     if (!validate()) return;
@@ -47,17 +70,12 @@ export default function RegisterForm() {
     setErrors((p) => ({ ...p, global: undefined }));
 
     try {
-      // Wire this to your backend
-      // const res = await fetch("/api/auth/register", {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify({ name, username, password, agree }),
-      //   credentials: "include",
-      // });
-      // if (!res.ok) throw new Error("Registration failed.");
-
-      await new Promise((r) => setTimeout(r, 800));
-      window.location.href = "/login?new=1";
+      await axiosInstance.post("/users/signup", {
+        fullName: name.trim(),
+        username: username.trim(),
+        password,
+      });
+      router.replace("/login");
     } catch {
       setErrors({
         global: "Something went wrong creating your account. Please try again.",
@@ -69,7 +87,7 @@ export default function RegisterForm() {
   return (
     <form
       onSubmit={onSubmit}
-      className="mx-auto w-full rounded-2xl border border-gray-200/70 bg-white p-6 shadow-sm dark:border-white/10 dark:bg-neutral-900"
+      className="mx-auto w-full rounded-2xl border border-gray-200/70 bg-white p-2 shadow-sm dark:border-white/10 dark:bg-neutral-900"
       noValidate
     >
       {/* Full Name */}

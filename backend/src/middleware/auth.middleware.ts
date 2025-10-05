@@ -1,9 +1,10 @@
-import { JWT_CONFIG } from "../config/jwt";
-import { JwtPayloadDto, jwtPayloadSchema } from "../dtos/jwt.dto";
-import { Request, Response, NextFunction } from "express";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
+import { JWT_CONFIG } from "../config/jwt";
+import { jwtPayloadSchema } from "../dtos/jwt.dto";
 export interface AuthRequest extends Request {
-  user?: JwtPayloadDto;
+  user?: any;
 }
 export const authenticate = (req: AuthRequest, res: Response, next: NextFunction) => {
   try {

@@ -1,6 +1,10 @@
 "use client";
+import axiosInstance from "@/config/axiosConfig";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
+import * as z from "zod";
 
 type FieldErrors = Partial<{
   username: string;
@@ -14,17 +18,28 @@ export default function LoginForm() {
   const [showPwd, setShowPwd] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<FieldErrors>({});
+  const searchParams = useSearchParams();
+  const returnTo = searchParams.get("returnTo");
+  const validateSchema = z.object({
+    username: z.string().min(3, "Username must be at least 3 characters long"),
+    password: z.string().min(6, "Password must be at least 6 characters long"),
+  });
 
   const validate = () => {
-    const e: FieldErrors = {};
-    if (!username) e.username = "Username is required.";
-    else if (username.length < 1)
-      e.username = "Username must be at least 1 character";
-    if (!password) e.password = "Password is required.";
-    setErrors(e);
-    return Object.keys(e).length === 0;
+    const result = validateSchema.safeParse({ username, password });
+    if (!result.success) {
+      const fieldErrors: FieldErrors = {};
+      result.error.issues.forEach((err) => {
+        if (err.path[0] && !fieldErrors[err.path[0] as keyof FieldErrors]) {
+          fieldErrors[err.path[0] as keyof FieldErrors] = err.message;
+        }
+      });
+      setErrors(fieldErrors);
+      return false;
+    }
+    setErrors({});
+    return true;
   };
-
   const onSubmit = async (ev: React.FormEvent<HTMLFormElement>) => {
     ev.preventDefault();
     if (!validate()) return;
@@ -33,29 +48,24 @@ export default function LoginForm() {
     setErrors((prev) => ({ ...prev, global: undefined }));
 
     try {
-      // replace w ur real auth endpoint
-      // e.g:
-      // const res = await fetch("/api/auth/login", {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify({ username, password, remember }),
-      //   credentials: "include",
-      // });
-      // if (!res.ok) throw new Error("Invalid username or password.");
-
-      // Simulate latency
-      await new Promise((r) => setTimeout(r, 800));
-
-      // redirect to app logic
-      window.location.href = "/"; // or use next/navigation's redirect()
+      const response = await axiosInstance.post("/auth/login", {
+        username,
+        password,
+      });
+      toast.success(response.message, { duration: 2000 });
+      setTimeout(() => {
+        window.location.href = returnTo || "/";
+      }, 500);
     } catch {
-      // dont enumerate which part failed (prevents account enumeration)
       setErrors({
         global:
-          "We couldn’t sign you in. Please check your credentials and try again.",
+          "Something went wrong ! Please check your credentials and try again.",
       });
       setLoading(false);
     }
+  };
+  const handleOnclickGoogle = () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_BASE_URL}/auth/google`;
   };
 
   return (
@@ -277,10 +287,10 @@ export default function LoginForm() {
       </div>
 
       {/* Social sign-in */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 gap-3">
         <button
           type="button"
-          // onClick={() => (window.location.href = "/api/auth/google")}
+          onClick={() => handleOnclickGoogle()}
           className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-green-100 dark:bg-neutral-900 dark:text-gray-200 cursor-pointer"
           aria-label="Continue with Google"
         >
@@ -349,25 +359,6 @@ export default function LoginForm() {
             </g>
           </svg>
           Google
-        </button>
-
-        <button
-          type="button"
-          // onClick={() => (window.location.href = "/api/auth/facebook")}
-          className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-gray-300 bg-white px-3 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-4 focus:ring-green-100 dark:bg-neutral-900 dark:text-gray-200 cursor-pointer"
-          aria-label="Continue with Facebook"
-        >
-          <svg viewBox="0 0 24 24" className="h-5 w-5" aria-hidden="true">
-            <path
-              fill="#1877F2"
-              d="M24 12.07C24 5.74 18.63.98 12 .98S0 5.74 0 12.07C0 18.06 4.39 23.19 10.12 24v-8.44H7.08v-3.49h3.04V9.41c0-3 1.79-4.66 4.53-4.66 1.31 0 2.68.24 2.68.24v2.95h-1.51c-1.49 0-1.95.93-1.95 1.88v2.25h3.32l-.53 3.49h-2.79V24C19.61 23.19 24 18.06 24 12.07z"
-            />
-            <path
-              fill="#fff"
-              d="M16.87 15.56l.53-3.49h-3.32V9.82c0-.95.46-1.88 1.95-1.88h1.51V5c0 0-1.36-.24-2.68-.24-2.74 0-4.53 1.66-4.53 4.66v2.66H7.08v3.49h3.04V24h3.66v-8.44h2.79z"
-            />
-          </svg>
-          Facebook
         </button>
       </div>
     </form>

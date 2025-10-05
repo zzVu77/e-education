@@ -10,6 +10,8 @@ import authRouter from "./routes/auth.route";
 import cookieParser from "cookie-parser";
 import orderRouter from "./routes/orders.route";
 import { setupSwagger } from "./swagger";
+import passport from "passport";
+import "./config/passport";
 async function bootstrap() {
   // Create Express app
   const app = express();
@@ -24,6 +26,7 @@ async function bootstrap() {
   app.use(express.urlencoded({ extended: true })); // To handle request body from HTML forms
   app.use(morgan("dev"));
   app.use(cookieParser());
+  app.use(passport.initialize());
   // Define routes
   app.get("/", (_req, res) => {
     res.send("E-Education API is running");

@@ -57,3 +57,14 @@ export type OrderItem = {
 };
 
 export type OrdersDataResponse = OrderItem[];
+export type LoginResponse = {
+  message: string;
+  user: {
+    id: string;
+    fullName: string;
+  };
+};
+export type UserInfo = {
+  id: string;
+  fullName: string;
+};

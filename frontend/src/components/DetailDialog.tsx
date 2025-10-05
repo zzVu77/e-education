@@ -1,4 +1,3 @@
-import { formatCurrency } from "@/lib/utils";
 import Image from "next/image";
 import { ASSSETS } from "../constants/assets";
 import ButtonAddToFavorite from "./ButtonAddToFavorite";
@@ -13,6 +12,7 @@ import {
 } from "./ui/dialog";
 import { Text } from "./ui/typography";
 import { ProductCardProps } from "@/types";
+import { formatCurrency } from "@/utils/client/formatCurrency";
 
 type DetailDialogProps = {
   productProps: ProductCardProps;

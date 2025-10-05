@@ -5,7 +5,7 @@ import SectionHeader from "@/components/shared/SectionHeader";
 import Wrapper from "@/components/shared/Wrapper";
 import axiosInstance from "@/config/axiosConfig";
 import { CoursesDataResponse, ProductCardProps } from "@/types";
-import { SearchParamsPromise } from "@/utils/searchParams";
+import { SearchParamsPromise } from "@/utils/client/searchParams";
 import { Bookmark } from "lucide-react";
 import Image from "next/image";
 
@@ -33,7 +33,6 @@ const Home = async ({
   } else if (resolvedParams.sort === "desc") {
     coursesData.data.sort((a, b) => b.price - a.price);
   }
-  console.log(coursesData);
 
   return (
     <>
@@ -78,7 +77,10 @@ const Home = async ({
             ))}
           </div>
         )}
-        <CustomPagination totalPages={coursesData.totalPages} />
+        <CustomPagination
+          totalPages={coursesData.totalPages}
+          currPage={Number(resolvedParams.page) || 1}
+        />
       </Wrapper>
     </>
   );
