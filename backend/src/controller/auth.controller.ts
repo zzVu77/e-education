@@ -5,7 +5,7 @@ import { authService } from "../services/auth.service";
 const setTokenCookie = (res: Response, tokenName: string, token: string, maxAge: number) => {
   res.cookie(tokenName, token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: process.env.ENV === "production",
     maxAge,
     sameSite: "none",
   });
