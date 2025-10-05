@@ -77,7 +77,7 @@ axiosInstance.interceptors.response.use(
 
       try {
         await axios.post(
-          "http://localhost:8080/api/auth/refresh",
+          `${BASE_URL}/auth/refresh`,
           {},
           { withCredentials: true },
         );
