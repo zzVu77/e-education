@@ -42,12 +42,18 @@ import {
 } from "@/types";
 import axiosInstance from "@/config/axiosConfig";
 import { toast } from "sonner";
+import { uploadImageToCloudinary } from "@/lib/utils";
 
 const onSubmitCreateCourse = async (values: CourseFormValues) => {
   try {
-    const imgUrl =
-      "https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80";
-
+    // const imgUrl =
+    //   "https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80";
+    let imgUrl = "";
+    if (values.imgUrl instanceof File) {
+      imgUrl = await uploadImageToCloudinary(values.imgUrl, "courses");
+    } else if (typeof values.imgUrl === "string") {
+      imgUrl = values.imgUrl;
+    }
     // Gọi API createCourse
     const createRes = await axiosInstance.post<CreateCourseResponse>(
       "/courses",
@@ -111,7 +117,7 @@ export default function ManageCourses() {
       console.log("changedFields", changedFields);
       if (changedFields.imgUrl instanceof File) {
         // Upload ảnh thật sự ở đây nếu có
-        imgUrl = "https://yourcdn.com/uploaded-image.jpg";
+        imgUrl = await uploadImageToCloudinary(changedFields.imgUrl, "courses");
         changedFields.imgUrl = imgUrl;
       }
       console.log("changedFields after image upload", changedFields);
@@ -192,7 +198,7 @@ export default function ManageCourses() {
             categories={categories} // <- thêm prop categories
             defaultValues={{
               ...row.original,
-              image: row.original.imgUrl,
+              imgUrl: row.original.imgUrl,
             }}
             onSubmitCourse={onSubmitEditCourse}
           >
