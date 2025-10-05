@@ -8,6 +8,7 @@ const setTokenCookie = (res: Response, tokenName: string, token: string, maxAge:
     secure: process.env.ENV === "production",
     maxAge,
     sameSite: "none",
+    path: "/",
   });
 };
 export const authController = {
