@@ -1,4 +1,4 @@
-"user server";
+"use server";
 import { UserInfo } from "@/types";
 import jwt from "jsonwebtoken";
 
