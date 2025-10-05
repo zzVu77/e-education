@@ -2,12 +2,12 @@ import { Request, RequestHandler, Response } from "express";
 import { JWT_CONFIG } from "../config/jwt";
 import { LoginUserDto } from "../dtos/users.dto";
 import { authService } from "../services/auth.service";
-import { set } from "mongoose";
 const setTokenCookie = (res: Response, tokenName: string, token: string, maxAge: number) => {
   res.cookie(tokenName, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     maxAge,
+    sameSite: "none",
   });
 };
 export const authController = {
@@ -55,11 +55,7 @@ export const authController = {
         return res.status(401).json({ message: "Refresh token missing" });
       }
       const { accessToken } = authService.refreshToken(refreshToken);
-      res.cookie("accessToken", accessToken, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        maxAge: JWT_CONFIG.ACCESS_EXPIRES_IN,
-      });
+      setTokenCookie(res, "accessToken", accessToken, JWT_CONFIG.ACCESS_EXPIRES_IN);
       return res.json({ message: "Access token refreshed" });
     } catch {
       return res.status(401).json({ message: "Invalid refresh token" });
