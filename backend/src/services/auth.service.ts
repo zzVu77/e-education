@@ -13,10 +13,10 @@ export const authService = {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) throw new Error("Invalid credentials");
     const payload = { id: user._id, fullName: user.fullName };
-    const accessToken = jwt.sign(payload, JWT_CONFIG.ACCESS_EXPIRES_TOKEN, {
+    const accessToken = jwt.sign(payload, JWT_CONFIG.ACCESS_SECRET, {
       expiresIn: JWT_CONFIG.ACCESS_EXPIRES_IN,
     });
-    const refreshToken = jwt.sign(payload, JWT_CONFIG.REFRESH_EXPIRES_TOKEN, {
+    const refreshToken = jwt.sign(payload, JWT_CONFIG.REFRESH_SECRET, {
       expiresIn: JWT_CONFIG.REFRESH_EXPIRES_IN,
     });
     return { accessToken, refreshToken };
