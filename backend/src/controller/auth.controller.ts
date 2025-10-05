@@ -7,7 +7,7 @@ const setTokenCookie = (res: Response, tokenName: string, token: string, maxAge:
     httpOnly: true,
     secure: process.env.ENV === "production",
     maxAge,
-    sameSite: "strict",
+    sameSite: "none",
     // path: "/",
   });
 };
