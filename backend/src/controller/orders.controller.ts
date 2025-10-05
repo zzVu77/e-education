@@ -17,7 +17,7 @@ export const orderController = {
   async getAllOrders(_req: Request, res: Response) {
     try {
       const orders = await orderService.getAllOrders();
-      return res.json(orders);
+      return res.status(200).json(orders);
     } catch (error) {
       console.error("Error fetching orders:", error);
       return res.status(500).json({ error: "Internal Server Error" });
@@ -40,7 +40,7 @@ export const orderController = {
     const { userId } = req.params;
     try {
       const orders = await orderService.getOrdersByUser(userId);
-      return res.json(orders);
+      return res.status(200).json(orders);
     } catch (error) {
       console.error("Error fetching user's orders:", error);
       return res.status(500).json({ error: "Internal Server Error" });
@@ -60,7 +60,7 @@ export const orderController = {
       const orders = await orderService.getOrdersByStatus(
         canonical as "Pending" | "Paid" | "Failed",
       );
-      res.json(orders);
+      res.status(200).json(orders);
     } catch (error) {
       console.error("Error fetching orders by status:", error);
       return res.status(500).json({ error: "Internal Server Error" });

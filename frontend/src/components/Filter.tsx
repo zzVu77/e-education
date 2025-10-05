@@ -7,11 +7,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Category2 } from "iconsax-reactjs";
-import { DollarSign } from "lucide-react";
+import { ArrowDownWideNarrow } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 type Props = {
-  typeOfFilter: "category" | "price";
+  typeOfFilter: "category" | "sort";
   items: { label: string; value: string }[];
 };
 
@@ -27,17 +27,19 @@ const Filter = ({ typeOfFilter, items }: Props) => {
     } else {
       params.delete(typeOfFilter);
     }
+    if (typeOfFilter === "category") {
+      params.delete("page");
+    }
     router.replace(`?${params.toString()}`);
   };
 
   return (
     <Select onValueChange={handleChange} defaultValue={currentValue}>
       <SelectTrigger className="min-w-[100px] md:mim-w-[150px] w-max focus-visible:ring-0 focus-visible:border-[1px] border-[1px] font-semibold shadow-sm h-10 rounded-lg cursor-pointer ">
-        {/* <Funnel className=" h-4 w-4 text-black pointer-events-none" /> */}
         {typeOfFilter === "category" ? (
           <Category2 size="32" variant="Outline" />
         ) : (
-          <DollarSign className=" h-4 w-4 text-gray-500 pointer-events-none" />
+          <ArrowDownWideNarrow className=" h-4 w-4 text-gray-500 pointer-events-none" />
         )}
 
         <SelectValue

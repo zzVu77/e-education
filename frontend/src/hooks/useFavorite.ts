@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { LOCAL_STORAGE_FAVORITE_KEY } from "../../constants/const";
+import { LOCAL_STORAGE_FAVORITE_KEY } from "../constants/const";
 
 // Custom event to notify when there is a change
 const FAVORITE_CHANGED_EVENT = "favorite:changed";

@@ -1,4 +1,5 @@
 // src/server.ts
+import cors from "cors";
 import "dotenv/config";
 import express from "express";
 import morgan from "morgan";
@@ -9,13 +10,23 @@ import authRouter from "./routes/auth.route";
 import cookieParser from "cookie-parser";
 import orderRouter from "./routes/orders.route";
 import { setupSwagger } from "./swagger";
+import passport from "passport";
+import "./config/passport";
 async function bootstrap() {
   // Create Express app
   const app = express();
+  app.use(
+    cors({
+      origin: ["http://localhost:3000"],
+      credentials: true,
+    }),
+  );
+  // Middleware
   app.use(express.json());
   app.use(express.urlencoded({ extended: true })); // To handle request body from HTML forms
   app.use(morgan("dev"));
   app.use(cookieParser());
+  app.use(passport.initialize());
   // Define routes
   app.get("/", (_req, res) => {
     res.send("E-Education API is running");
@@ -38,3 +49,4 @@ bootstrap().catch((err) => {
   console.error("Startup error:", err);
   process.exit(1);
 });
+// Removed the conflicting cors function declaration

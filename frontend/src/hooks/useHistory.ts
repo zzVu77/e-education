@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { LOCAL_STORAGE_HISTORY_KEY } from "../../constants/const";
+import { LOCAL_STORAGE_HISTORY_KEY } from "../constants/const";
 
 const HISTORY_CHANGED_EVENT = "history:changed";
 

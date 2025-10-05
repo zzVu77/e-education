@@ -44,3 +44,8 @@ export const paginatedCoursesResponseSchema = z.object({
 });
 
 export type PaginatedCoursesResponseDto = z.infer<typeof paginatedCoursesResponseSchema>;
+
+export type FilterCriteria = {
+  title?: string;
+  category?: string;
+};
