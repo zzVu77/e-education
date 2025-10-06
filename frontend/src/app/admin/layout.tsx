@@ -1,4 +1,3 @@
-"use client";
 import AdminSideBar from "@/components/admin/AdminSideBar";
 
 export default function AdminLayout({
