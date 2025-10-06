@@ -20,7 +20,7 @@ async function bootstrap() {
       origin: [
         "http://localhost:3000",
         "https://e-education-vu77.vercel.app",
-        "https://vucoder77.id.vn/",
+        "https://vucoder77.id.vn",
       ],
       credentials: true,
     }),
