@@ -25,6 +25,17 @@ async function bootstrap() {
       credentials: true,
     }),
   );
+  app.options(
+    "*",
+    cors({
+      origin: [
+        "https://vucoder77.id.vn",
+        "https://e-education-vu77.vercel.app",
+        "http://localhost:3000",
+      ],
+      credentials: true,
+    }),
+  );
   // Middleware
   app.use(express.json());
   app.use(express.urlencoded({ extended: true })); // To handle request body from HTML forms
