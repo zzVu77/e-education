@@ -45,8 +45,14 @@ export const authController = {
   }) as RequestHandler,
   // Logout user
   logout(_req: Request, res: Response) {
-    res.clearCookie("accessToken", { domain: ".vucoder77.id.vn", path: "/" });
-    res.clearCookie("refreshToken", { domain: ".vucoder77.id.vn", path: "/" });
+    res.clearCookie("accessToken", {
+      domain: isProduction ? ".vucoder77.id.vn" : "localhost",
+      path: "/",
+    });
+    res.clearCookie("refreshToken", {
+      domain: isProduction ? ".vucoder77.id.vn" : "localhost",
+      path: "/",
+    });
     return res.json({ message: "Logout success" });
   },
   // Refresh access token
