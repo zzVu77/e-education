@@ -1,4 +1,5 @@
 import Header from "@/components/Header";
+import AIChat from "@/components/AIChat";
 import { Toaster } from "@/components/ui/sonner";
 import { Check, Info } from "lucide-react";
 import type { Metadata } from "next";
@@ -34,7 +35,7 @@ export default async function RootLayout({
       <body className={`${openSans.variable}  antialiased`}>
         <UserProvider initialUser={user}>
           <Header />
-          {/* <AIChat></AIChat> */}
+          <AIChat />
           <Toaster
             icons={{
               success: <Check className="text-green-500 h-5 w-5 mr-4" />,

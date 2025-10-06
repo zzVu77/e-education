@@ -1,0 +1,11 @@
+google-generativeai
+pandas
+pymongo[srv]
+sentence-transformers
+accelerate
+datasets
+fastapi 
+pydantic
+uvicorn[standard]
+ipython
+python-dotenv
