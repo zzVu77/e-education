@@ -2,12 +2,13 @@ import { Request, RequestHandler, Response } from "express";
 import { JWT_CONFIG } from "../config/jwt";
 import { LoginUserDto } from "../dtos/users.dto";
 import { authService } from "../services/auth.service";
+const isProduction = process.env.ENV === "production";
 const setTokenCookie = (res: Response, tokenName: string, token: string, maxAge: number) => {
   res.cookie(tokenName, token, {
     httpOnly: true,
-    secure: process.env.ENV === "production",
+    secure: isProduction,
     maxAge,
-    domain: ".vucoder77.id.vn",
+    domain: isProduction ? ".vucoder77.id.vn" : "localhost",
     path: "/",
   });
 };
