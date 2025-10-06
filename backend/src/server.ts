@@ -21,6 +21,7 @@ async function bootstrap() {
         "http://localhost:3000",
         "https://e-education-vu77.vercel.app",
         "https://vucoder77.id.vn",
+        "http://10.0.40.208:3000",
       ],
       credentials: true,
     }),

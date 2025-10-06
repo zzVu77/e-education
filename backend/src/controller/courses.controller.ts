@@ -10,7 +10,7 @@ export const courseController = {
       if (!newCourse) {
         return res.status(400).json({ error: "Failed to create course" });
       }
-      return res.status(201).json({ message: "Course created successfully" });
+      return res.status(201).json({ message: "Course created successfully", data: newCourse });
     } catch {
       return res.status(500).json({ error: "Internal Server Error" });
     }
@@ -25,6 +25,15 @@ export const courseController = {
       return res.status(200).json(result);
     } catch {
       res.status(500).json({ error: "Internal Server Error" });
+    }
+  },
+  async getAllCategories(req: Request, res: Response) {
+    try {
+      const categories = await courseService.getAllCategories(); // giả sử service trả về string[]
+      return res.status(200).json(categories);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      return res.status(500).json({ error: "Internal Server Error" });
     }
   },
 
@@ -68,7 +77,7 @@ export const courseController = {
       if (!updatedCourse) {
         return res.status(404).json({ error: "Course not found" });
       }
-      res.status(200).json({ message: "Course updated successfully" });
+      res.status(200).json({ message: "Course updated successfully", data: updatedCourse });
     } catch (error) {
       console.error("Error updating course:", error);
       return res.status(400).json({ error: (error as Error).message });
