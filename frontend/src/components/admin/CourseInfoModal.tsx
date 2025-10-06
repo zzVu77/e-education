@@ -1,12 +1,11 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useState } from "react";
+import { useRef } from "react";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -33,12 +32,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../ui/select";
+import { Edit2 } from "iconsax-reactjs";
+import { ImagePlus, Trash2 } from "lucide-react";
 
 // ✅ Fix lỗi File is not defined khi SSR
 const FileClass = typeof File !== "undefined" ? File : class {};
 
 // ✅ Định nghĩa schema an toàn với SSR
-const courseSchema = z.object({
+const courseSchemaBase = z.object({
   id: z.string().optional(), // ✅ thêm dòng này
   imgUrl: z.union([z.instanceof(FileClass), z.string()]), // Cho phép File hoặc URL string
   title: z.string().min(3, "Title must be at least 3 characters long"),
@@ -49,8 +50,35 @@ const courseSchema = z.object({
   price: z.number().min(0, "Price must be a positive number"),
   duration: z.number().min(1, "Duration must be at least 1 hour"),
 });
+const courseSchema = (type: "create" | "update" = "create") =>
+  courseSchemaBase.superRefine((data, ctx) => {
+    // Nếu là "create" → bắt buộc phải có ảnh
+    if (type === "create") {
+      if (
+        (typeof data.imgUrl === "string" && data.imgUrl.trim() === "") ||
+        !(data.imgUrl instanceof FileClass)
+      ) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["imgUrl"],
+          message: "Please upload a course image.",
+        });
+      }
+    }
 
-export type CourseFormValues = z.infer<typeof courseSchema>;
+    // Nếu là "update" → cho phép string (ảnh cũ) hoặc File (ảnh mới),
+    // nhưng không được "" nếu là string
+    if (type === "update") {
+      if (typeof data.imgUrl === "string" && data.imgUrl.trim() === "") {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ["imgUrl"],
+          message: "Existing image URL cannot be empty.",
+        });
+      }
+    }
+  });
+export type CourseFormValues = z.infer<ReturnType<typeof courseSchema>>;
 
 interface CourseInfoModalProps {
   children?: React.ReactNode;
@@ -68,7 +96,7 @@ export function CourseInfoModal({
   onSubmitCourse,
 }: CourseInfoModalProps) {
   const form = useForm<CourseFormValues>({
-    resolver: zodResolver(courseSchema),
+    resolver: zodResolver(courseSchema(type)),
     defaultValues: {
       id: defaultValues?.id || undefined,
       imgUrl: defaultValues?.imgUrl || "",
@@ -81,18 +109,27 @@ export function CourseInfoModal({
       duration: defaultValues?.duration || 0,
     },
   });
-
-  const [previewUrl, setPreviewUrl] = useState<string>(
-    typeof defaultValues?.imgUrl === "string" ? defaultValues.imgUrl : "",
-  );
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = (data: CourseFormValues) => {
     console.log("Form submitted:", data);
     console.log("defaultValues:", defaultValues);
+
     onSubmitCourse?.(data);
-    // toast.success(type === "create" ? "Course created!" : "Course updated!");
     form.reset();
-    setPreviewUrl(""); // reset preview
+  };
+  const handleFileChange = (
+    file: File | null,
+    fieldOnChange: (value: File | string) => void,
+  ) => {
+    if (file) {
+      fieldOnChange(file);
+    }
+  };
+
+  const handleRemoveImage = (fieldOnChange: (value: File | string) => void) => {
+    fieldOnChange("");
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   return (
@@ -121,198 +158,241 @@ export function CourseInfoModal({
               render={({ field }) => <input type="hidden" {...field} />}
             />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
-              {/* Upload & Preview ảnh */}
-              <div className="flex flex-col space-y-3 md:h-full">
+              {/* Cột trái: Upload & Preview ảnh */}
+              <div className="flex flex-col space-y-3 h-full">
                 <FormField
                   control={form.control}
                   name="imgUrl"
                   render={({ field }) => (
-                    <FormItem className="w-full">
+                    <FormItem className="flex flex-col items-center w-full h-full">
                       <FormLabel>Course Image</FormLabel>
-                      <FormControl>
-                        <Input
+
+                      <div
+                        className="relative w-full h-full border-2 border-dashed rounded-md flex items-center justify-center cursor-pointer hover:bg-muted transition"
+                        onClick={() => fileInputRef.current?.click()}
+                      >
+                        {field.value ? (
+                          <img
+                            src={
+                              typeof field.value === "string"
+                                ? field.value
+                                : field.value instanceof File
+                                  ? URL.createObjectURL(field.value)
+                                  : ""
+                            }
+                            alt="Preview"
+                            className="w-full h-full object-cover rounded-md"
+                          />
+                        ) : (
+                          <div className="flex flex-col items-center text-gray-500">
+                            <ImagePlus className="h-10 w-10 mb-2" />
+                            <span>Click to upload image</span>
+                          </div>
+                        )}
+                        <input
+                          ref={fileInputRef}
                           type="file"
                           accept="image/*"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0];
-                            if (file) {
-                              field.onChange(file); // Lưu File vào form
-                              setPreviewUrl(URL.createObjectURL(file)); // Hiển thị preview
-                            }
-                          }}
+                          className="hidden"
+                          onChange={(e) =>
+                            handleFileChange(
+                              e.target.files?.[0] || null,
+                              field.onChange,
+                            )
+                          }
                         />
-                      </FormControl>
+                      </div>
+
+                      {/* Nút Edit + Remove */}
+                      <div className="flex gap-2 mt-3">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => fileInputRef.current?.click()}
+                          disabled={!field.value}
+                          className="flex items-center gap-1"
+                        >
+                          <Edit2 className="h-4 w-4" /> Edit
+                        </Button>
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          onClick={() => handleRemoveImage(field.onChange)}
+                          disabled={!field.value}
+                          className="flex items-center gap-1"
+                        >
+                          <Trash2 className="h-4 w-4" /> Remove
+                        </Button>
+                      </div>
+
                       <FormMessage />
                     </FormItem>
                   )}
                 />
-                {previewUrl && (
-                  <div className="flex-1">
-                    <img
-                      src={previewUrl}
-                      alt="Preview"
-                      className="w-full h-full object-cover rounded-md border"
-                    />
-                  </div>
-                )}
               </div>
 
-              {/* Các input còn lại */}
-              <div className="space-y-4 md:flex md:flex-col md:justify-between">
-                <FormField
-                  control={form.control}
-                  name="title"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Course Title</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Enter course title" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+              {/* ✅ Cột phải: Các input + nút Add Course chung 1 div */}
+              <div className="flex flex-col justify-between space-y-4">
+                <div className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="title"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Course Title</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Enter course title" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                <FormField
-                  control={form.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Description</FormLabel>
-                      <FormControl>
-                        <Textarea
-                          placeholder="Enter course description"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                  <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Description</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="Enter course description"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                <FormField
-                  control={form.control}
-                  name="level"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Level</FormLabel>
-                      <FormControl>
-                        <Select
-                          value={field.value}
-                          onValueChange={field.onChange}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select level" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {["Beginner", "Intermediate", "Advanced"].map(
-                              (lvl) => (
-                                <SelectItem key={lvl} value={lvl}>
-                                  {lvl}
+                  <FormField
+                    control={form.control}
+                    name="level"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Level</FormLabel>
+                        <FormControl>
+                          <Select
+                            value={field.value}
+                            onValueChange={field.onChange}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select level" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {["Beginner", "Intermediate", "Advanced"].map(
+                                (lvl) => (
+                                  <SelectItem key={lvl} value={lvl}>
+                                    {lvl}
+                                  </SelectItem>
+                                ),
+                              )}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="instructor"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Instructor</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="Enter instructor name"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="category"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Category</FormLabel>
+                        <FormControl>
+                          <Select
+                            value={field.value}
+                            onValueChange={field.onChange}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a category" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {categories.map((cat) => (
+                                <SelectItem key={cat} value={cat}>
+                                  {cat}
                                 </SelectItem>
-                              ),
-                            )}
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                <FormField
-                  control={form.control}
-                  name="instructor"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Instructor</FormLabel>
-                      <FormControl>
-                        <Input placeholder="Enter instructor name" {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                  <FormField
+                    control={form.control}
+                    name="duration"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Duration (minutes)</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            step="30"
+                            placeholder="Enter course duration"
+                            value={field.value}
+                            onChange={(e) =>
+                              field.onChange(parseInt(e.target.value, 10))
+                            }
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
 
-                <FormField
-                  control={form.control}
-                  name="category"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Category</FormLabel>
-                      <FormControl>
-                        <Select
-                          value={field.value}
-                          onValueChange={field.onChange}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select a category" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            {categories.map((cat) => (
-                              <SelectItem key={cat} value={cat}>
-                                {cat}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                  <FormField
+                    control={form.control}
+                    name="price"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Price</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            step="0.01"
+                            placeholder="Enter course price"
+                            value={field.value}
+                            onChange={(e) =>
+                              field.onChange(parseFloat(e.target.value))
+                            }
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
 
-                <FormField
-                  control={form.control}
-                  name="duration"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Duration (minutes)</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          step="30"
-                          placeholder="Enter course duration"
-                          value={field.value}
-                          onChange={(e) =>
-                            field.onChange(parseInt(e.target.value, 10))
-                          }
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="price"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Price</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="number"
-                          step="0.01"
-                          placeholder="Enter course price"
-                          value={field.value}
-                          onChange={(e) =>
-                            field.onChange(parseFloat(e.target.value))
-                          }
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {/* ✅ Nút Add Course nằm chung div này, dưới các input */}
+                <div className="flex justify-end pt-2">
+                  <Button type="submit" className="w-full md:w-auto">
+                    {type === "create" ? "Add Course" : "Save Changes"}
+                  </Button>
+                </div>
               </div>
             </div>
-
-            <DialogFooter>
-              <Button type="submit">
-                {type === "create" ? "Add Course" : "Save Changes"}
-              </Button>
-            </DialogFooter>
           </form>
         </Form>
       </DialogContent>
