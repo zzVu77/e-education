@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { Router } from "express";
 import { authController } from "../controller/auth.controller";
 import { validate } from "../middleware/validation.middleware";
@@ -81,11 +80,15 @@ authRouter.post("/logout", (req, res) => authController.logout(req, res));
  *         description: Refresh success
  */
 authRouter.post("/refresh", (req, res) => authController.refresh(req, res));
-authRouter.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
-
+authRouter.get(
+  "/google",
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+  }) as import("express").RequestHandler,
+);
 authRouter.get(
   "/google/callback",
-  passport.authenticate("google", { session: false }),
+  passport.authenticate("google", { session: false }) as import("express").RequestHandler,
   authController.googleCallback,
 );
 

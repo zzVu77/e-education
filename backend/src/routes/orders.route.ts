@@ -81,23 +81,6 @@ orderRouter.get("/status/:status", (req, res) => orderController.getOrdersByStat
 
 /**
  * @swagger
- * /api/orders/user/{userId}:
- *   get:
- *     summary: Get orders by user ID
- *     tags: [Orders]
- *     parameters:
- *       - in: path
- *         name: userId
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: List of orders for the user
- */
-orderRouter.get("/user/:userId", (req, res) => orderController.getOrdersByUser(req, res));
-/**
- * @swagger
  * /api/orders/{id}:
  *   get:
  *     summary: Get order by ID
@@ -115,5 +98,23 @@ orderRouter.get("/user/:userId", (req, res) => orderController.getOrdersByUser(r
  *         description: Order not found
  */
 orderRouter.get("/:id", (req, res) => orderController.getOrderById(req, res));
+
+/**
+ * @swagger
+ * /api/orders/user/{userId}:
+ *   get:
+ *     summary: Get orders by user ID
+ *     tags: [Orders]
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: List of orders for the user
+ */
+orderRouter.get("/user/:userId", (req, res) => orderController.getOrdersByUser(req, res));
 
 export default orderRouter;
