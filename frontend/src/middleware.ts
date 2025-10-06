@@ -43,14 +43,14 @@ export async function middleware(req: NextRequest) {
       return NextResponse.redirect(new URL("/", req.url));
     }
     // If the token is invalid and there's a refresh token, attempt to refresh
-    // if (!validPayload && refreshToken) {
-    //   // Redirect to the refresh API endpoint of Nextjs with returnTo parameter
-    //   const refreshUrl = new URL("/api/auth/refresh", req.url);
-    //   // Set returnTo to the current pathname
-    //   refreshUrl.searchParams.set("returnTo", pathname);
-    //   // Redirect to the refresh URL to get a new access token
-    //   return NextResponse.redirect(refreshUrl);
-    // }
+    if (!validPayload && refreshToken) {
+      // Redirect to the refresh API endpoint of Nextjs with returnTo parameter
+      const refreshUrl = new URL("/api/auth/refresh", req.url);
+      // Set returnTo to the current pathname
+      refreshUrl.searchParams.set("returnTo", pathname);
+      // Redirect to the refresh URL to get a new access token
+      return NextResponse.redirect(refreshUrl);
+    }
     // If the token is valid, allow the request to proceed
     if (validPayload) {
       return NextResponse.next();

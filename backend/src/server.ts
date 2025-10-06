@@ -17,7 +17,11 @@ async function bootstrap() {
   const app = express();
   app.use(
     cors({
-      origin: ["http://localhost:3000", "https://e-education-vu77.vercel.app"],
+      origin: [
+        "http://localhost:3000",
+        "https://e-education-vu77.vercel.app",
+        "https://vucoder77.id.vn/",
+      ],
       credentials: true,
     }),
   );
