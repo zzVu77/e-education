@@ -38,13 +38,6 @@ export const courseResponseSchema = z.object({
 });
 export type CourseResponseDto = z.infer<typeof courseResponseSchema>;
 
-export const paginatedCoursesResponseSchema = z.object({
-  data: z.array(courseResponseSchema),
-  totalPages: z.number(),
-});
-
-export type PaginatedCoursesResponseDto = z.infer<typeof paginatedCoursesResponseSchema>;
-
 export type FilterCriteria = {
   title?: string;
   category?: string;

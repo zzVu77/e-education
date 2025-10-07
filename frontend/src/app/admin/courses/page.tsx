@@ -34,7 +34,6 @@ import {
   CourseInfoModal,
 } from "../../../components/admin/CourseInfoModal";
 import {
-  CoursesDataResponse,
   CategoryDataResponse,
   CreateCourseResponse,
   CourseApiResponse,
@@ -137,8 +136,8 @@ export default function ManageCourses() {
 
   useEffect(() => {
     axiosInstance
-      .get<CoursesDataResponse>("/courses")
-      .then((res) => setData(res.data))
+      .get<CourseApiResponse[]>("/courses")
+      .then((res) => setData(res))
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
   }, []);
