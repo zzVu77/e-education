@@ -71,4 +71,5 @@ export type LoginResponse = {
 export type UserInfo = {
   id: string;
   fullName: string;
+  role: "admin" | "user";
 };

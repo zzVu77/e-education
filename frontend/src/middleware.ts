@@ -1,13 +1,17 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { jwtVerify } from "jose";
+import { JWTPayload, jwtVerify } from "jose";
 
 const secret = new TextEncoder().encode(process.env.ACCESS_SECRET);
-
-async function verifyToken(token: string) {
+export interface JwtPayloadCustom extends JWTPayload {
+  userId: string;
+  email: string;
+  role: "admin" | "user";
+}
+async function verifyToken(token: string): Promise<JwtPayloadCustom | null> {
   try {
     const { payload } = await jwtVerify(token, secret);
-    return payload;
+    return payload as JwtPayloadCustom;
   } catch {
     console.log("Access token is expired or invalid");
     return null;
@@ -20,6 +24,7 @@ export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const isPublicRoute =
     pathname.startsWith("/login") || pathname.startsWith("/signup");
+  const isAdminRoute = pathname.startsWith("/admin");
 
   if (!accessToken && !refreshToken) {
     if (isPublicRoute) {
@@ -34,6 +39,7 @@ export async function middleware(req: NextRequest) {
   if (accessToken) {
     // Verify the access token
     const validPayload = await verifyToken(accessToken);
+    console.log(validPayload);
     // If the token is valid and the user is trying to access a public route, redirect to home
     if (validPayload && isPublicRoute) {
       const returnTo = req.nextUrl.searchParams.get("returnTo");
@@ -53,6 +59,13 @@ export async function middleware(req: NextRequest) {
     }
     // If the token is valid, allow the request to proceed
     if (validPayload) {
+      // If the route is admin, check the user's role
+      if (isAdminRoute) {
+        const userRole = validPayload.role;
+        if (userRole !== "admin") {
+          return NextResponse.redirect(new URL("/", req.url));
+        }
+      }
       return NextResponse.next();
     }
   } else {
@@ -73,5 +86,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/test", "/login", "/signup"],
+  matcher: ["/test", "/login", "/signup", "/admin/:path*"],
 };

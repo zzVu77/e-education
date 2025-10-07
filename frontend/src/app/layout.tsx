@@ -46,7 +46,6 @@ export default async function RootLayout({
   const cookieStore = await cookies();
   const token = cookieStore.get("accessToken")?.value;
   const user = token ? await getUserFromToken(token) : null;
-
   return (
     <html lang="en">
       <body className={`${openSans.variable} antialiased`}>

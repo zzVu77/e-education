@@ -11,7 +11,13 @@ import {
 import axiosInstance from "@/config/axiosConfig";
 import { useUser } from "@/context/UserContext";
 import { cn } from "@/lib/utils";
-import { CircleUser, LogIn, LogOut, ShoppingCartIcon } from "lucide-react";
+import {
+  CircleUser,
+  LayoutDashboard,
+  LogIn,
+  LogOut,
+  ShoppingCartIcon,
+} from "lucide-react";
 import Link from "next/link";
 import Desktop from "./shared/Desktop";
 
@@ -68,12 +74,28 @@ const Header = () => {
                     </DropdownMenuLabel>
                   </Desktop.Hide>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link href="#" className="flex items-center cursor-pointer">
-                      <ShoppingCartIcon className="h-4 w-4 mr-2" />
-                      Cart
-                    </Link>
-                  </DropdownMenuItem>
+                  {user.role === "admin" ? (
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href="/admin"
+                        className="flex items-center cursor-pointer"
+                      >
+                        <LayoutDashboard className="h-4 w-4 mr-2" />
+                        Dashboard
+                      </Link>
+                    </DropdownMenuItem>
+                  ) : (
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href="#"
+                        className="flex items-center cursor-pointer"
+                      >
+                        <ShoppingCartIcon className="h-4 w-4 mr-2" />
+                        Cart
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+
                   <DropdownMenuItem
                     className="flex items-center text-red-600 cursor-pointer"
                     onClick={handleLogout}
