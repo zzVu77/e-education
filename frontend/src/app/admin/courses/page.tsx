@@ -229,6 +229,11 @@ export default function ManageCourses() {
       columnVisibility,
       rowSelection,
     },
+    initialState: {
+      pagination: {
+        pageSize: 10,
+      },
+    },
   });
   // if (!mounted) return null;
 

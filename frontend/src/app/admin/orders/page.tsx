@@ -1,6 +1,4 @@
 "use client";
-
-import { useEffect, useState } from "react";
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -13,15 +11,16 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 
 import {
   Table,
@@ -32,10 +31,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
+import axiosInstance from "@/config/axiosConfig";
+import { OrderItem, OrdersDataResponse } from "@/types";
 import { ChevronDown } from "lucide-react";
 import { OrderModal } from "../../../components/admin/OrderInfoModal";
-import { OrdersDataResponse, OrderItem } from "@/types";
-import axiosInstance from "@/config/axiosConfig";
 
 const columns: ColumnDef<OrderItem>[] = [
   {
@@ -44,8 +43,8 @@ const columns: ColumnDef<OrderItem>[] = [
     cell: (info) => info.getValue(),
   },
   {
-    accessorKey: "user.username",
-    header: "User",
+    accessorKey: "user.id",
+    header: "User ID",
     cell: (info) => info.getValue(),
   },
   {
@@ -71,7 +70,7 @@ const columns: ColumnDef<OrderItem>[] = [
             <OrderModal courses={courses}>
               <Button
                 size="sm"
-                className="bg-green-500 text-white hover:bg-green-600"
+                className="bg-transparent text-black text-xs shadow-none hover:bg-transparent"
               >
                 +{extraCount} more
               </Button>
@@ -112,34 +111,6 @@ const columns: ColumnDef<OrderItem>[] = [
   },
 ];
 
-// const mockOrders: Order[] = [
-//   {
-//     _id: "68d4074c61dbbcf56a047b61",
-//     userName: "John Doe",
-//     courses: [
-//       { id: 1, title: "Node.js API Development" },
-//       { id: 2, title: "Next.js Mastery" },
-//       { id: 3, title: "React.js Basics" },
-//     ],
-//     totalAmount: 23.78,
-//     paymentStatus: "Pending",
-//     paymentMethod: "Paypal",
-//     createdAt: "2025-07-25T16:01:00.000+00:00",
-//   },
-//   {
-//     _id: "68d4074c61dbbcf56a047b62",
-//     userName: "Alice Smith",
-//     courses: [
-//       { id: 1, title: "Node.js API Development" },
-//       { id: 2, title: "Next.js Mastery" },
-//     ],
-//     totalAmount: 59,
-//     paymentStatus: "Paid",
-//     paymentMethod: "Credit Card",
-//     createdAt: "2025-08-01T10:15:00.000+00:00",
-//   },
-// ];
-
 export default function ManageOrders() {
   const [data, setData] = useState<OrderItem[]>([]);
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -165,6 +136,11 @@ export default function ManageOrders() {
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    initialState: {
+      pagination: {
+        pageSize: 8,
+      },
+    },
     state: {
       sorting,
       columnFilters,
@@ -174,51 +150,128 @@ export default function ManageOrders() {
   });
 
   return (
-    <div className="w-full flex flex-col gap-4 p-2">
+    <div className="w-full flex flex-col gap-4 p-2 py-4">
       {/* Filter */}
       <div className="flex items-center gap-2 flex-wrap">
         <Input
           placeholder="Filter by Order ID..."
-          value={(table.getColumn("_id")?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn("id")?.getFilterValue() as string) ?? ""}
           onChange={(e) =>
-            table.getColumn("_id")?.setFilterValue(e.target.value)
+            table.getColumn("id")?.setFilterValue(e.target.value)
           }
-          className="max-w-sm text-xs"
+          className="max-w-sm text-xs border-green-500 text-green-500 hover:bg-green-50 focus-visible:border-green-500 focus-visible:bg-green-50 focus-visible:ring-[1px]"
         />
 
-        <select
-          className="border rounded p-1 text-xs"
-          value={
-            (table.getColumn("paymentStatus")?.getFilterValue() as string) ?? ""
-          }
-          onChange={(e) =>
-            table
-              .getColumn("paymentStatus")
-              ?.setFilterValue(e.target.value || undefined)
-          }
-        >
-          <option value="">All Status</option>
-          <option value="Pending">Pending</option>
-          <option value="Paid">Paid</option>
-          <option value="Cancelled">Cancelled</option>
-        </select>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="outline"
+              className="text-xs border-green-500 text-green-500 hover:bg-green-50"
+            >
+              {(table.getColumn("paymentMethod")?.getFilterValue() as string) ||
+                "All Methods"}
+              <ChevronDown className="ml-2 h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="min-w-[150px]">
+            <DropdownMenuCheckboxItem
+              checked={!table.getColumn("paymentMethod")?.getFilterValue()}
+              onCheckedChange={() =>
+                table.getColumn("paymentMethod")?.setFilterValue(undefined)
+              }
+            >
+              All Methods
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={
+                table.getColumn("paymentMethod")?.getFilterValue() === "Paypal"
+              }
+              onCheckedChange={() =>
+                table.getColumn("paymentMethod")?.setFilterValue("Paypal")
+              }
+            >
+              Paypal
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={
+                table.getColumn("paymentMethod")?.getFilterValue() ===
+                "Credit Card"
+              }
+              onCheckedChange={() =>
+                table.getColumn("paymentMethod")?.setFilterValue("Credit Card")
+              }
+            >
+              Credit Card
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={
+                table.getColumn("paymentMethod")?.getFilterValue() ===
+                "Bank Transfer"
+              }
+              onCheckedChange={() =>
+                table
+                  .getColumn("paymentMethod")
+                  ?.setFilterValue("Bank Transfer")
+              }
+            >
+              Bank Transfer
+            </DropdownMenuCheckboxItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
-        <select
-          className="border rounded p-1 text-xs"
-          value={
-            (table.getColumn("paymentMethod")?.getFilterValue() as string) ?? ""
-          }
-          onChange={(e) =>
-            table
-              .getColumn("paymentMethod")
-              ?.setFilterValue(e.target.value || undefined)
-          }
-        >
-          <option value="">All Methods</option>
-          <option value="Paypal">Paypal</option>
-          <option value="Credit Card">Credit Card</option>
-          <option value="Bank Transfer">Bank Transfer</option>
-        </select>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="outline"
+              className="text-xs border-green-500 text-green-500 hover:bg-green-50"
+            >
+              {(table.getColumn("paymentStatus")?.getFilterValue() as string) ||
+                "All Status"}
+              <ChevronDown className="ml-2 h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="start" className="min-w-[150px]">
+            <DropdownMenuCheckboxItem
+              checked={!table.getColumn("paymentStatus")?.getFilterValue()}
+              onCheckedChange={() =>
+                table.getColumn("paymentStatus")?.setFilterValue(undefined)
+              }
+            >
+              All Status
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={
+                table.getColumn("paymentStatus")?.getFilterValue() === "Pending"
+              }
+              onCheckedChange={() =>
+                table.getColumn("paymentStatus")?.setFilterValue("Pending")
+              }
+            >
+              Pending
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={
+                table.getColumn("paymentStatus")?.getFilterValue() === "Paid"
+              }
+              onCheckedChange={() =>
+                table.getColumn("paymentStatus")?.setFilterValue("Paid")
+              }
+            >
+              Paid
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={
+                table.getColumn("paymentStatus")?.getFilterValue() ===
+                "Cancelled"
+              }
+              onCheckedChange={() =>
+                table.getColumn("paymentStatus")?.setFilterValue("Cancelled")
+              }
+            >
+              Cancelled
+            </DropdownMenuCheckboxItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
