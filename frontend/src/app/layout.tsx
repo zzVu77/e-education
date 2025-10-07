@@ -7,6 +7,7 @@ import "./globals.css";
 import { UserProvider } from "@/context/UserContext";
 import { cookies } from "next/headers";
 import { getUserFromToken } from "@/utils/server/auth.server";
+import { OnlineUserProvider } from "@/context/OnlineUserContext";
 
 const openSans = Open_Sans({
   variable: "--font-open-sans",
@@ -33,15 +34,17 @@ export default async function RootLayout({
     <html lang="en">
       <body className={`${openSans.variable}  antialiased`}>
         <UserProvider initialUser={user}>
-          <Header />
-          {/* <AIChat></AIChat> */}
-          <Toaster
-            icons={{
-              success: <Check className="text-green-500 h-5 w-5 mr-4" />,
-              info: <Info className="text-blue-500 h-5 w-5 mr-4  " />,
-            }}
-          />
-          {children}
+          <OnlineUserProvider>
+            <Header />
+            {/* <AIChat></AIChat> */}
+            <Toaster
+              icons={{
+                success: <Check className="text-green-500 h-5 w-5 mr-4" />,
+                info: <Info className="text-blue-500 h-5 w-5 mr-4  " />,
+              }}
+            />
+            {children}
+          </OnlineUserProvider>
         </UserProvider>
       </body>
     </html>
