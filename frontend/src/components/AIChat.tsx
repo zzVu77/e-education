@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { BotIcon, SendIcon, UserIcon, XIcon } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
+import MarkdownRenderer from "./MarkdownRenderer";
 
 interface ChatMessage {
   id: string;
@@ -122,7 +123,11 @@ const AIChat = () => {
                       {message.sender === "user" ? "You" : "Bot"}
                     </span>
                   </div>
-                  <p>{message.text}</p>
+                  {message.sender === "bot" ? (
+                    <MarkdownRenderer content={message.text} />
+                  ) : (
+                    <p>{message.text}</p>
+                  )}
                 </div>
               </div>
             ))}

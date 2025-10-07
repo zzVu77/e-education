@@ -37,6 +37,8 @@ def health(): return {"ok": True}
 def chat(req: ChatReq):
     docs = get_docs_for_rerank_unique(req.message, chunks_coll=chunks_coll)
     if not docs: return {"message": "No relevant context found."}
-    prompt = llm.llm.build_sales_prompt(req.message, docs, language="en")
+    prompt = llm.llm.build_sales_prompt(req.message, docs, language="auto")
     answer = llm.generate_content(prompt)
+    answer = llm.llm.normalize_markdown(answer)
+    # Return markdown for frontend to render with react-markdown
     return {"message": answer}

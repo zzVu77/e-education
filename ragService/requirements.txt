@@ -9,3 +9,5 @@ pydantic
 uvicorn[standard]
 ipython
 python-dotenv
+markdown
+pygments

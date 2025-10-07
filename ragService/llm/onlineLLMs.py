@@ -3,7 +3,9 @@ import os
 import textwrap
 from typing import Any, Dict, List, Optional, Sequence, Union
 import google.generativeai as genai
-from IPython.display import Markdown
+import re
+import markdown
+from markdown.extensions import codehilite, fenced_code, tables, toc 
 
 class OnlineLLMs:
     def __init__(
@@ -71,9 +73,61 @@ class OnlineLLMs:
                 text = ""
         return text or ""
 
+    def normalize_markdown(self, s: str) -> str:
+        if not s:
+            return s
+        out = s.strip()
+        out = re.sub(r'\s\*\s', '\n- ', out)
+        out = re.sub(r':\s*-\s', ':\n- ', out)
+        out = re.sub(r'\n{3,}', '\n\n', out)
+        return out
+    
     def format_markdown(self, text: str) -> str:
-        return textwrap.indent(text.replace("\t", "    "), "> ")
-
+        """
+        Convert markdown text to HTML using Python markdown library.
+        Similar to what react-markdown would do in a frontend.
+        """
+        if not text:
+            return text
+            
+        # Configure markdown with extensions
+        md = markdown.Markdown(
+            extensions=[
+                'codehilite',
+                'fenced_code', 
+                'tables',
+                'toc',
+                'nl2br',
+                'attr_list'
+            ],
+            extension_configs={
+                'codehilite': {
+                    'css_class': 'highlight',
+                    'use_pygments': True
+                },
+                'toc': {
+                    'permalink': True
+                }
+            }
+        )
+        
+        # Convert markdown to HTML
+        html = md.convert(text)
+        
+        # Add some basic styling classes for better presentation
+        html = html.replace('<h1>', '<h1 class="text-2xl font-bold mb-4">')
+        html = html.replace('<h2>', '<h2 class="text-xl font-semibold mb-3">')
+        html = html.replace('<h3>', '<h3 class="text-lg font-medium mb-2">')
+        html = html.replace('<p>', '<p class="mb-3">')
+        html = html.replace('<ul>', '<ul class="list-disc list-inside mb-3">')
+        html = html.replace('<ol>', '<ol class="list-decimal list-inside mb-3">')
+        html = html.replace('<li>', '<li class="mb-1">')
+        html = html.replace('<code>', '<code class="bg-gray-100 px-1 py-0.5 rounded text-sm">')
+        html = html.replace('<pre>', '<pre class="bg-gray-100 p-3 rounded overflow-x-auto mb-3">')
+        html = html.replace('<blockquote>', '<blockquote class="border-l-4 border-gray-300 pl-4 italic mb-3">')
+        
+        return html
+    
     def build_sales_prompt(
         self,
         query: str,
@@ -87,7 +141,6 @@ class OnlineLLMs:
             joined.append(f"- Source #{i+1}:\n{textwrap.shorten(s, width=2000, placeholder=' ...')}")
         context = "\n\n".join(joined) if joined else "(no sources provided)"
 
-        # Auto-detect language from query if not specified
         if language == "auto":
             language_instruction = "Reply in the same language as the user's query."
         else:
@@ -103,6 +156,11 @@ class OnlineLLMs:
             f"- {language_instruction}\n"
             f"- Be concise, clear, and helpful.\n"
             f"- If price or duration is missing, state that it's unavailable.\n"
+            f"- Format your response using markdown for better readability.\n"
+            f"- Use **bold** for important information like course names, prices, and key details.\n"
+            f"- Use bullet points (-) for lists of features or benefits.\n"
+            f"- Use numbered lists (1., 2., 3.) for step-by-step information.\n"
+            f"- Use > for important notes or highlights.\n"
         )
         return prompt
 
