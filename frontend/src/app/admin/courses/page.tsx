@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import {
   ColumnDef,
@@ -54,7 +53,7 @@ const onSubmitCreateCourse = async (values: CourseFormValues) => {
     } else if (typeof values.imgUrl === "string") {
       imgUrl = values.imgUrl;
     }
-    // Gọi API createCourse
+    // Call API createCourse
     const createRes = await axiosInstance.post<CreateCourseResponse>(
       "/courses",
       {
@@ -70,7 +69,7 @@ const onSubmitCreateCourse = async (values: CourseFormValues) => {
     );
 
     console.log("Course created:", createRes.data);
-    toast.success(createRes.message); // dùng sonner thay alert
+    toast.success(createRes.message);
   } catch (err) {
     console.error("Error creating course:", err);
     toast.error("Failed to create course");
@@ -85,11 +84,7 @@ export default function ManageCourses() {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
-  // const [mounted, setMounted] = useState(false);
 
-  // useEffect(() => {
-  //   setMounted(true); // đánh dấu đã mount
-  // }, []);
   const onSubmitEditCourse = async (dataForm: CourseFormValues) => {
     try {
       const { id, ...newValues } = dataForm;
@@ -240,56 +235,58 @@ export default function ManageCourses() {
   if (loading) return <p>Loading...</p>;
 
   return (
-    <div className="w-full flex flex-col gap-4 p-2">
-      {/* Filter + Toggle Columns */}
-      <div className="flex items-center gap-2">
-        <Input
-          placeholder="Filter by title..."
-          value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
-          onChange={(e) =>
-            table.getColumn("title")?.setFilterValue(e.target.value)
-          }
-          className="max-w-sm text-xs"
-        />
-
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="outline"
-              className="ml-auto text-xs border-green-500 text-green-500 hover:bg-green-50"
-            >
-              Columns <ChevronDown className="ml-2 h-4 w-4" />
+    <div className="w-full flex flex-col gap-4 p-2 py-4">
+      <div className="flex flex-row justify-between items-center ">
+        {/* Filter + Toggle Columns */}
+        <div className="flex flex-row items-start justify-start gap-2">
+          <Input
+            placeholder="Filter by title..."
+            value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
+            onChange={(e) =>
+              table.getColumn("title")?.setFilterValue(e.target.value)
+            }
+            className="max-w-sm text-xs border-green-500 text-green-500 hover:bg-green-50"
+          />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                className="text-xs border-green-500 text-green-500 hover:bg-green-50"
+              >
+                Columns <ChevronDown className="ml-2 h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {table
+                .getAllColumns()
+                .filter((c) => c.getCanHide())
+                .map((column) => (
+                  <DropdownMenuCheckboxItem
+                    key={column.id}
+                    className="capitalize"
+                    checked={column.getIsVisible()}
+                    onCheckedChange={(value) =>
+                      column.toggleVisibility(!!value)
+                    }
+                  >
+                    {column.id}
+                  </DropdownMenuCheckboxItem>
+                ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+        {/* Add New */}
+        <div className="self-end">
+          <CourseInfoModal
+            type="create"
+            categories={categories} // <- thêm prop categories
+            onSubmitCourse={onSubmitCreateCourse}
+          >
+            <Button className="bg-green-500 text-white hover:bg-green-600">
+              Add new course
             </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((c) => c.getCanHide())
-              .map((column) => (
-                <DropdownMenuCheckboxItem
-                  key={column.id}
-                  className="capitalize"
-                  checked={column.getIsVisible()}
-                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                >
-                  {column.id}
-                </DropdownMenuCheckboxItem>
-              ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-
-      {/* Add New */}
-      <div className="self-end">
-        <CourseInfoModal
-          type="create"
-          categories={categories} // <- thêm prop categories
-          onSubmitCourse={onSubmitCreateCourse}
-        >
-          <Button className="bg-green-500 text-white hover:bg-green-600">
-            Add new course
-          </Button>
-        </CourseInfoModal>
+          </CourseInfoModal>
+        </div>
       </div>
 
       {/* Table */}

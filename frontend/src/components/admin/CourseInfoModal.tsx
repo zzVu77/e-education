@@ -34,6 +34,7 @@ import {
 } from "../ui/select";
 import { Edit2 } from "iconsax-reactjs";
 import { ImagePlus, Trash2 } from "lucide-react";
+import { ScrollArea } from "../ui/scroll-area";
 
 // ✅ Fix lỗi File is not defined khi SSR
 const FileClass = typeof File !== "undefined" ? File : class {};
@@ -135,266 +136,276 @@ export function CourseInfoModal({
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="w-full max-w-sm md:max-w-2xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>
+      <DialogContent className="w-full max-w-sm md:max-w-[80vw] max-h-[95vh] overflow-y-auto">
+        <DialogHeader className="w-full text-center">
+          <DialogTitle className="text-center">
             {type === "create" ? "Add New Course" : "Edit Course"}
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-center">
             {type === "create"
               ? "Fill in the course details to add a new course."
               : "Update the course information here."}
           </DialogDescription>
         </DialogHeader>
+        <ScrollArea className="h-full w-full rounded-md ">
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(handleSubmit)}
+              className="space-y-4"
+            >
+              <FormField
+                control={form.control}
+                name="id"
+                render={({ field }) => <input type="hidden" {...field} />}
+              />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
+                {/*Upload & Preview image */}
+                <div className="flex flex-col space-y-3 h-full">
+                  <FormField
+                    control={form.control}
+                    name="imgUrl"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col items-center w-full h-full">
+                        <FormLabel>Course Image</FormLabel>
 
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className="space-y-4"
-          >
-            <FormField
-              control={form.control}
-              name="id"
-              render={({ field }) => <input type="hidden" {...field} />}
-            />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch">
-              {/* Cột trái: Upload & Preview ảnh */}
-              <div className="flex flex-col space-y-3 h-full">
-                <FormField
-                  control={form.control}
-                  name="imgUrl"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-col items-center w-full h-full">
-                      <FormLabel>Course Image</FormLabel>
-
-                      <div
-                        className="relative w-full h-full border-2 border-dashed rounded-md flex items-center justify-center cursor-pointer hover:bg-muted transition"
-                        onClick={() => fileInputRef.current?.click()}
-                      >
-                        {field.value ? (
-                          <img
-                            src={
-                              typeof field.value === "string"
-                                ? field.value
-                                : field.value instanceof File
-                                  ? URL.createObjectURL(field.value)
-                                  : ""
-                            }
-                            alt="Preview"
-                            className="w-full h-full object-cover rounded-md"
-                          />
-                        ) : (
-                          <div className="flex flex-col items-center text-gray-500">
-                            <ImagePlus className="h-10 w-10 mb-2" />
-                            <span>Click to upload image</span>
-                          </div>
-                        )}
-                        <input
-                          ref={fileInputRef}
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          onChange={(e) =>
-                            handleFileChange(
-                              e.target.files?.[0] || null,
-                              field.onChange,
-                            )
-                          }
-                        />
-                      </div>
-
-                      {/* Nút Edit + Remove */}
-                      <div className="flex gap-2 mt-3">
-                        <Button
-                          type="button"
-                          variant="outline"
+                        <div
+                          className="relative w-full h-full border-2 border-dashed rounded-md flex items-center justify-center cursor-pointer hover:bg-muted transition min-h-[200px] "
                           onClick={() => fileInputRef.current?.click()}
-                          disabled={!field.value}
-                          className="flex items-center gap-1"
                         >
-                          <Edit2 className="h-4 w-4" /> Edit
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="destructive"
-                          onClick={() => handleRemoveImage(field.onChange)}
-                          disabled={!field.value}
-                          className="flex items-center gap-1"
-                        >
-                          <Trash2 className="h-4 w-4" /> Remove
-                        </Button>
-                      </div>
-
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
-
-              {/* ✅ Cột phải: Các input + nút Add Course chung 1 div */}
-              <div className="flex flex-col justify-between space-y-4">
-                <div className="space-y-4">
-                  <FormField
-                    control={form.control}
-                    name="title"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Course Title</FormLabel>
-                        <FormControl>
-                          <Input placeholder="Enter course title" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="description"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Description</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            placeholder="Enter course description"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="level"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Level</FormLabel>
-                        <FormControl>
-                          <Select
-                            value={field.value}
-                            onValueChange={field.onChange}
-                          >
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select level" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {["Beginner", "Intermediate", "Advanced"].map(
-                                (lvl) => (
-                                  <SelectItem key={lvl} value={lvl}>
-                                    {lvl}
-                                  </SelectItem>
-                                ),
-                              )}
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="instructor"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Instructor</FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder="Enter instructor name"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="category"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Category</FormLabel>
-                        <FormControl>
-                          <Select
-                            value={field.value}
-                            onValueChange={field.onChange}
-                          >
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select a category" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              {categories.map((cat) => (
-                                <SelectItem key={cat} value={cat}>
-                                  {cat}
-                                </SelectItem>
-                              ))}
-                            </SelectContent>
-                          </Select>
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name="duration"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Duration (minutes)</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            step="30"
-                            placeholder="Enter course duration"
-                            value={field.value}
+                          {field.value ? (
+                            <img
+                              src={
+                                typeof field.value === "string"
+                                  ? field.value
+                                  : field.value instanceof File
+                                    ? URL.createObjectURL(field.value)
+                                    : ""
+                              }
+                              alt="Preview"
+                              className="w-full h-full object-cover rounded-md"
+                            />
+                          ) : (
+                            <div className="flex flex-col items-center text-gray-500">
+                              <ImagePlus className="h-10 w-10 mb-2" />
+                              <span>Click to upload image</span>
+                            </div>
+                          )}
+                          <input
+                            ref={fileInputRef}
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
                             onChange={(e) =>
-                              field.onChange(parseInt(e.target.value, 10))
+                              handleFileChange(
+                                e.target.files?.[0] || null,
+                                field.onChange,
+                              )
                             }
                           />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                        </div>
 
-                  <FormField
-                    control={form.control}
-                    name="price"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Price</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            step="0.01"
-                            placeholder="Enter course price"
-                            value={field.value}
-                            onChange={(e) =>
-                              field.onChange(parseFloat(e.target.value))
-                            }
-                          />
-                        </FormControl>
+                        {/* Edit + Remove buttons */}
+                        <div className="flex gap-2 mt-3">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => fileInputRef.current?.click()}
+                            disabled={!field.value}
+                            className="flex items-center gap-1 bg-black text-white hover:bg-black/80 hover:text-white "
+                          >
+                            <Edit2 className="h-4 w-4" /> Edit
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            onClick={() => handleRemoveImage(field.onChange)}
+                            disabled={!field.value}
+                            className="flex items-center gap-1"
+                          >
+                            <Trash2 className="h-4 w-4" /> Remove
+                          </Button>
+                        </div>
+
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                 </div>
 
-                {/* ✅ Nút Add Course nằm chung div này, dưới các input */}
-                <div className="flex justify-end pt-2">
-                  <Button type="submit" className="w-full md:w-auto">
+                {/* Right column: Input fields + Add Course button */}
+                <div className="flex flex-col justify-between space-y-4">
+                  <div className="space-y-4">
+                    <FormField
+                      control={form.control}
+                      name="title"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Course Title</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="Enter course title"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="description"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Description</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Enter course description"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <div className="flex flex-row justify-start gap-4 items-center w-full">
+                      <FormField
+                        control={form.control}
+                        name="level"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Level</FormLabel>
+                            <FormControl>
+                              <Select
+                                value={field.value}
+                                onValueChange={field.onChange}
+                              >
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select level" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {["Beginner", "Intermediate", "Advanced"].map(
+                                    (lvl) => (
+                                      <SelectItem key={lvl} value={lvl}>
+                                        {lvl}
+                                      </SelectItem>
+                                    ),
+                                  )}
+                                </SelectContent>
+                              </Select>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      <FormField
+                        control={form.control}
+                        name="category"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Category</FormLabel>
+                            <FormControl>
+                              <Select
+                                value={field.value}
+                                onValueChange={field.onChange}
+                              >
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Select a category" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {categories.map((cat) => (
+                                    <SelectItem key={cat} value={cat}>
+                                      {cat}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    <FormField
+                      control={form.control}
+                      name="instructor"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Instructor</FormLabel>
+                          <FormControl>
+                            <Input
+                              placeholder="Enter instructor name"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <div className="flex flex-row justify-start gap-4 items-center w-full">
+                      <FormField
+                        control={form.control}
+                        name="duration"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Duration (minutes)</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                step="30"
+                                placeholder="Enter course duration"
+                                value={field.value}
+                                onChange={(e) =>
+                                  field.onChange(parseInt(e.target.value, 10))
+                                }
+                                min={0}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="price"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Price</FormLabel>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                min={0}
+                                step="0.01"
+                                placeholder="Enter course price"
+                                value={field.value}
+                                onChange={(e) =>
+                                  field.onChange(parseFloat(e.target.value))
+                                }
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  </div>
+                  {/* Add course button */}
+                </div>
+                <div className="flex justify-center pt-2 md:col-span-2 ">
+                  <Button
+                    variant={"viewDetails"}
+                    type="submit"
+                    className="w-full md:w-auto rounded-md px-20"
+                  >
                     {type === "create" ? "Add Course" : "Save Changes"}
                   </Button>
                 </div>
               </div>
-            </div>
-          </form>
-        </Form>
+            </form>
+          </Form>
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );
