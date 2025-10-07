@@ -6,6 +6,8 @@ import google.generativeai as genai
 import re
 import markdown
 from markdown.extensions import codehilite, fenced_code, tables, toc 
+from ragService.retrieval.vector_search import get_docs_for_rerank_unique
+from ragService.retrieval.fqa_vector_search import get_docs_for_fqa
 
 class OnlineLLMs:
     def __init__(
@@ -82,51 +84,6 @@ class OnlineLLMs:
         out = re.sub(r'\n{3,}', '\n\n', out)
         return out
     
-    def format_markdown(self, text: str) -> str:
-        """
-        Convert markdown text to HTML using Python markdown library.
-        Similar to what react-markdown would do in a frontend.
-        """
-        if not text:
-            return text
-            
-        # Configure markdown with extensions
-        md = markdown.Markdown(
-            extensions=[
-                'codehilite',
-                'fenced_code', 
-                'tables',
-                'toc',
-                'nl2br',
-                'attr_list'
-            ],
-            extension_configs={
-                'codehilite': {
-                    'css_class': 'highlight',
-                    'use_pygments': True
-                },
-                'toc': {
-                    'permalink': True
-                }
-            }
-        )
-        
-        # Convert markdown to HTML
-        html = md.convert(text)
-        
-        # Add some basic styling classes for better presentation
-        html = html.replace('<h1>', '<h1 class="text-2xl font-bold mb-4">')
-        html = html.replace('<h2>', '<h2 class="text-xl font-semibold mb-3">')
-        html = html.replace('<h3>', '<h3 class="text-lg font-medium mb-2">')
-        html = html.replace('<p>', '<p class="mb-3">')
-        html = html.replace('<ul>', '<ul class="list-disc list-inside mb-3">')
-        html = html.replace('<ol>', '<ol class="list-decimal list-inside mb-3">')
-        html = html.replace('<li>', '<li class="mb-1">')
-        html = html.replace('<code>', '<code class="bg-gray-100 px-1 py-0.5 rounded text-sm">')
-        html = html.replace('<pre>', '<pre class="bg-gray-100 p-3 rounded overflow-x-auto mb-3">')
-        html = html.replace('<blockquote>', '<blockquote class="border-l-4 border-gray-300 pl-4 italic mb-3">')
-        
-        return html
     
     def build_sales_prompt(
         self,
@@ -165,19 +122,85 @@ class OnlineLLMs:
         return prompt
 
 
+    def build_faq_prompt(
+        self,
+        query: str,
+        source_information: Sequence[str],
+        language: str = "auto",
+    ) -> str:
+        joined: List[str] = []
+        for i, s in enumerate(source_information):
+            if not s or not isinstance(s, str):
+                continue
+            joined.append(f"- FAQ Source #{i+1}:\n{textwrap.shorten(s, width=2000, placeholder=' ...')}")
+        context = "\n\n".join(joined) if joined else "(no FAQ sources provided)"
 
-# from retrieval.vector_search import get_docs_for_rerank_unique
-# from llms.online_llms import OnlineLLMs
+        if language == "auto":
+            language_instruction = "Reply in the same language as the user's query."
+        else:
+            language_instruction = f"Reply in {language}."
 
-# # Build context from your ANN -> dedupe step
-# query = "I want to buy business improvement skills courses?"
-# sources = get_docs_for_rerank_unique(query, course_chunks, k_candidates=50, k_return=2)
+        prompt = (
+            f"You are a helpful support assistant for an e-learning platform.\n"
+            f"User's question: {query}\n\n"
+            f"Answer strictly based on the FAQ information below.\n"
+            f"If the answer is not present, say you don't have enough information.\n\n"
+            f"FAQ information:\n{context}\n\n"
+            f"Constraints:\n"
+            f"- {language_instruction}\n"
+            f"- Be concise and clear.\n"
+            f"- Use markdown for formatting.\n"
+            f"- Use **bold** for important policy names, deadlines, or steps.\n"
+            f"- Use bullet points for lists.\n"
+        )
+        return prompt
 
-# llm = OnlineLLMs(model_name="gemini-2.0-flash")  # uses GOOGLE_API_KEY from Colab Secrets or env
-# prompt = llm.build_sales_prompt(query, sources, language="en")
-# answer = llm.generate(prompt)
 
-# print(answer)
-# In notebooks:
-# from IPython.display import Markdown, display
-# display(Markdown(llm.format_markdown(answer)))
+    def classify_query_mode(self, query: str) -> str:
+        q = (query or "").lower()
+        faq_keywords = [
+            "refund", "payment", "policy", "support", "account", "login",
+            "shipping", "cancel", "cancellation", "terms", "privacy", "faq",
+            "how do i", "how to", "reset password", "order status", "can i"
+        ]
+        course_keywords = [
+            "course", "lesson", "module", "curriculum", "syllabus", "price",
+            "duration", "instructor", "beginner", "advanced", "enroll", "buy"
+        ]
+        if any(k in q for k in faq_keywords) and not any(k in q for k in course_keywords):
+            return "faq"
+        return "course"
+
+
+    def answer_query(
+        self,
+        query: str,
+        *,
+        course_chunks_coll,
+        faq_chunks_coll,
+        language: str = "auto",
+        mode: Optional[str] = None,  # "faq" | "course" | None (auto)
+        k_candidates: int = 50,
+        k_return: int = 2,
+    ) -> str:
+        resolved_mode = (mode or self.classify_query_mode(query)).lower()
+
+        if resolved_mode == "faq":
+            sources = get_docs_for_fqa(
+                query=query,
+                chunks_coll=faq_chunks_coll,
+                k_candidates=k_candidates,
+                k_return=k_return,
+            )
+            prompt = self.build_faq_prompt(query, sources, language=language)
+        else:
+            sources = get_docs_for_rerank_unique(
+                query=query,
+                chunks_coll=course_chunks_coll,
+                k_candidates=k_candidates,
+                k_return=max(2, k_return),
+            )
+            prompt = self.build_sales_prompt(query, sources, language=language)
+
+        raw = self.generate(prompt)
+        return self.normalize_markdown(raw)
