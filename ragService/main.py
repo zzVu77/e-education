@@ -1,11 +1,12 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-from ragService.retrieval.vector_search import get_docs_for_rerank_unique
 from ragService.llm.llms import LLMS
 from pymongo import MongoClient
 import os
 from dotenv import load_dotenv
 from fastapi.middleware.cors import CORSMiddleware
+from langdetect import detect, DetectorFactory
+DetectorFactory.seed = 0
 
 load_dotenv()
 
@@ -27,18 +28,33 @@ mongo_client = MongoClient(MONGODB_URI)
 mongo_db = mongo_client[DB_NAME]
 chunks_coll = mongo_db[CHUNKS_COLLECTION]
 
+CHUNKS_COLLECTION_FAQ = "faqs_chunks"
+chunks_coll_faq = mongo_db[CHUNKS_COLLECTION_FAQ]
+
+
 class ChatReq(BaseModel):
     message: str
+    language: str | None = None 
 
 @app.get("/health")
 def health(): return {"ok": True}
 
 @app.post("/chat")
 def chat(req: ChatReq):
-    docs = get_docs_for_rerank_unique(req.message, chunks_coll=chunks_coll)
-    if not docs: return {"message": "No relevant context found."}
-    prompt = llm.llm.build_sales_prompt(req.message, docs, language="auto")
-    answer = llm.generate_content(prompt)
-    answer = llm.llm.normalize_markdown(answer)
-    # Return markdown for frontend to render with react-markdown
+    # Prefer client-provided language; otherwise detect from message; fallback to English
+    if req.language:
+        lang = req.language
+    else:
+        try:
+            lang = detect(req.message)
+        except Exception:
+            lang = "en"
+    answer = llm.llm.answer_query(
+        query=req.message,
+        course_chunks_coll=chunks_coll,
+        faq_chunks_coll=chunks_coll_faq,
+        language=lang,
+        mode=None,
+    )
+    # answer = llm.llm.normalize_markdown(answer)
     return {"message": answer}
