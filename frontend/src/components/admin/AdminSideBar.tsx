@@ -1,8 +1,15 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
+import axiosInstance from "@/config/axiosConfig";
+import { useUser } from "@/context/UserContext";
 import { cn } from "@/lib/utils";
-import { BookOpen, LayoutDashboard, LogOut, ShoppingCart } from "lucide-react";
+import {
+  BookOpen,
+  House,
+  LayoutDashboard,
+  LogOut,
+  ShoppingCart,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -10,11 +17,22 @@ const menuItems = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/courses", label: "Courses", icon: BookOpen },
   { href: "/admin/orders", label: "Orders", icon: ShoppingCart },
+  { href: "/", label: "Homepage", icon: House },
 ];
 
 export default function AdminSideBar() {
+  const { setUser } = useUser();
   const pathname = usePathname();
-
+  const handleLogout = () => {
+    try {
+      axiosInstance.post("/auth/logout").then(() => {
+        setUser(null);
+        window.location.href = "/";
+      });
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
   return (
     <div>
       {/* Sidebar Desktop */}
@@ -43,7 +61,10 @@ export default function AdminSideBar() {
             ))}
           </div>
           <div className="p-2 border-t border-green-600">
-            <Button className="w-full flex items-center justify-center bg-white text-green-500 hover:bg-gray-100">
+            <Button
+              onClick={handleLogout}
+              className="w-full flex items-center justify-center bg-white text-green-500 hover:bg-gray-100"
+            >
               <LogOut className="mr-2 h-4 w-4 text-green-500" />
               Logout
             </Button>
@@ -74,7 +95,10 @@ export default function AdminSideBar() {
           );
         })}
 
-        <button className="flex flex-col items-center justify-center text-xs text-gray-500 hover:text-green-500">
+        <button
+          onClick={handleLogout}
+          className="flex flex-col items-center justify-center text-xs text-gray-500 hover:text-green-500"
+        >
           <LogOut className="h-5 w-5 mb-1" />
           Logout
         </button>
