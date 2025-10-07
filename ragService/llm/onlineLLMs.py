@@ -74,15 +74,11 @@ class OnlineLLMs:
     def format_markdown(self, text: str) -> str:
         return textwrap.indent(text.replace("\t", "    "), "> ")
 
-    def to_markdown(text):
-        text = text.replace('•', '  *')
-        return Markdown(textwrap.indent(text, '> ', predicate=lambda _: True))
-
     def build_sales_prompt(
         self,
         query: str,
         source_information: Sequence[str],
-        language: str = "en",
+        language: str = "auto",
     ) -> str:
         joined = []
         for i, s in enumerate(source_information):
@@ -91,6 +87,12 @@ class OnlineLLMs:
             joined.append(f"- Source #{i+1}:\n{textwrap.shorten(s, width=2000, placeholder=' ...')}")
         context = "\n\n".join(joined) if joined else "(no sources provided)"
 
+        # Auto-detect language from query if not specified
+        if language == "auto":
+            language_instruction = "Reply in the same language as the user's query."
+        else:
+            language_instruction = f"Reply in {language}."
+
         prompt = (
             f"Act as an online sales consultant for a course selling website. "
             f"A user's query: {query}\n"
@@ -98,7 +100,7 @@ class OnlineLLMs:
             f"If an answer is not present, say you don't have enough information.\n\n"
             f"Product information:\n{context}\n\n"
             f"Constraints:\n"
-            f"- Reply in {language}.\n"
+            f"- {language_instruction}\n"
             f"- Be concise, clear, and helpful.\n"
             f"- If price or duration is missing, state that it's unavailable.\n"
         )
