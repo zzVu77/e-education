@@ -37,7 +37,11 @@ export const authController = {
       const { accessToken, refreshToken } = authService.generateTokens(user);
       setTokenCookie(res, "accessToken", accessToken, JWT_CONFIG.ACCESS_EXPIRES_IN);
       setTokenCookie(res, "refreshToken", refreshToken, JWT_CONFIG.REFRESH_EXPIRES_IN);
-      res.redirect(process.env.FE_REDIRECT_URI || "http://localhost:3000");
+      res.redirect(
+        process.env.ENV === "development"
+          ? "http://localhost:3000"
+          : (process.env.FE_REDIRECT_URI as string),
+      );
     } catch (error) {
       console.error(error);
       return res.status(500).json({ message: "Google authentication failed" });
