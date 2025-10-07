@@ -159,7 +159,7 @@ export default function ManageOrders() {
           onChange={(e) =>
             table.getColumn("id")?.setFilterValue(e.target.value)
           }
-          className="max-w-sm text-xs border-green-500 text-green-500 hover:bg-green-50 focus-visible:border-green-500 focus-visible:bg-green-50 focus-visible:ring-[1px]"
+          className="w-full md:max-w-sm text-xs border-green-500 text-green-500 hover:bg-green-50 focus-visible:border-green-500 focus-visible:bg-green-50 focus-visible:ring-[1px]"
         />
 
         <DropdownMenu>

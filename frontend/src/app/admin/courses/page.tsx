@@ -28,7 +28,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Plus } from "lucide-react";
 import {
   CourseFormValues,
   CourseInfoModal,
@@ -42,7 +42,7 @@ import {
 import axiosInstance from "@/config/axiosConfig";
 import { toast } from "sonner";
 import { uploadImageToCloudinary } from "@/lib/utils";
-
+import { useMediaQuery } from "usehooks-ts";
 const onSubmitCreateCourse = async (values: CourseFormValues) => {
   try {
     // const imgUrl =
@@ -84,7 +84,7 @@ export default function ManageCourses() {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
-
+  const isMd = useMediaQuery("(min-width: 768px)");
   const onSubmitEditCourse = async (dataForm: CourseFormValues) => {
     try {
       const { id, ...newValues } = dataForm;
@@ -250,7 +250,7 @@ export default function ManageCourses() {
             onChange={(e) =>
               table.getColumn("title")?.setFilterValue(e.target.value)
             }
-            className="max-w-sm text-xs border-green-500 text-green-500 hover:bg-green-50"
+            className="max-w-sm text-xs border-green-500 text-green-500 hover:bg-green-50 px-2"
           />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -288,7 +288,8 @@ export default function ManageCourses() {
             onSubmitCourse={onSubmitCreateCourse}
           >
             <Button className="bg-green-500 text-white hover:bg-green-600">
-              Add new course
+              <Plus />
+              {isMd ? "Create" : ""}
             </Button>
           </CourseInfoModal>
         </div>
