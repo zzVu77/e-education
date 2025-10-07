@@ -12,6 +12,17 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
+import {
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -133,7 +144,16 @@ export default function ManageCourses() {
       toast.error("Failed to update course");
     }
   };
-
+  const onDeleteCourse = async (id: string) => {
+    try {
+      await axiosInstance.delete(`/courses/${id}`);
+      setData((prev) => prev.filter((course) => course.id !== id));
+      toast.success("Deleted course successfully");
+    } catch (err) {
+      console.error("Error deleting course:", err);
+      toast.error("Failed to delete course");
+    }
+  };
   useEffect(() => {
     axiosInstance
       .get<CourseApiResponse[]>("/courses")
@@ -203,9 +223,37 @@ export default function ManageCourses() {
               Edit
             </Button>
           </CourseInfoModal>
-          <Button size="sm" className="bg-red-500 text-white hover:bg-red-600">
-            Delete
-          </Button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                size="sm"
+                className="bg-red-500 text-white hover:bg-red-600"
+              >
+                Delete
+              </Button>
+            </AlertDialogTrigger>
+
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>
+                  Are you sure you want to delete this course?
+                </AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action cannot be undone. The course will be permanently
+                  removed.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => onDeleteCourse(row.original.id)}
+                  className="bg-red-500 text-white hover:bg-red-600"
+                >
+                  Confirm
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       ),
     },

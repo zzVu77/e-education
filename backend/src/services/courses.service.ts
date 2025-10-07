@@ -17,8 +17,7 @@ export const courseService = {
   },
 
   async getAllCourses(): Promise<CourseResponseDto[]> {
-    const courses = await CourseModel.find().lean();
-
+    const courses = await CourseModel.find();
     return courses.map((course) => course as CourseResponseDto);
   },
 
