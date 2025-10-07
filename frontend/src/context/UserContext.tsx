@@ -2,7 +2,7 @@
 "use client";
 import { createContext, ReactNode, useContext, useState } from "react";
 
-export type User = { id: string; fullName: string };
+export type User = { id: string; fullName: string; role: string };
 type UserContextType = {
   user: User | null;
   setUser: (user: User | null) => void;

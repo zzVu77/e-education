@@ -9,6 +9,7 @@ import userRouter from "./routes/users.route";
 import authRouter from "./routes/auth.route";
 import cookieParser from "cookie-parser";
 import orderRouter from "./routes/orders.route";
+import dashboardRouter from "./routes/dashboard.route";
 import { setupSwagger } from "./swagger";
 import passport from "passport";
 import "./config/passport";
@@ -21,6 +22,7 @@ async function bootstrap() {
         "http://localhost:3000",
         "https://e-education-vu77.vercel.app",
         "https://vucoder77.id.vn",
+        "http://10.0.40.208:3000",
       ],
       credentials: true,
     }),
@@ -40,6 +42,8 @@ async function bootstrap() {
   app.use("/api/users", userRouter);
   app.use("/api/auth", authRouter);
   app.use("/api/orders", orderRouter);
+  app.use("/api/dashboard", dashboardRouter);
+
   const uri = process.env.MONGODB_URI!;
   await connectDB(uri);
   const port = Number(process.env.PORT) || 3000;

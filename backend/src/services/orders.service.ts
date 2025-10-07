@@ -1,6 +1,14 @@
-import { CreateOrderDto, OrderResponseDto, OrderResponseSchema } from "../dtos/orders.dto";
+import { Types } from "mongoose";
+import {
+  CreateOrderDto,
+  OrderResponseDto,
+  OrderResponseDtoForGetAllOrders,
+  OrderResponseSchema,
+  // CourseInOrderDtoForGetAllOrders,
+  OrderResponseSchemaForGetAllOrders,
+} from "../dtos/orders.dto";
+import { CourseModel, ICourse } from "../models/course.model";
 import { OrderModel } from "../models/order.model";
-import { CourseModel } from "../models/course.model";
 
 export const orderService = {
   async createOrder(orderData: CreateOrderDto) {
@@ -26,9 +34,57 @@ export const orderService = {
     await newOrder.save();
   },
 
-  async getAllOrders(): Promise<OrderResponseDto[]> {
-    const orders = await OrderModel.find();
-    return orders.map((order) => OrderResponseSchema.parse(order.toJSON()));
+  async getAllOrders(): Promise<OrderResponseDtoForGetAllOrders[]> {
+    const orders = await OrderModel.find()
+      .populate({
+        path: "courses",
+        select: "title price",
+      })
+      .populate({
+        path: "user",
+        select: "username",
+      });
+    return orders.map((order) => {
+      const orderObj = order.toJSON();
+
+      // check courses
+      const courses: {
+        id: string;
+        name: string;
+        price: number;
+      }[] = ((orderObj.courses as (ICourse | Types.ObjectId)[]) ?? []).map((c) => {
+        if (c instanceof Types.ObjectId) {
+          return { id: c.toString(), name: "", price: 0 }; // fallback nếu chưa populate
+        }
+        return {
+          id: c.id.toString(),
+          name: c.title,
+          price: c.price,
+        };
+      });
+
+      // user
+      const user: { id: string; username: string } = (() => {
+        const u = orderObj.user as { id?: Types.ObjectId; username?: string } | Types.ObjectId;
+        if (u instanceof Types.ObjectId) {
+          return { id: u.toString(), username: "" }; // fallback nếu chưa populate
+        }
+        return {
+          id: u.id?.toString() ?? "Id not found",
+          username: u.username ?? "Username not found",
+        };
+      })();
+
+      const createdAt = orderObj.createdAt?.toISOString() ?? "";
+      const updatedAt = orderObj.updatedAt?.toISOString() ?? "";
+      return OrderResponseSchemaForGetAllOrders.parse({
+        ...orderObj,
+        user,
+        courses,
+        createdAt,
+        updatedAt,
+      });
+    });
   },
 
   async getOrderById(id: string): Promise<OrderResponseDto | null> {

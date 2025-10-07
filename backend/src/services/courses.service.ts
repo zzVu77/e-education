@@ -3,6 +3,7 @@ import {
   CourseResponseDto,
   CreateCourseDto,
   FilterCriteria,
+  GetAllCategoriesResponseDto,
   PaginatedCoursesResponseDto,
   UpdateCourseDto,
 } from "../dtos/courses.dto";
@@ -15,17 +16,9 @@ export const courseService = {
     return course.toJSON() as CourseResponseDto;
   },
 
-  async getAllCourses(page = 1, limit = 10): Promise<PaginatedCoursesResponseDto> {
-    const skip = (page - 1) * limit;
-    const [courses, totalItems] = await Promise.all([
-      CourseModel.find().skip(skip).limit(limit),
-      CourseModel.countDocuments(),
-    ]);
-
-    return {
-      data: courses.map((course) => course.toJSON() as CourseResponseDto),
-      totalPages: Math.ceil(totalItems / limit),
-    };
+  async getAllCourses(): Promise<CourseResponseDto[]> {
+    const courses = await CourseModel.find();
+    return courses.map((course) => course as CourseResponseDto);
   },
 
   async getCourseById(id: string): Promise<CourseResponseDto | null> {
@@ -63,6 +56,10 @@ export const courseService = {
       data: courses.map((course) => course.toJSON() as CourseResponseDto),
       totalPages: Math.ceil(totalItems / limit),
     };
+  },
+  async getAllCategories(): Promise<GetAllCategoriesResponseDto> {
+    const categories = await CourseModel.distinct("category");
+    return { data: categories };
   },
   async filterCoursesByCriteria(
     criteria: FilterCriteria,

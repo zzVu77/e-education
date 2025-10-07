@@ -97,6 +97,27 @@ courseRouter.get("/filter", (req, res) => courseController.filterCoursesByCriter
 
 /**
  * @swagger
+ * /api/courses/categories:
+ *   get:
+ *     summary: Get all course categories
+ *     tags: [Courses]
+ *     responses:
+ *       200:
+ *         description: List of all categories
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ */
+courseRouter.get("/categories", (req, res) => courseController.getAllCategories(req, res));
+
+/**
+ * @swagger
  * /api/courses/{id}:
  *   get:
  *     summary: Get course by ID
@@ -113,6 +134,7 @@ courseRouter.get("/filter", (req, res) => courseController.filterCoursesByCriter
  *       404:
  *         description: Course not found
  */
+
 courseRouter.get("/:id", (req, res) => courseController.getCourseById(req, res));
 
 /**

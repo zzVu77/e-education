@@ -10,7 +10,7 @@ export const userService = {
     }
     const hashedPassword = await bcrypt.hash(password, 10);
     userData.password = hashedPassword;
-    const newUser = new UserModel({ fullName, username, password: hashedPassword });
+    const newUser = new UserModel({ fullName, username, password: hashedPassword, role: "user" });
     await newUser.save();
   },
 };

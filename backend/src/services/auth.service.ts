@@ -12,7 +12,7 @@ export const authService = {
     }
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) throw new Error("Invalid credentials");
-    const payload = { id: user._id, fullName: user.fullName };
+    const payload = { id: user._id, fullName: user.fullName, role: user.role };
     const accessToken = jwt.sign(payload, JWT_CONFIG.ACCESS_SECRET, {
       expiresIn: JWT_CONFIG.ACCESS_EXPIRES_IN,
     });
@@ -51,6 +51,7 @@ export const authService = {
         fullName: data.fullName,
         googleId: data.googleId,
         password: hashedPassword,
+        role: "user",
       });
       await user.save();
     }
@@ -58,7 +59,7 @@ export const authService = {
     return user;
   },
   generateTokens(user: IUser) {
-    const payload = { id: user._id, fullName: user.fullName };
+    const payload = { id: user._id, fullName: user.fullName, role: user.role };
     const accessToken = jwt.sign(payload, JWT_CONFIG.ACCESS_SECRET, {
       expiresIn: JWT_CONFIG.ACCESS_EXPIRES_IN,
     });
