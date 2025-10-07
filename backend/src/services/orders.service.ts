@@ -1,15 +1,14 @@
+import { Types } from "mongoose";
 import {
   CreateOrderDto,
   OrderResponseDto,
-  OrderResponseSchema,
   OrderResponseDtoForGetAllOrders,
+  OrderResponseSchema,
   // CourseInOrderDtoForGetAllOrders,
   OrderResponseSchemaForGetAllOrders,
 } from "../dtos/orders.dto";
-import { OrderModel } from "../models/order.model";
 import { CourseModel, ICourse } from "../models/course.model";
-import { Types } from "mongoose";
-import { IUser } from "../models/user.model";
+import { OrderModel } from "../models/order.model";
 
 export const orderService = {
   async createOrder(orderData: CreateOrderDto) {
@@ -70,7 +69,6 @@ export const orderService = {
         if (u instanceof Types.ObjectId) {
           return { id: u.toString(), username: "" }; // fallback nếu chưa populate
         }
-        console.log("User in order:", u);
         return {
           id: u.id?.toString() ?? "Id not found",
           username: u.username ?? "Username not found",
