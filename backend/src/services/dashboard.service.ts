@@ -164,6 +164,7 @@ export const getTopSellingCoursesService = async (limit = 5): Promise<TopCourseI
         as: "courseInfo",
       },
     },
+    // courseInfo: [ { title: 'Learn Node' } ] -> courseInfo: { title: 'Learn Node' }
     {
       $unwind: {
         path: "$courseInfo",
