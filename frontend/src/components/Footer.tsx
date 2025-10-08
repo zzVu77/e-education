@@ -2,19 +2,19 @@
 
 import { Text } from "@/components/ui/typography";
 import { Github, Youtube, Facebook } from "lucide-react";
+import Link from "next/link";
 
 const navLinks = [
   { label: "Home", link: "/" },
+  { label: "About", link: "#" },
+  { label: "Contact Us", link: "#" },
   { label: "FAQ", link: "/faq" },
-  { label: "About", link: "/about" },
-  { label: "Contact Us", link: "/contact" },
-  { label: "Our Team", link: "/team" },
 ];
 
 export default function Footer() {
   return (
-    <footer className="bg-green-500 text-white mt-5 pt-10">
-      <div className="mx-auto w-full max-w-screen-xl p-5 py-6 lg:py-8">
+    <footer className="bg-green-500 text-white mt-5 pt-5">
+      <div className="mx-auto w-full max-w-screen-xl pb-4">
         {/* Mạng xã hội */}
         <div className="flex flex-row justify-center gap-x-6">
           <a
@@ -46,23 +46,18 @@ export default function Footer() {
         {/* Navigation Links */}
         <div className="flex flex-row flex-wrap justify-center gap-x-4 md:gap-x-6 mt-5">
           {navLinks.map((nav) => (
-            <a key={nav.link} href={nav.link}>
+            <Link key={nav.link} href={nav.link} className="hover:scale-105">
               <Text
                 body={4}
-                className="text-white/90 hover:text-white font-medium"
+                className="text-[14px] tracking-wider text-white hover:text-black transition-all duration-500 ease-in-out font-medium underline "
               >
                 {nav.label}
               </Text>
-            </a>
+            </Link>
           ))}
         </div>
 
-        {/* Branding */}
-        <div className="flex justify-center w-full mt-4">
-          <Text className="text-sm text-white/80 text-center">F3 - UTE</Text>
-        </div>
-
-        <hr className="my-5 sm:mx-auto lg:my-8 border-white/30" />
+        <hr className=" sm:mx-auto my-4 border-white/30" />
 
         <div className="flex justify-center w-full">
           <Text className="text-sm text-white/80 text-center">
