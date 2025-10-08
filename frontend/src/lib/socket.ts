@@ -17,14 +17,6 @@ export const getSocket = () => {
       query: { userId },
       transports: ["websocket"],
     });
-
-    // socket.on("connect", () => {
-    //   console.log("🔌 Connected to socket server with userId:", userId);
-    // });
-
-    // socket.on("updateOnlineUsers", (count: number) => {
-    //   console.log("👥 Online users:", count);
-    // });
   }
   return socket;
 };
