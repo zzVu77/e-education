@@ -1,4 +1,6 @@
+langdetect==1.0.9
 google-generativeai
+openai
 pandas
 pymongo[srv]
 sentence-transformers

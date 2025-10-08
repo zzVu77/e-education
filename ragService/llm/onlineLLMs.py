@@ -6,7 +6,6 @@ import google.generativeai as genai
 import re
 import markdown
 from markdown.extensions import codehilite, fenced_code, tables, toc 
-# from ragService.retrieval.vector_search import get_docs_for_rerank_unique  # disabled: course search
 from ragService.retrieval.fqa_vector_search import get_docs_for_fqa
 
 class OnlineLLMs:
@@ -83,37 +82,6 @@ class OnlineLLMs:
         out = re.sub(r':\s*-\s', ':\n- ', out)
         out = re.sub(r'\n{3,}', '\n\n', out)
         return out
-    
-    
-    # def build_sales_prompt(self, query: str, source_information: Sequence[str], language: str = "auto") -> str:
-    #     """Course sales prompt (disabled)."""
-    #     joined = []
-    #     for i, s in enumerate(source_information):
-    #         if not s or not isinstance(s, str):
-    #             continue
-    #         joined.append(f"- Source #{i+1}:\n{textwrap.shorten(s, width=2000, placeholder=' ...')}")
-    #     context = "\n\n".join(joined) if joined else "(no sources provided)"
-    #     language_instruction = (
-    #         "Reply in the same language as the user's query." if language == "auto" else f"Reply in {language}."
-    #     )
-    #     prompt = (
-    #         f"Act as an online sales consultant for a course selling website. "
-    #         f"A user's query: {query}\n"
-    #         f"Answer the questions based on the product information below. "
-    #         f"If an answer is not present, say you don't have enough information.\n\n"
-    #         f"Product information:\n{context}\n\n"
-    #         f"Constraints:\n"
-    #         f"- {language_instruction}\n"
-    #         f"- Be concise, clear, and helpful.\n"
-    #         f"- If price or duration is missing, state that it's unavailable.\n"
-    #         f"- Format your response using markdown for better readability.\n"
-    #         f"- Use **bold** for important information like course names, prices, and key details.\n"
-    #         f"- Use bullet points (-) for lists of features or benefits.\n"
-    #         f"- Use numbered lists (1., 2., 3.) for step-by-step information.\n"
-    #         f"- Use > for important notes or highlights.\n"
-    #     )
-    #     return prompt
-
 
     def build_faq_prompt(
         self,
@@ -150,7 +118,6 @@ class OnlineLLMs:
 
 
     def classify_query_mode(self, query: str) -> str:
-        # Mode classifier disabled; always use FAQ flow
         return "faq"
 
 
@@ -158,7 +125,6 @@ class OnlineLLMs:
         self,
         query: str,
         *,
-        course_chunks_coll,
         faq_chunks_coll,
         language: str = "auto",
         mode: Optional[str] = None,  # "faq" | "course" | None (auto)
@@ -167,22 +133,6 @@ class OnlineLLMs:
     ) -> str:
         resolved_mode = (mode or self.classify_query_mode(query)).lower()
 
-        # if resolved_mode == "faq":
-        #     sources = get_docs_for_fqa(
-        #         query=query,
-        #         chunks_coll=faq_chunks_coll,
-        #         k_candidates=k_candidates,
-        #         k_return=1,
-        #     )
-        #     prompt = self.build_faq_prompt(query, sources, language=language)
-        # else:
-        #     sources = get_docs_for_rerank_unique(
-        #         query=query,
-        #         chunks_coll=course_chunks_coll,
-        #         k_candidates=k_candidates,
-        #         k_return=max(2, k_return),
-        #     )
-        #     prompt = self.build_sales_prompt(query, sources, language=language)
         sources = get_docs_for_fqa(
             query=query,
             chunks_coll=faq_chunks_coll,

@@ -66,12 +66,6 @@ def get_docs_for_rerank_unique(
     k_return: int = 6,
     num_candidates: int = DEFAULT_NUM_CANDIDATES,
 ) -> List[str]:
-    """
-    1) Fetch many ANN candidates from `chunks_coll`.
-    2) Keep the highest-scoring chunk per course_id.
-    3) Build compact doc strings (title + text [+ price]) for reranking.
-    4) Return top-k docs (pre-trim) to control rerank latency/cost.
-    """
     hits = vector_search(
         query,
         chunks_coll,
@@ -81,7 +75,7 @@ def get_docs_for_rerank_unique(
     if not hits:
         return []
 
-    top = best_chunk_per_course(hits)[:int(k_return)]
+    top = best_chunk_per_course(hits)[:int(k_return)]   #only use to handle if there are duplicated value 
 
     docs: List[str] = []
     for h in top:

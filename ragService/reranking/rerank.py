@@ -5,7 +5,7 @@ class BGEReRanker:
     def __init__(
         self,
         model_name: str = "BAAI/bge-reranker-v2-m3",
-        device: Optional[str] = None,           # e.g., "cuda" or "cpu"; None = auto
+        device: Optional[str] = "cpu",           # e.g., "cuda" or "cpu"; None = auto
     ):
         self.reranker = CrossEncoder(model_name, device=device)
 
