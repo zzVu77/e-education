@@ -45,8 +45,8 @@ export default function Footer() {
 
         {/* Navigation Links */}
         <div className="flex flex-row flex-wrap justify-center gap-x-4 md:gap-x-6 mt-5">
-          {navLinks.map((nav) => (
-            <Link key={nav.link} href={nav.link} className="hover:scale-105">
+          {navLinks.map((nav, index) => (
+            <Link key={index} href={nav.link} className="hover:scale-105">
               <Text
                 body={4}
                 className="text-[14px] tracking-wider text-white hover:text-black transition-all duration-500 ease-in-out font-medium underline "

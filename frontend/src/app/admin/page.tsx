@@ -1,5 +1,6 @@
 "use client";
 
+import { CourseRevenueChartWithLabel } from "@/components/admin/CourseRevenueChart";
 import { StatisticCard } from "@/components/admin/StatisticCard";
 import { useOnlineUsers } from "@/context/OnlineUserContext";
 import { formatCurrency } from "@/utils/client/formatCurrency";
@@ -57,15 +58,21 @@ export default function DashboardStats() {
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 ">
-      {statsList.map((stat) => (
-        <StatisticCard
-          key={stat.title}
-          title={stat.title}
-          value={stat.value}
-          icon={stat.icon}
-        />
-      ))}
+    <div>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 p-2 py-4">
+        {statsList.map((stat) => (
+          <StatisticCard
+            key={stat.title}
+            title={stat.title}
+            value={stat.value}
+            icon={stat.icon}
+          />
+        ))}
+      </div>
+      <div className="p-2  grid grid-cols-2 ">
+        <CourseRevenueChartWithLabel />
+        <CourseRevenueChartWithLabel />
+      </div>
     </div>
   );
 }
