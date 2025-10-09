@@ -1,4 +1,3 @@
-langdetect==1.0.9
 google-generativeai
 openai
 pandas
@@ -13,3 +12,5 @@ ipython
 python-dotenv
 markdown
 pygments
+transformers
+torch

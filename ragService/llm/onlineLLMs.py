@@ -53,7 +53,14 @@ class OnlineLLMs:
     ) -> str:
 
         genai = self._client()
-        model = genai.GenerativeModel(self.model_name)
+        model = genai.GenerativeModel(
+            self.model_name,
+            # system_instruction=(
+            #     "You are a helpful support assistant for an e-learning platform. "
+            #     "Answer strictly based on the provided FAQ sources. "
+            #     "If missing, say you don't have enough information."
+            # ),    
+        )
 
         cfg = dict(self.generation_config)
         if generation_config:
