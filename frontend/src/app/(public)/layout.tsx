@@ -1,3 +1,4 @@
+import AIChat from "@/components/AIChat";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 
@@ -9,6 +10,7 @@ export default function PublicLayout({
   return (
     <>
       <Header />
+      <AIChat />
       <main>{children}</main>
       <Footer />
     </>

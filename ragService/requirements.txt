@@ -1,0 +1,16 @@
+google-generativeai
+openai
+pandas
+pymongo[srv]
+sentence-transformers
+accelerate
+datasets
+fastapi 
+pydantic
+uvicorn[standard]
+ipython
+python-dotenv
+markdown
+pygments
+transformers
+torch
