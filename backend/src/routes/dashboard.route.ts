@@ -20,7 +20,7 @@ const dashboardRouter = Router();
  * /api/dashboard/summary:
  *   get:
  *     summary: Get summary statistics (total orders, revenue, new vs returning users)
- *     description: Returns key performance metrics for the selected period.
+ *     description: Returns key performance metrics for the selected period (month or year).
  *     tags: [Dashboard]
  *     parameters:
  *       - in: query
@@ -28,23 +28,18 @@ const dashboardRouter = Router();
  *         required: false
  *         schema:
  *           type: string
- *           enum: [month, week, all]
+ *           enum: [month, year, all]
  *           default: month
- *         description: Time period for summary.
+ *         description: Choose "month" or "year" to define the summary scope.
  *       - in: query
  *         name: value
  *         required: false
  *         schema:
  *           type: string
- *           example: "2025-10"
- *         description: Month (YYYY-MM) or week number, depending on period.
- *       - in: query
- *         name: year
- *         required: false
- *         schema:
- *           type: integer
- *           example: 2025
- *         description: Optional year, used when period=week.
+ *           example: "09-2025"
+ *         description:
+ *           If period="month", use "MM-YYYY" (e.g. 09-2025).
+ *           If period="year", use "YYYY" (e.g. 2025).
  *     responses:
  *       200:
  *         description: Dashboard summary retrieved successfully.
@@ -70,7 +65,6 @@ const dashboardRouter = Router();
  *         description: Server error when fetching dashboard summary.
  */
 dashboardRouter.get("/summary", getDashboardSummary);
-
 /**
  * @swagger
  * /api/dashboard/revenue-trend:
