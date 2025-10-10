@@ -10,7 +10,9 @@ export default function AdminLayout({
     <OnlineUserProvider>
       <div className="flex h-screen">
         <AdminSideBar />
-        <main className="flex-1 bg-gray-100 overflow-y-auto">{children}</main>
+        <main className="flex-1 bg-gray-100 overflow-y-auto pb-20 md:pb-0">
+          {children}
+        </main>
       </div>
     </OnlineUserProvider>
   );

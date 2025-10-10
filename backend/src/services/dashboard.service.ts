@@ -136,16 +136,7 @@ export const getTopSellingCoursesService = async (limit = 5): Promise<TopCourseI
   }
 
   const result = await OrderModel.aggregate<TopCourseAgg>([
-    //[
-    // ord1, ord2, ord4
-    //]
     { $match: { paymentStatus: "Paid" } },
-    //     [
-    //   { _id: "ord1", courses: "c1", totalAmount: 100 },
-    //   { _id: "ord1", courses: "c2", totalAmount: 100 },
-    //   { _id: "ord2", courses: "c1", totalAmount: 60 },
-    //   { _id: "ord4", courses: "c2", totalAmount: 120 }
-    // ]
     { $unwind: "$courses" },
     {
       $group: {
@@ -154,7 +145,7 @@ export const getTopSellingCoursesService = async (limit = 5): Promise<TopCourseI
         totalRevenue: { $sum: "$totalAmount" },
       },
     },
-    { $sort: { totalOrders: -1 } },
+    { $sort: { totalRevenue: -1 } },
     { $limit: limit },
     {
       $lookup: {
@@ -164,11 +155,10 @@ export const getTopSellingCoursesService = async (limit = 5): Promise<TopCourseI
         as: "courseInfo",
       },
     },
-    // courseInfo: [ { title: 'Learn Node' } ] -> courseInfo: { title: 'Learn Node' }
     {
       $unwind: {
         path: "$courseInfo",
-        preserveNullAndEmptyArrays: true, // ✅ Giúp tránh lỗi nếu không có match
+        preserveNullAndEmptyArrays: true,
       },
     },
   ]);

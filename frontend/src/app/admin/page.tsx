@@ -70,7 +70,7 @@ export default function DashboardStats() {
           />
         ))}
       </div>
-      <div className="p-2 grid grid-cols-2 gap-4">
+      <div className="p-2 grid grid-cols-1 md:grid-cols-2 gap-4">
         <CourseRevenueChartWithLabel />
         <RevenueChartByPeriod />
       </div>

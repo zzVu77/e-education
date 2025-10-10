@@ -125,8 +125,7 @@ export function CourseRevenueChartWithLabel() {
                   dataKey="title"
                   position="insideLeft"
                   offset={8}
-                  className="fill-white font-medium text-[12px]"
-                  fontSize={12}
+                  className="fill-white font-medium text-[10px] md:text-[12px]"
                 />
               </Bar>
             </BarChart>
