@@ -19,6 +19,7 @@ async function bootstrap() {
   // Create Express app
   const allowedOrigins = [
     "http://localhost:3000",
+    "http://localhost:3001",
     "https://vucoder77.id.vn", // <-- ĐẢM BẢO URL NÀY ĐÚNG VÀ KHÔNG CÓ DẤU / Ở CUỐI
     "https://e-education-vu77.vercel.app",
     "http://10.0.40.208:3000",
