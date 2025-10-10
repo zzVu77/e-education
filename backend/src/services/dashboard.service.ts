@@ -10,33 +10,30 @@ import {
  * --- Dashboard Summary Service ---
  */
 export const getDashboardSummaryService = async (
-  period: "month" | "week" | "all",
-  value?: string,
-  year?: number,
+  value: string, // "MM-YYYY" hoặc "YYYY"
 ): Promise<DashboardSummaryDto> => {
   const now = new Date();
-  let startDate: Date;
-  let endDate: Date = new Date();
 
-  if (period === "month") {
-    const [y, m] = value?.split("-").map(Number) ?? [now.getFullYear(), now.getMonth() + 1];
+  let startDate: Date;
+  let endDate: Date;
+
+  if (/^\d{2}-\d{4}$/.test(value)) {
+    // === Trường hợp month-year ===
+    const [m, y] = value.split("-").map(Number);
     startDate = new Date(y, m - 1, 1);
     endDate = new Date(y, m, 0, 23, 59, 59, 999);
-  } else if (period === "week") {
-    const w = Number(value) || 1;
-    const y = year || now.getFullYear();
-    const firstDayOfYear = new Date(y, 0, 1);
-    const dayOfWeek = firstDayOfYear.getDay();
-    const daysOffset = (w - 1) * 7 - dayOfWeek + 1;
-    startDate = new Date(y, 0, 1 + daysOffset);
-    endDate = new Date(startDate);
-    endDate.setDate(startDate.getDate() + 6);
-    endDate.setHours(23, 59, 59, 999);
+  } else if (/^\d{4}$/.test(value)) {
+    // === Trường hợp chỉ có year ===
+    const y = Number(value);
+    startDate = new Date(y, 0, 1);
+    endDate = new Date(y, 11, 31, 23, 59, 59, 999);
   } else {
-    startDate = new Date(0);
+    throw new Error("Giá trị không hợp lệ, phải là 'MM-YYYY' hoặc 'YYYY'");
   }
 
-  // Định nghĩa rõ kiểu dữ liệu Mongo trả về
+  console.log("Start Date:", startDate);
+  console.log("End Date:", endDate);
+
   interface OrderAggResult {
     totalOrders: number;
     totalRevenue: number;
