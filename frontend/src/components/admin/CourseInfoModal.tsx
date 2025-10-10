@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -35,6 +35,7 @@ import {
 import { Edit2 } from "iconsax-reactjs";
 import { ImagePlus, Trash2 } from "lucide-react";
 import { ScrollArea } from "../ui/scroll-area";
+import { Loader2 } from "lucide-react";
 
 // ✅ Fix lỗi File is not defined khi SSR
 const FileClass = typeof File !== "undefined" ? File : class {};
@@ -96,6 +97,9 @@ export function CourseInfoModal({
   categories = [],
   onSubmitCourse,
 }: CourseInfoModalProps) {
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const form = useForm<CourseFormValues>({
     resolver: zodResolver(courseSchema(type)),
     defaultValues: {
@@ -112,12 +116,17 @@ export function CourseInfoModal({
   });
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleSubmit = (data: CourseFormValues) => {
-    console.log("Form submitted:", data);
-    console.log("defaultValues:", defaultValues);
-
-    onSubmitCourse?.(data);
-    form.reset();
+  const handleSubmit = async (data: CourseFormValues) => {
+    try {
+      setLoading(true);
+      await onSubmitCourse?.(data); // ⚡ Đợi submit thật sự hoàn thành
+      form.reset();
+      setOpen(false); // ✅ Đóng modal chỉ sau khi hoàn tất
+    } catch (error) {
+      console.error("Error submitting course:", error);
+    } finally {
+      setLoading(false);
+    }
   };
   const handleFileChange = (
     file: File | null,
@@ -134,7 +143,7 @@ export function CourseInfoModal({
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="w-full max-w-sm md:max-w-[80vw] max-h-[95vh] overflow-y-auto">
         <DialogHeader className="w-full text-center">
@@ -169,8 +178,14 @@ export function CourseInfoModal({
                         <FormLabel>Course Image</FormLabel>
 
                         <div
-                          className="relative w-full h-full border-2 border-dashed rounded-md flex items-center justify-center cursor-pointer hover:bg-muted transition min-h-[200px] "
-                          onClick={() => fileInputRef.current?.click()}
+                          className={`relative w-full h-full border-2 border-dashed rounded-md flex items-center justify-center transition min-h-[200px] ${
+                            field.value
+                              ? "cursor-not-allowed"
+                              : "cursor-pointer hover:bg-muted"
+                          }`}
+                          onClick={() => {
+                            if (!field.value) fileInputRef.current?.click(); // ✅ chỉ cho click khi chưa có ảnh
+                          }}
                         >
                           {field.value ? (
                             <img
@@ -354,7 +369,6 @@ export function CourseInfoModal({
                             <FormControl>
                               <Input
                                 type="number"
-                                step="30"
                                 placeholder="Enter course duration"
                                 value={field.value}
                                 onChange={(e) =>
@@ -377,7 +391,6 @@ export function CourseInfoModal({
                               <Input
                                 type="number"
                                 min={0}
-                                step="0.01"
                                 placeholder="Enter course price"
                                 value={field.value}
                                 onChange={(e) =>
@@ -395,11 +408,22 @@ export function CourseInfoModal({
                 </div>
                 <div className="flex justify-center pt-2 md:col-span-2 ">
                   <Button
-                    variant={"viewDetails"}
+                    variant="viewDetails"
                     type="submit"
-                    className="w-full md:w-auto rounded-md px-20"
+                    disabled={loading}
+                    className="w-full md:w-auto rounded-md px-20 flex items-center justify-center gap-2"
                   >
-                    {type === "create" ? "Add Course" : "Save Changes"}
+                    {loading ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />{" "}
+                        {/* spinner */}
+                        <span>Saving...</span>
+                      </>
+                    ) : type === "create" ? (
+                      "Add Course"
+                    ) : (
+                      "Save Changes"
+                    )}
                   </Button>
                 </div>
               </div>

@@ -1,4 +1,5 @@
 import AdminSideBar from "@/components/admin/AdminSideBar";
+import { OnlineUserProvider } from "@/context/OnlineUserContext";
 
 export default function AdminLayout({
   children,
@@ -6,9 +7,13 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex h-screen">
-      <AdminSideBar />
-      <main className="flex-1 bg-gray-100 overflow-y-auto">{children}</main>
-    </div>
+    <OnlineUserProvider>
+      <div className="flex h-screen">
+        <AdminSideBar />
+        <main className="flex-1 bg-gray-100 overflow-y-auto pb-20 md:pb-0">
+          {children}
+        </main>
+      </div>
+    </OnlineUserProvider>
   );
 }

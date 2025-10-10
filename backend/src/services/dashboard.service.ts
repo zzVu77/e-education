@@ -145,7 +145,7 @@ export const getTopSellingCoursesService = async (limit = 5): Promise<TopCourseI
         totalRevenue: { $sum: "$totalAmount" },
       },
     },
-    { $sort: { totalOrders: -1 } },
+    { $sort: { totalRevenue: -1 } },
     { $limit: limit },
     {
       $lookup: {
@@ -158,14 +158,14 @@ export const getTopSellingCoursesService = async (limit = 5): Promise<TopCourseI
     {
       $unwind: {
         path: "$courseInfo",
-        preserveNullAndEmptyArrays: true, // ✅ Giúp tránh lỗi nếu không có match
+        preserveNullAndEmptyArrays: true,
       },
     },
   ]);
   console.log(result);
   return result.map((item) => ({
     courseId: item._id.toString(),
-    title: item.courseInfo.title, // ✅ fallback an toàn
+    title: item.courseInfo?.title ?? "Unknown Course",
     totalOrders: item.totalOrders,
     totalRevenue: item.totalRevenue,
   }));
