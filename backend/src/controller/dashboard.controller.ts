@@ -8,13 +8,9 @@ import {
 
 export const getDashboardSummary = async (req: Request, res: Response) => {
   try {
-    const { period = "month", value, year } = req.query;
+    const { value } = req.query;
 
-    const summary = await getDashboardSummaryService(
-      period as "month" | "week" | "all",
-      value as string,
-      year ? Number(year) : undefined,
-    );
+    const summary = await getDashboardSummaryService(value as string);
 
     res.status(200).json(summary);
   } catch (error) {
