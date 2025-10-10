@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "E-Education Platform",
     description: "A modern AI-powered learning experience",
-    url: "https://e-education-vu77.vercel.app",
+    url: "https://vucoder77.id.vn",
     siteName: "E-Education",
     images: [
       {
