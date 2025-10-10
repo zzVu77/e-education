@@ -41,7 +41,7 @@ interface CourseData {
 const chartConfig = {
   totalRevenue: {
     label: "Revenue",
-    color: "rgb(11, 218, 81)",
+    color: "hsl(38.82,100.00%,50.00%)",
   },
   label: {
     color: "rgb(255, 255, 255)",
@@ -94,11 +94,11 @@ export function CourseRevenueChartWithLabel() {
       <CardContent>
         {isLoading ? (
           <div className="space-y-4">
-            <Skeleton className="h-8 w-[90%] bg-green-500 " />
-            <Skeleton className="h-8 w-[70%] bg-green-500 " />
-            <Skeleton className="h-8 w-[50%] bg-green-500 " />
-            <Skeleton className="h-8 w-[30%] bg-green-500 " />
-            <Skeleton className="h-8 w-[20%] bg-green-500 " />
+            <Skeleton className="h-8 w-[90%] bg-[hsl(38.82,100.00%,50.00%)] " />
+            <Skeleton className="h-8 w-[70%] bg-[hsl(38.82,100.00%,50.00%)] " />
+            <Skeleton className="h-8 w-[50%] bg-[hsl(38.82,100.00%,50.00%)] " />
+            <Skeleton className="h-8 w-[30%] bg-[hsl(38.82,100.00%,50.00%)] " />
+            <Skeleton className="h-8 w-[20%] bg-[hsl(38.82,100.00%,50.00%)] " />
           </div>
         ) : (
           <ChartContainer config={chartConfig}>

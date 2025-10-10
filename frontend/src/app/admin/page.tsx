@@ -1,6 +1,7 @@
 "use client";
 
 import { CourseRevenueChartWithLabel } from "@/components/admin/CourseRevenueChart";
+import { RevenueChartByPeriod } from "@/components/admin/RevenueChartByPeriod";
 import { StatisticCard } from "@/components/admin/StatisticCard";
 import { useOnlineUsers } from "@/context/OnlineUserContext";
 import { formatCurrency } from "@/utils/client/formatCurrency";
@@ -69,9 +70,9 @@ export default function DashboardStats() {
           />
         ))}
       </div>
-      <div className="p-2  grid grid-cols-2 ">
+      <div className="p-2 grid grid-cols-2 gap-4">
         <CourseRevenueChartWithLabel />
-        <CourseRevenueChartWithLabel />
+        <RevenueChartByPeriod />
       </div>
     </div>
   );
