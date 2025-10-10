@@ -57,7 +57,7 @@ async function bootstrap() {
   // Initialize Socket.IO server
   const io = new SocketIOServer(httpServer, {
     cors: {
-      origin: ["http://localhost:3000", "http://10.0.40.208:3000"],
+      origin: ["http://localhost:3000", "http://10.0.40.208:3000", "https://vucoder77.id.vn/"],
       credentials: true,
     },
   });

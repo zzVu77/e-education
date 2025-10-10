@@ -13,7 +13,7 @@ export const getSocket = () => {
         return id;
       })();
 
-    socket = io("http://localhost:8080", {
+    socket = io(process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080", {
       query: { userId },
       transports: ["websocket"],
     });
