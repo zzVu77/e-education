@@ -53,38 +53,6 @@ import axiosInstance from "@/config/axiosConfig";
 import { toast } from "sonner";
 import { uploadImageToCloudinary } from "@/lib/utils";
 import { useMediaQuery } from "usehooks-ts";
-const onSubmitCreateCourse = async (values: CourseFormValues) => {
-  try {
-    // const imgUrl =
-    //   "https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80";
-    let imgUrl = "";
-    if (values.imgUrl instanceof File) {
-      imgUrl = await uploadImageToCloudinary(values.imgUrl, "courses");
-    } else if (typeof values.imgUrl === "string") {
-      imgUrl = values.imgUrl;
-    }
-    // Call API createCourse
-    const createRes = await axiosInstance.post<CreateCourseResponse>(
-      "/courses",
-      {
-        title: values.title,
-        description: values.description,
-        price: Number(values.price),
-        category: values.category,
-        level: values.level,
-        instructor: values.instructor,
-        duration: Number(values.duration),
-        imgUrl,
-      },
-    );
-
-    console.log("Course created:", createRes.data);
-    toast.success(createRes.message);
-  } catch (err) {
-    console.error("Error creating course:", err);
-    toast.error("Failed to create course");
-  }
-};
 
 export default function ManageCourses() {
   const [data, setData] = useState<CourseApiResponse[]>([]);
@@ -95,6 +63,38 @@ export default function ManageCourses() {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = useState({});
   const isMd = useMediaQuery("(min-width: 768px)");
+  const onSubmitCreateCourse = async (values: CourseFormValues) => {
+    try {
+      // const imgUrl =
+      //   "https://images.unsplash.com/photo-1523240795612-9a054b0db644?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80";
+      let imgUrl = "";
+      if (values.imgUrl instanceof File) {
+        imgUrl = await uploadImageToCloudinary(values.imgUrl, "courses");
+      } else if (typeof values.imgUrl === "string") {
+        imgUrl = values.imgUrl;
+      }
+      // Call API createCourse
+      const createRes = await axiosInstance.post<CreateCourseResponse>(
+        "/courses",
+        {
+          title: values.title,
+          description: values.description,
+          price: Number(values.price),
+          category: values.category,
+          level: values.level,
+          instructor: values.instructor,
+          duration: Number(values.duration),
+          imgUrl,
+        },
+      );
+      setData((prev) => [...prev, createRes.data]);
+      console.log("Course created:", createRes.data);
+      toast.success(createRes.message);
+    } catch (err) {
+      console.error("Error creating course:", err);
+      toast.error("Failed to create course");
+    }
+  };
   const onSubmitEditCourse = async (dataForm: CourseFormValues) => {
     try {
       const { id, ...newValues } = dataForm;
