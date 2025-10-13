@@ -76,13 +76,13 @@ const Header = () => {
                   <DropdownMenuSeparator />
                   {user.role === "admin" ? (
                     <DropdownMenuItem asChild>
-                      <Link
+                      <a
                         href="/admin"
                         className="flex items-center cursor-pointer"
                       >
                         <LayoutDashboard className="h-4 w-4 mr-2" />
                         Dashboard
-                      </Link>
+                      </a>
                     </DropdownMenuItem>
                   ) : (
                     <DropdownMenuItem asChild>
