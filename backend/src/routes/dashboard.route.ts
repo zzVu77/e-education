@@ -5,6 +5,7 @@ import {
   getRevenueTrend,
   getTopSellingCourses,
 } from "../controller/dashboard.controller";
+import { authenticate, isAdmin } from "../middleware/auth.middleware";
 
 const dashboardRouter = Router();
 
@@ -64,7 +65,7 @@ const dashboardRouter = Router();
  *       500:
  *         description: Server error when fetching dashboard summary.
  */
-dashboardRouter.get("/summary", getDashboardSummary);
+dashboardRouter.get("/summary", authenticate, isAdmin, getDashboardSummary);
 /**
  * @swagger
  * /api/dashboard/revenue-trend:
@@ -99,7 +100,7 @@ dashboardRouter.get("/summary", getDashboardSummary);
  *       500:
  *         description: Server error when fetching revenue trend.
  */
-dashboardRouter.get("/revenue-trend", getRevenueTrend);
+dashboardRouter.get("/revenue-trend", authenticate, isAdmin, getRevenueTrend);
 
 /**
  * @swagger
@@ -140,6 +141,6 @@ dashboardRouter.get("/revenue-trend", getRevenueTrend);
  *       500:
  *         description: Server error when fetching top-selling courses.
  */
-dashboardRouter.get("/top-selling-courses", getTopSellingCourses);
+dashboardRouter.get("/top-selling-courses", authenticate, isAdmin, getTopSellingCourses);
 
 export default dashboardRouter;

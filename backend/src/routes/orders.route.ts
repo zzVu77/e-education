@@ -2,6 +2,7 @@ import { Router } from "express";
 import { orderController } from "../controller/orders.controller";
 import { validate } from "../middleware/validation.middleware";
 import { createOrderSchema } from "../dtos/orders.dto";
+import { authenticate, isAdmin } from "../middleware/auth.middleware";
 
 const orderRouter = Router();
 
@@ -44,7 +45,7 @@ const orderRouter = Router();
  *       201:
  *         description: Order created
  */
-orderRouter.post("/", validate(createOrderSchema), (req, res) =>
+orderRouter.post("/", authenticate, isAdmin, validate(createOrderSchema), (req, res) =>
   orderController.createOrder(req, res),
 );
 
@@ -58,7 +59,7 @@ orderRouter.post("/", validate(createOrderSchema), (req, res) =>
  *       200:
  *         description: List of orders
  */
-orderRouter.get("/", (req, res) => orderController.getAllOrders(req, res));
+orderRouter.get("/", authenticate, isAdmin, (req, res) => orderController.getAllOrders(req, res));
 
 /**
  * @swagger
@@ -77,7 +78,9 @@ orderRouter.get("/", (req, res) => orderController.getAllOrders(req, res));
  *       200:
  *         description: List of orders with given status
  */
-orderRouter.get("/status/:status", (req, res) => orderController.getOrdersByStatus(req, res));
+orderRouter.get("/status/:status", authenticate, isAdmin, (req, res) =>
+  orderController.getOrdersByStatus(req, res),
+);
 
 /**
  * @swagger
@@ -97,7 +100,9 @@ orderRouter.get("/status/:status", (req, res) => orderController.getOrdersByStat
  *       404:
  *         description: Order not found
  */
-orderRouter.get("/:id", (req, res) => orderController.getOrderById(req, res));
+orderRouter.get("/:id", authenticate, isAdmin, (req, res) =>
+  orderController.getOrderById(req, res),
+);
 
 /**
  * @swagger
@@ -115,6 +120,8 @@ orderRouter.get("/:id", (req, res) => orderController.getOrderById(req, res));
  *       200:
  *         description: List of orders for the user
  */
-orderRouter.get("/user/:userId", (req, res) => orderController.getOrdersByUser(req, res));
+orderRouter.get("/user/:userId", authenticate, isAdmin, (req, res) =>
+  orderController.getOrdersByUser(req, res),
+);
 
 export default orderRouter;
