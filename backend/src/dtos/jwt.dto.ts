@@ -3,6 +3,7 @@ import { z } from "zod";
 export const jwtPayloadSchema = z.object({
   id: z.string(),
   fullName: z.string(),
+  role: z.enum(["user", "admin"]),
 });
 
 export type JwtPayloadDto = z.infer<typeof jwtPayloadSchema>;

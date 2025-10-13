@@ -2,6 +2,8 @@ import { Router } from "express";
 import { courseController } from "../controller/courses.controller";
 import { createCourseSchema, updateCourseSchema } from "../dtos/courses.dto";
 import { validate } from "../middleware/validation.middleware";
+import { authenticate, isAdmin } from "../middleware/auth.middleware";
+// import { authenticate } from "passport";
 
 const courseRouter = Router();
 
@@ -178,7 +180,7 @@ courseRouter.get("/:id", (req, res) => courseController.getCourseById(req, res))
  *       201:
  *         description: Course created
  */
-courseRouter.post("/", validate(createCourseSchema), (req, res) =>
+courseRouter.post("/", authenticate, isAdmin, validate(createCourseSchema), (req, res) =>
   courseController.createCourse(req, res),
 );
 
@@ -207,7 +209,7 @@ courseRouter.post("/", validate(createCourseSchema), (req, res) =>
  *       404:
  *         description: Course not found
  */
-courseRouter.put("/:id", validate(updateCourseSchema), (req, res) =>
+courseRouter.put("/:id", authenticate, isAdmin, validate(updateCourseSchema), (req, res) =>
   courseController.updateCourse(req, res),
 );
 
@@ -229,6 +231,8 @@ courseRouter.put("/:id", validate(updateCourseSchema), (req, res) =>
  *       404:
  *         description: Course not found
  */
-courseRouter.delete("/:id", (req, res) => courseController.deleteCourse(req, res));
+courseRouter.delete("/:id", authenticate, isAdmin, (req, res) =>
+  courseController.deleteCourse(req, res),
+);
 
 export default courseRouter;

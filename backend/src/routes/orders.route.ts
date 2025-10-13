@@ -2,6 +2,7 @@ import { Router } from "express";
 import { orderController } from "../controller/orders.controller";
 import { validate } from "../middleware/validation.middleware";
 import { createOrderSchema } from "../dtos/orders.dto";
+import { authenticate, isAdmin } from "../middleware/auth.middleware";
 
 const orderRouter = Router();
 
@@ -58,7 +59,7 @@ orderRouter.post("/", validate(createOrderSchema), (req, res) =>
  *       200:
  *         description: List of orders
  */
-orderRouter.get("/", (req, res) => orderController.getAllOrders(req, res));
+orderRouter.get("/", authenticate, isAdmin, (req, res) => orderController.getAllOrders(req, res));
 
 /**
  * @swagger
@@ -77,7 +78,9 @@ orderRouter.get("/", (req, res) => orderController.getAllOrders(req, res));
  *       200:
  *         description: List of orders with given status
  */
-orderRouter.get("/status/:status", (req, res) => orderController.getOrdersByStatus(req, res));
+orderRouter.get("/status/:status", authenticate, isAdmin, (req, res) =>
+  orderController.getOrdersByStatus(req, res),
+);
 
 /**
  * @swagger
