@@ -4,7 +4,7 @@ import { Suspense } from "react";
 
 export default async function LoginPage() {
   return (
-    <main className="h-auto w-full flex items-center justify-center px-4 py-2">
+    <main className="h-screen w-full flex items-start justify-center px-4 py-2">
       <div className="w-full max-w-xl">
         <div className="flex flex-col items-center text-center mb-6">
           {/* App glyph */}

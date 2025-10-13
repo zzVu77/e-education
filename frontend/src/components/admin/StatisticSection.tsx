@@ -54,6 +54,9 @@ export function StatisticSection() {
       })
       .finally(() => setLoading(false));
   }, [value]);
+  useEffect(() => {
+    console.log("Re-rendered StatisticSection with onlineUsers:", onlineUsers);
+  }, [onlineUsers]);
 
   const statsList = stats
     ? [

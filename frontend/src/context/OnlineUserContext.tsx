@@ -22,6 +22,7 @@ export const OnlineUserProvider = ({
     const socket = getSocket();
 
     socket.on("updateOnlineUsers", (count: number) => {
+      console.log("Received online users count:", count);
       setOnlineUsers(count);
     });
 
